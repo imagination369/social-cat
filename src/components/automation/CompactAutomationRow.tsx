@@ -117,6 +117,7 @@ export function CompactAutomationRow({
   const handleTest = async () => {
     setTesting(true);
     setTestResult(null);
+    window.dispatchEvent(new CustomEvent('cat:job-start'));
 
     try {
       // Build request body with filters (only for reply-to-tweets)

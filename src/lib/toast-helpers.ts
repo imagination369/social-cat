@@ -26,8 +26,8 @@ export function showRateLimitWarning(
 
   const resetTime = formatResetTime(resetIn);
 
-  toast.warning(`Approaching ${limitLabels[limitType]} rate limit`, {
-    description: `Limit resets in ${resetTime}. Consider slowing down automation.`,
+  toast.warning(`Paws! ⚠️ Approaching ${limitLabels[limitType]} rate limit`, {
+    description: `Time for a quick cat nap! Limit resets in ${resetTime}. 😺`,
     duration: 8000,
     action: {
       label: 'View Limits',
@@ -57,8 +57,8 @@ export function showRateLimitError(
 
   const resetTime = formatResetTime(resetIn);
 
-  toast.error(`${limitLabels[limitType]} rate limit exceeded`, {
-    description: `Twitter API limit reached. Resets in ${resetTime}. Automation paused.`,
+  toast.error(`Taking a cat nap 😴 ${limitLabels[limitType]} limit reached`, {
+    description: `Time to rest those paws! Resets in ${resetTime}. Automation paused. 💤`,
     duration: 10000,
     action: {
       label: 'View Limits',
@@ -75,10 +75,12 @@ export function showRateLimitError(
  * @param details - Error details (optional)
  */
 export function showTwitter403Error(details?: string) {
-  toast.error('Twitter API access forbidden (403)', {
+  window.dispatchEvent(new CustomEvent('cat:error'));
+
+  toast.error('Access fur-bidden 🚫😿', {
     description:
       details ||
-      'You may have hit your daily rate limit. Check your usage on the Limits page.',
+      'The cat can\'t access this! You may have hit your daily rate limit.',
     duration: 10000,
     action: {
       label: 'View Limits',
@@ -95,10 +97,12 @@ export function showTwitter403Error(details?: string) {
  * @param retryAfter - Seconds until retry (from retry-after header)
  */
 export function showTwitter429Error(retryAfter?: number) {
+  window.dispatchEvent(new CustomEvent('cat:error'));
+
   const resetTime = retryAfter ? formatResetTime(retryAfter * 1000) : 'a few minutes';
 
-  toast.error('Twitter API rate limit exceeded (429)', {
-    description: `Too many requests. Please wait ${resetTime} before trying again.`,
+  toast.error('Whoa there, speedy paws! 🐾', {
+    description: `Too many requests. The cat needs ${resetTime} to recharge. 😴`,
     duration: 10000,
     action: {
       label: 'View Limits',
@@ -115,7 +119,9 @@ export function showTwitter429Error(retryAfter?: number) {
  * @param error - Error message
  */
 export function showApiError(error: string) {
-  toast.error('API Error', {
+  window.dispatchEvent(new CustomEvent('cat:error'));
+
+  toast.error('Meow-ch! 😿', {
     description: error,
     duration: 6000,
   });
@@ -127,7 +133,9 @@ export function showApiError(error: string) {
  * @param message - Success message
  */
 export function showTwitterSuccess(message: string) {
-  toast.success('Success', {
+  window.dispatchEvent(new CustomEvent('cat:success'));
+
+  toast.success('Purrfect! 🐱✅', {
     description: message,
     duration: 4000,
   });

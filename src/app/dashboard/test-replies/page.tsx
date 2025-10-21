@@ -92,7 +92,7 @@ export default function TestRepliesPage() {
       <div className="p-6 space-y-4">
         {/* Header */}
         <div className="space-y-1">
-          <h1 className="font-black text-2xl tracking-tight">Test Tweet Replies</h1>
+          <h1 className="font-black text-2xl tracking-tight">🧪🐱 Test Tweet Replies</h1>
           <p className="text-sm text-secondary">
             Test and refine your reply prompts without posting to Twitter
           </p>

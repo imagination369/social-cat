@@ -57,10 +57,10 @@ export function AppLoader() {
 
         {/* App Name */}
         <div className="text-center space-y-2">
-          <h1 className="font-black text-2xl tracking-tight">Social Cat</h1>
+          <h1 className="font-black text-2xl tracking-tight">🐱 Social Cat</h1>
           <div className="flex items-center gap-2 justify-center">
             <Loader2 className="h-4 w-4 animate-spin text-accent" />
-            <p className="text-xs text-secondary">Loading your automations...</p>
+            <p className="text-xs text-secondary">Waking up the cat...</p>
           </div>
         </div>
       </div>

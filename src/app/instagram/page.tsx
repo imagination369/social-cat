@@ -12,7 +12,7 @@ export default function InstagramPage() {
             <div className="h-6 w-6 rounded-md bg-gradient-to-br from-[#f09433] via-[#dc2743] to-[#bc1888] flex items-center justify-center">
               <Instagram className="h-4 w-4 text-white" />
             </div>
-            <h1 className="font-black text-2xl tracking-tight">Instagram</h1>
+            <h1 className="font-black text-2xl tracking-tight">😸 Instagram</h1>
           </div>
           <p className="text-xs text-secondary">Monitor and reply to comments & DMs</p>
         </div>

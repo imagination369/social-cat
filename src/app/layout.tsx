@@ -5,6 +5,7 @@ import { SessionProvider } from "@/components/providers/SessionProvider";
 import { Toaster } from "@/components/ui/sonner";
 import NextTopLoader from "nextjs-toploader";
 import { AppLoader } from "@/components/ui/app-loader";
+import { CatMascot } from "@/components/ui/cat-mascot";
 
 const robotoHeading = Roboto_Mono({
   weight: "500",
@@ -47,6 +48,7 @@ export default function RootLayout({
         />
         <SessionProvider>{children}</SessionProvider>
         <Toaster />
+        <CatMascot />
       </body>
     </html>
   );

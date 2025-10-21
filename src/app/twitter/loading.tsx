@@ -8,7 +8,7 @@ export default function TwitterLoading() {
           <Loader2 className="h-8 w-8 animate-spin text-[#1DA1F2]" />
           <Twitter className="h-4 w-4 text-[#1DA1F2] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
         </div>
-        <p className="text-sm text-secondary">Loading Twitter...</p>
+        <p className="text-sm text-secondary">Hunting for tweets... 🐱🐦</p>
       </div>
     </div>
   );

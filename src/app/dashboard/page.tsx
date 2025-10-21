@@ -63,7 +63,7 @@ export default function DashboardPage() {
       <div className="p-6 space-y-6">
         {/* Header */}
         <div className="space-y-1">
-          <h1 className="font-black text-2xl tracking-tight">Dashboard</h1>
+          <h1 className="font-black text-2xl tracking-tight">🐱 Dashboard</h1>
           <p className="text-sm text-secondary">
             Monitor your social media automations
           </p>

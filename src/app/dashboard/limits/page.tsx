@@ -369,7 +369,7 @@ export default function LimitsPage() {
       <DashboardLayout>
         <div className="p-6 space-y-4">
           <div className="space-y-1">
-            <h1 className="font-black text-2xl tracking-tight">API Limits</h1>
+            <h1 className="font-black text-2xl tracking-tight">📊🐾 API Limits</h1>
             <p className="text-sm text-secondary">Loading...</p>
           </div>
         </div>
@@ -383,7 +383,7 @@ export default function LimitsPage() {
         {/* Header with Tier Selector */}
         <div className="flex items-start justify-between gap-4">
           <div className="space-y-1 flex-1">
-            <h1 className="font-black text-2xl tracking-tight">API Limits</h1>
+            <h1 className="font-black text-2xl tracking-tight">📊🐾 API Limits</h1>
             <p className="text-xs text-secondary">
               Monitor usage across platforms
             </p>

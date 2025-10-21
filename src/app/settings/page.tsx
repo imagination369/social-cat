@@ -3,7 +3,8 @@
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Twitter, Youtube, Instagram, Check, X, Loader2 } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { Twitter, Youtube, Instagram, Check, X, Loader2, Cat } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 
@@ -23,6 +24,20 @@ export default function SettingsPage() {
   const [youtubeConnected, setYoutubeConnected] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [instagramConnected, setInstagramConnected] = useState(false);
+  const [catMascotEnabled, setCatMascotEnabled] = useState(true);
+
+  // Load cat mascot preference from localStorage
+  useEffect(() => {
+    const hidden = localStorage.getItem('cat-mascot-hidden') === 'true';
+    setCatMascotEnabled(!hidden);
+  }, []);
+
+  const handleCatMascotToggle = (enabled: boolean) => {
+    setCatMascotEnabled(enabled);
+    localStorage.setItem('cat-mascot-hidden', enabled ? 'false' : 'true');
+    // Reload to apply changes
+    window.location.reload();
+  };
 
   // Fetch Twitter connection status on mount (only if authenticated)
   useEffect(() => {
@@ -163,7 +178,7 @@ export default function SettingsPage() {
       <div className="p-6 space-y-6">
         {/* Header */}
         <div className="space-y-1">
-          <h1 className="font-black text-2xl tracking-tight">Settings</h1>
+          <h1 className="font-black text-2xl tracking-tight">⚙️😼 Settings</h1>
           <p className="text-xs text-secondary">Connect your social media accounts</p>
         </div>
 
@@ -272,6 +287,30 @@ export default function SettingsPage() {
               >
                 {instagramConnected ? 'Disconnect' : 'Coming Soon'}
               </Button>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* App Preferences */}
+        <div className="space-y-3">
+          <h2 className="font-bold text-sm">App Preferences</h2>
+          <Card className="border-border bg-surface">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Cat className="h-4 w-4 text-accent" />
+                  <div>
+                    <div className="text-sm font-medium">Cat Mascot</div>
+                    <div className="text-[10px] text-secondary">
+                      Show the interactive cat companion in the bottom-right corner
+                    </div>
+                  </div>
+                </div>
+                <Switch
+                  checked={catMascotEnabled}
+                  onCheckedChange={handleCatMascotToggle}
+                />
+              </div>
             </CardContent>
           </Card>
         </div>
