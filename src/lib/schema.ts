@@ -18,28 +18,7 @@ export const tweetsTableSQLite = sqliteTable('tweets', {
   statusCreatedAtIdx: sqliteIndex('tweets_status_created_at_idx').on(table.status, table.createdAt),
 }));
 
-export const aiResponsesTableSQLite = sqliteTable('ai_responses', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
-  prompt: text('prompt').notNull(),
-  response: text('response').notNull(),
-  model: text('model').notNull(),
-  createdAt: integer('created_at', { mode: 'timestamp' })
-    .notNull()
-    .default(sql`(unixepoch())`),
-});
-
 // User authentication tables for SQLite
-export const usersTableSQLite = sqliteTable('users', {
-  id: text('id').primaryKey(),
-  name: text('name'),
-  email: text('email').notNull().unique(),
-  emailVerified: integer('email_verified', { mode: 'timestamp' }),
-  image: text('image'),
-  createdAt: integer('created_at', { mode: 'timestamp' })
-    .notNull()
-    .default(sql`(unixepoch())`),
-});
-
 export const accountsTableSQLite = sqliteTable('accounts', {
   id: text('id').primaryKey(),
   userId: text('user_id').notNull(),
@@ -60,22 +39,6 @@ export const accountsTableSQLite = sqliteTable('accounts', {
   userProviderIdx: sqliteIndex('accounts_user_provider_idx').on(table.userId, table.provider),
   providerAccountIdx: sqliteUniqueIndex('accounts_provider_account_idx').on(table.provider, table.providerAccountId),
 }));
-
-export const sessionsTableSQLite = sqliteTable('sessions', {
-  id: text('id').primaryKey(),
-  sessionToken: text('session_token').notNull().unique(),
-  userId: text('user_id').notNull(),
-  expires: integer('expires', { mode: 'timestamp' }).notNull(),
-}, (table) => ({
-  userIdIdx: sqliteIndex('sessions_user_id_idx').on(table.userId),
-  expiresIdx: sqliteIndex('sessions_expires_idx').on(table.expires),
-}));
-
-export const verificationTokensTableSQLite = sqliteTable('verification_tokens', {
-  identifier: text('identifier').notNull(),
-  token: text('token').notNull().unique(),
-  expires: integer('expires', { mode: 'timestamp' }).notNull(),
-});
 
 // YouTube tables for SQLite
 export const youtubeVideosTableSQLite = sqliteTable('youtube_videos', {
@@ -203,24 +166,7 @@ export const tweetsTablePostgres = pgTable('tweets', {
   statusCreatedAtIdx: pgIndex('tweets_status_created_at_idx').on(table.status, table.createdAt),
 }));
 
-export const aiResponsesTablePostgres = pgTable('ai_responses', {
-  id: serial('id').primaryKey(),
-  prompt: pgText('prompt').notNull(),
-  response: pgText('response').notNull(),
-  model: varchar('model', { length: 100 }).notNull(),
-  createdAt: timestamp('created_at').notNull().defaultNow(),
-});
-
 // User authentication tables for PostgreSQL
-export const usersTablePostgres = pgTable('users', {
-  id: varchar('id', { length: 255 }).primaryKey(),
-  name: varchar('name', { length: 255 }),
-  email: varchar('email', { length: 255 }).notNull().unique(),
-  emailVerified: timestamp('email_verified'),
-  image: pgText('image'),
-  createdAt: timestamp('created_at').notNull().defaultNow(),
-});
-
 export const accountsTablePostgres = pgTable('accounts', {
   id: varchar('id', { length: 255 }).primaryKey(),
   userId: varchar('user_id', { length: 255 }).notNull(),
@@ -241,22 +187,6 @@ export const accountsTablePostgres = pgTable('accounts', {
   userProviderIdx: pgIndex('accounts_user_provider_idx').on(table.userId, table.provider),
   providerAccountIdx: pgUniqueIndex('accounts_provider_account_idx').on(table.provider, table.providerAccountId),
 }));
-
-export const sessionsTablePostgres = pgTable('sessions', {
-  id: varchar('id', { length: 255 }).primaryKey(),
-  sessionToken: varchar('session_token', { length: 255 }).notNull().unique(),
-  userId: varchar('user_id', { length: 255 }).notNull(),
-  expires: timestamp('expires').notNull(),
-}, (table) => ({
-  userIdIdx: pgIndex('sessions_user_id_idx').on(table.userId),
-  expiresIdx: pgIndex('sessions_expires_idx').on(table.expires),
-}));
-
-export const verificationTokensTablePostgres = pgTable('verification_tokens', {
-  identifier: varchar('identifier', { length: 255 }).notNull(),
-  token: varchar('token', { length: 255 }).notNull().unique(),
-  expires: timestamp('expires').notNull(),
-});
 
 // YouTube tables for PostgreSQL
 export const youtubeVideosTablePostgres = pgTable('youtube_videos', {
@@ -526,11 +456,7 @@ export const apiCredentialsTablePostgres = pgTable('api_credentials', {
 // Export the appropriate tables based on environment
 // This will be imported and used throughout the app
 export const tweetsTable = useSQLite ? tweetsTableSQLite : tweetsTablePostgres;
-export const aiResponsesTable = useSQLite ? aiResponsesTableSQLite : aiResponsesTablePostgres;
-export const usersTable = useSQLite ? usersTableSQLite : usersTablePostgres;
 export const accountsTable = useSQLite ? accountsTableSQLite : accountsTablePostgres;
-export const sessionsTable = useSQLite ? sessionsTableSQLite : sessionsTablePostgres;
-export const verificationTokensTable = useSQLite ? verificationTokensTableSQLite : verificationTokensTablePostgres;
 export const youtubeVideosTable = useSQLite ? youtubeVideosTableSQLite : youtubeVideosTablePostgres;
 export const youtubeCommentsTable = useSQLite ? youtubeCommentsTableSQLite : youtubeCommentsTablePostgres;
 export const oauthStateTable = useSQLite ? oauthStateTableSQLite : oauthStateTablePostgres;
@@ -545,14 +471,8 @@ export const apiCredentialsTable = useSQLite ? apiCredentialsTableSQLite : apiCr
 
 export type Tweet = typeof tweetsTableSQLite.$inferSelect;
 export type NewTweet = typeof tweetsTableSQLite.$inferInsert;
-export type AIResponse = typeof aiResponsesTableSQLite.$inferSelect;
-export type NewAIResponse = typeof aiResponsesTableSQLite.$inferInsert;
-export type User = typeof usersTableSQLite.$inferSelect;
-export type NewUser = typeof usersTableSQLite.$inferInsert;
 export type Account = typeof accountsTableSQLite.$inferSelect;
 export type NewAccount = typeof accountsTableSQLite.$inferInsert;
-export type Session = typeof sessionsTableSQLite.$inferSelect;
-export type NewSession = typeof sessionsTableSQLite.$inferInsert;
 export type YouTubeVideo = typeof youtubeVideosTableSQLite.$inferSelect;
 export type NewYouTubeVideo = typeof youtubeVideosTableSQLite.$inferInsert;
 export type YouTubeComment = typeof youtubeCommentsTableSQLite.$inferSelect;

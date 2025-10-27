@@ -58,6 +58,12 @@ export function CompactAutomationRow({
   const [newsLanguage, setNewsLanguage] = useState('en');
   const [newsCountry, setNewsCountry] = useState('US');
 
+  // Prompt modifiers (style toggles)
+  const [noHashtags, setNoHashtags] = useState(false);
+  const [noEmojis, setNoEmojis] = useState(false);
+  const [casualGrammar, setCasualGrammar] = useState(false);
+  const [maxCharacters, setMaxCharacters] = useState('280'); // '280', '200', '150', '100'
+
   // Load settings from database on mount
   useEffect(() => {
     const loadSettings = async () => {
@@ -83,6 +89,10 @@ export function CompactAutomationRow({
           if (settings.newsTopic !== undefined) setNewsTopic(settings.newsTopic);
           if (settings.newsLanguage !== undefined) setNewsLanguage(settings.newsLanguage);
           if (settings.newsCountry !== undefined) setNewsCountry(settings.newsCountry);
+          if (settings.noHashtags !== undefined) setNoHashtags(settings.noHashtags);
+          if (settings.noEmojis !== undefined) setNoEmojis(settings.noEmojis);
+          if (settings.casualGrammar !== undefined) setCasualGrammar(settings.casualGrammar);
+          if (settings.maxCharacters !== undefined) setMaxCharacters(settings.maxCharacters);
         }
       } catch (error) {
         console.error('Failed to load automation settings:', error);
@@ -93,6 +103,37 @@ export function CompactAutomationRow({
 
     loadSettings();
   }, [jobName]);
+
+  // Build final system prompt with modifiers
+  const buildFinalSystemPrompt = () => {
+    let finalPrompt = systemPrompt;
+
+    // Add modifiers as instructions
+    const modifiers: string[] = [];
+
+    if (noHashtags) {
+      modifiers.push('- Never use hashtags in your responses');
+    }
+
+    if (noEmojis) {
+      modifiers.push('- Never use emojis in your responses');
+    }
+
+    if (casualGrammar) {
+      modifiers.push('- Write with casual grammar like a real person texting (e.g., "hey how are u", "thats really cool", use contractions, drop apostrophes, lowercase)');
+      modifiers.push('- Make it feel natural and human, not formal or perfect');
+    }
+
+    if (maxCharacters !== '280') {
+      modifiers.push(`- Keep your responses under ${maxCharacters} characters (strict limit)`);
+    }
+
+    if (modifiers.length > 0) {
+      finalPrompt = `${finalPrompt}\n\nSTYLE RULES:\n${modifiers.join('\n')}`;
+    }
+
+    return finalPrompt;
+  };
 
   // Save settings to database
   const saveSettings = async (overrideSettings?: Partial<{
@@ -111,10 +152,14 @@ export function CompactAutomationRow({
     newsTopic: string;
     newsLanguage: string;
     newsCountry: string;
+    noHashtags: boolean;
+    noEmojis: boolean;
+    casualGrammar: boolean;
+    maxCharacters: string;
   }>) => {
     const settings = {
       interval,
-      systemPrompt,
+      systemPrompt: buildFinalSystemPrompt(), // Always save with modifiers applied
       enabled,
       searchQuery,
       minimumLikes,
@@ -128,6 +173,10 @@ export function CompactAutomationRow({
       newsTopic,
       newsLanguage,
       newsCountry,
+      noHashtags,
+      noEmojis,
+      casualGrammar,
+      maxCharacters,
       ...overrideSettings,
     };
 
@@ -306,12 +355,86 @@ export function CompactAutomationRow({
                 Configure how the AI behaves for this automation
               </DialogDescription>
             </DialogHeader>
-            <Textarea
-              value={systemPrompt}
-              onChange={(e) => setSystemPrompt(e.target.value)}
-              placeholder="Enter your system prompt..."
-              className="min-h-[200px] bg-background border-border text-sm resize-none"
-            />
+
+            <div className="space-y-4">
+              {/* Main prompt textarea */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-medium text-foreground">Base Prompt</label>
+                <Textarea
+                  value={systemPrompt}
+                  onChange={(e) => setSystemPrompt(e.target.value)}
+                  placeholder="Enter your system prompt..."
+                  className="min-h-[150px] bg-background border-border text-sm resize-none"
+                />
+              </div>
+
+              {/* Style modifiers */}
+              <div className="space-y-3 border-t border-border pt-3">
+                <label className="text-xs font-medium text-foreground">Style Options</label>
+
+                <div className="grid grid-cols-2 gap-3">
+                  {/* No Hashtags */}
+                  <label className="flex items-center gap-2 cursor-pointer group">
+                    <input
+                      type="checkbox"
+                      checked={noHashtags}
+                      onChange={(e) => setNoHashtags(e.target.checked)}
+                      className="w-4 h-4 rounded border-border bg-input accent-primary focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background cursor-pointer"
+                    />
+                    <span className="text-xs font-medium text-foreground group-hover:text-primary transition-colors">
+                      No hashtags
+                    </span>
+                  </label>
+
+                  {/* No Emojis */}
+                  <label className="flex items-center gap-2 cursor-pointer group">
+                    <input
+                      type="checkbox"
+                      checked={noEmojis}
+                      onChange={(e) => setNoEmojis(e.target.checked)}
+                      className="w-4 h-4 rounded border-border bg-input accent-primary focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background cursor-pointer"
+                    />
+                    <span className="text-xs font-medium text-foreground group-hover:text-primary transition-colors">
+                      No emojis
+                    </span>
+                  </label>
+
+                  {/* Casual Grammar */}
+                  <label className="flex items-center gap-2 cursor-pointer group col-span-2">
+                    <input
+                      type="checkbox"
+                      checked={casualGrammar}
+                      onChange={(e) => setCasualGrammar(e.target.checked)}
+                      className="w-4 h-4 rounded border-border bg-input accent-primary focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background cursor-pointer"
+                    />
+                    <span className="text-xs font-medium text-foreground group-hover:text-primary transition-colors">
+                      Casual grammar (like texting - more human/realistic)
+                    </span>
+                  </label>
+                </div>
+
+                {/* Character Limit */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-medium text-foreground">
+                    Max Characters per Tweet
+                  </label>
+                  <select
+                    value={maxCharacters}
+                    onChange={(e) => setMaxCharacters(e.target.value)}
+                    className="h-8 w-full rounded-md border border-border bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                  >
+                    <option value="280">280 (Twitter max)</option>
+                    <option value="200">200 (Short & punchy)</option>
+                    <option value="150">150 (Very concise)</option>
+                    <option value="100">100 (Ultra brief)</option>
+                  </select>
+                  <p className="text-[10px] text-secondary">
+                    AI will aim to stay under this character limit
+                  </p>
+                </div>
+              </div>
+            </div>
+
             <Button onClick={() => { setPromptOpen(false); saveSettings(); }} className="h-8 text-xs">
               Save
             </Button>

@@ -106,20 +106,31 @@ Guidelines:
 - Middle tweets should develop the idea with insights/details
 - Last tweet should have a strong conclusion or call-to-action
 - Be authentic, conversational, and thought-provoking
-- Avoid excessive hashtags or emojis unless specifically requested
+- Avoid excessive hashtags or emojis unless specifically requested`;
 
-Return ONLY the tweets, separated by "---" (three dashes on a new line). Example format:
-First tweet text here
+  // CRITICAL: Always append formatting instructions, even with custom system prompts
+  const formattingInstructions = `
+
+IMPORTANT FORMATTING RULES:
+- You MUST generate EXACTLY ${threadLength} separate tweets
+- Each tweet MUST be under 280 characters
+- Return ONLY the tweets separated by "---" (three dashes on a new line)
+- Do NOT return a single long tweet - split it into ${threadLength} distinct tweets
+
+Example format:
+First tweet text here (under 280 chars)
 
 ---
 
-Second tweet text here
+Second tweet text here (under 280 chars)
 
 ---
 
-Third tweet text here`;
+Third tweet text here (under 280 chars)`;
 
-  const finalSystemPrompt = systemPrompt || defaultSystemPrompt;
+  const finalSystemPrompt = systemPrompt
+    ? `${systemPrompt}\n${formattingInstructions}`
+    : `${defaultSystemPrompt}\n${formattingInstructions}`;
 
   const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
     {
@@ -141,11 +152,48 @@ Third tweet text here`;
 
   const result = completion.choices[0]?.message?.content || '';
 
-  // Split the result by "---" separator
-  const tweets = result
-    .split(/\n---\n/)
-    .map(tweet => tweet.trim())
-    .filter(tweet => tweet.length > 0 && tweet.length <= 280);
+  // Log raw AI response for debugging
+  logger.info({ rawResponse: result.substring(0, 500) }, 'Raw AI thread response (first 500 chars)');
+
+  // Split the result by "---" separator (handle various formats)
+  // Try multiple parsing strategies:
+  let tweets: string[] = [];
+
+  // Strategy 1: Split by "---" with flexible whitespace
+  if (result.includes('---')) {
+    tweets = result
+      .split(/\s*---\s*/)
+      .map(tweet => tweet.trim())
+      .filter(tweet => tweet.length > 0 && tweet.length <= 280);
+  }
+
+  // Strategy 2: If no separator found, try splitting by double newlines
+  if (tweets.length === 0 && result.includes('\n\n')) {
+    tweets = result
+      .split(/\n\n+/)
+      .map(tweet => tweet.trim())
+      .filter(tweet => tweet.length > 0 && tweet.length <= 280);
+  }
+
+  // Strategy 3: If still no tweets, try splitting by numbered list (1., 2., 3.)
+  if (tweets.length === 0 && /^\d+\.\s/.test(result)) {
+    tweets = result
+      .split(/\n\d+\.\s/)
+      .map(tweet => tweet.trim())
+      .filter(tweet => tweet.length > 0 && tweet.length <= 280);
+    // Remove potential leading number from first tweet
+    if (tweets.length > 0 && /^\d+\.\s/.test(tweets[0])) {
+      tweets[0] = tweets[0].replace(/^\d+\.\s/, '').trim();
+    }
+  }
+
+  // Strategy 4: Last resort - treat entire response as single tweet if it's valid
+  if (tweets.length === 0 && result.trim().length > 0 && result.trim().length <= 280) {
+    tweets = [result.trim()];
+  }
+
+  // Log parsed tweets for debugging
+  logger.info({ parsedCount: tweets.length, tweets: tweets.slice(0, 3) }, 'Parsed tweets from AI response');
 
   // Validate we got the right number of tweets
   if (tweets.length < threadLength) {

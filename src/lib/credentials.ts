@@ -1,6 +1,6 @@
 import { db } from './db';
 import { apiCredentialsTable } from './schema';
-import { encrypt, decrypt } from './encryption';
+import { encrypt, decrypt } from './crypto';
 import { eq } from 'drizzle-orm';
 
 // In-memory cache for credentials (clears on server restart)
@@ -28,10 +28,12 @@ export async function getCredential(key: string): Promise<string | undefined> {
       .limit(1);
 
     if (result && result.length > 0) {
-      const decrypted = decrypt(result[0].value);
-      // Cache the result
-      credentialsCache.set(key, { value: decrypted, timestamp: Date.now() });
-      return decrypted;
+      const decrypted = await decrypt(result[0].value);
+      if (decrypted) {
+        // Cache the result
+        credentialsCache.set(key, { value: decrypted, timestamp: Date.now() });
+        return decrypted;
+      }
     }
   } catch (error) {
     console.error(`Error fetching credential ${key} from database:`, error);
@@ -65,7 +67,10 @@ export async function getCredentials(keys: string[]): Promise<Record<string, str
  * Save or update a credential
  */
 export async function setCredential(key: string, value: string, platform: string): Promise<void> {
-  const encrypted = encrypt(value);
+  const encrypted = await encrypt(value);
+  if (!encrypted) {
+    throw new Error('Failed to encrypt credential');
+  }
 
   try {
     // Check if credential exists
@@ -135,7 +140,10 @@ export async function getPlatformCredentials(platform: string): Promise<Record<s
 
     const credentials: Record<string, string> = {};
     for (const row of results) {
-      credentials[row.key] = decrypt(row.value);
+      const decrypted = await decrypt(row.value);
+      if (decrypted) {
+        credentials[row.key] = decrypted;
+      }
     }
 
     return credentials;
