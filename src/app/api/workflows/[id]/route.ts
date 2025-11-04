@@ -48,6 +48,34 @@ export async function PATCH(
 
       const workflow = workflows[0];
 
+      // Update name and/or description
+      if (body.name !== undefined || body.description !== undefined) {
+        const updates: { name?: string; description?: string | null } = {};
+        if (body.name !== undefined) updates.name = body.name;
+        if (body.description !== undefined) updates.description = body.description;
+
+        await sqliteDb
+          .update(workflowsTableSQLite)
+          .set(updates)
+          .where(
+            and(
+              eq(workflowsTableSQLite.id, id),
+              eq(workflowsTableSQLite.userId, session.user.id)
+            )
+          );
+
+        logger.info(
+          {
+            userId: session.user.id,
+            workflowId: id,
+            updates,
+          },
+          'Workflow name/description updated'
+        );
+
+        return NextResponse.json({ success: true });
+      }
+
       // Update status
       if (body.status !== undefined) {
         await sqliteDb
@@ -131,6 +159,34 @@ export async function PATCH(
       }
 
       const workflow = workflows[0];
+
+      // Update name and/or description
+      if (body.name !== undefined || body.description !== undefined) {
+        const updates: { name?: string; description?: string | null } = {};
+        if (body.name !== undefined) updates.name = body.name;
+        if (body.description !== undefined) updates.description = body.description;
+
+        await postgresDb
+          .update(workflowsTablePostgres)
+          .set(updates)
+          .where(
+            and(
+              eq(workflowsTablePostgres.id, id),
+              eq(workflowsTablePostgres.userId, session.user.id)
+            )
+          );
+
+        logger.info(
+          {
+            userId: session.user.id,
+            workflowId: id,
+            updates,
+          },
+          'Workflow name/description updated'
+        );
+
+        return NextResponse.json({ success: true });
+      }
 
       // Update status
       if (body.status !== undefined) {

@@ -5,12 +5,16 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
-import { Download, Trash2, Workflow as WorkflowIcon, Play, Key, MessageSquare, Sliders, BarChart3 } from 'lucide-react';
+import { Download, Trash2, Workflow as WorkflowIcon, Play, Key, MessageSquare, Sliders, BarChart3, Pencil } from 'lucide-react';
 import { WorkflowListItem } from '@/types/workflows';
 import { WorkflowExecutionDialog } from './workflow-execution-dialog';
 import { CredentialsConfigDialog } from './credentials-config-dialog';
 import { WorkflowSettingsDialog } from './workflow-settings-dialog';
 import { WorkflowOutputsDialog } from './workflow-outputs-dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 
 interface WorkflowCardProps {
@@ -28,6 +32,10 @@ export function WorkflowCard({ workflow, onDeleted, onExport, onUpdated }: Workf
   const [credentialsConfigOpen, setCredentialsConfigOpen] = useState(false);
   const [settingsDialogOpen, setSettingsDialogOpen] = useState(false);
   const [outputsDialogOpen, setOutputsDialogOpen] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [editName, setEditName] = useState(workflow.name);
+  const [editDescription, setEditDescription] = useState(workflow.description || '');
+  const [saving, setSaving] = useState(false);
 
   const handleDelete = async () => {
     toast(`Delete "${workflow.name}"?`, {
@@ -95,6 +103,38 @@ export function WorkflowCard({ workflow, onDeleted, onExport, onUpdated }: Workf
     setExecutionDialogOpen(true);
   };
 
+  const handleSaveEdit = async () => {
+    if (!editName.trim()) {
+      toast.error('Workflow name is required');
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const response = await fetch(`/api/workflows/${workflow.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: editName,
+          description: editDescription || null,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update workflow');
+      }
+
+      toast.success('Workflow updated');
+      setEditDialogOpen(false);
+      onUpdated?.();
+    } catch (error) {
+      console.error('Error updating workflow:', error);
+      toast.error('Failed to update workflow');
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'active':
@@ -159,17 +199,26 @@ export function WorkflowCard({ workflow, onDeleted, onExport, onUpdated }: Workf
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-2 min-w-0 flex-1">
             <WorkflowIcon className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-            <CardTitle className="card-title truncate">{workflow.name}</CardTitle>
+            <CardTitle className="card-title truncate" title={workflow.name}>
+              {workflow.name.length > 35 ? `${workflow.name.slice(0, 35)}...` : workflow.name}
+            </CardTitle>
           </div>
           <div className="flex items-center gap-1 flex-shrink-0">
             <Button
               variant="ghost"
               size="icon-sm"
+              onClick={() => setEditDialogOpen(true)}
+              title="Edit workflow"
+            >
+              <Pencil className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon-sm"
               onClick={() => onExport(workflow.id)}
               title="Export workflow"
-              className="transition-all duration-200 hover:scale-110 active:scale-95"
             >
-              <Download className="h-4 w-4 transition-transform duration-200 group-hover:translate-y-0.5" />
+              <Download className="h-4 w-4" />
             </Button>
             <Button
               variant="ghost"
@@ -177,9 +226,9 @@ export function WorkflowCard({ workflow, onDeleted, onExport, onUpdated }: Workf
               onClick={handleDelete}
               disabled={deleting}
               title="Delete workflow"
-              className="transition-all duration-200 hover:scale-110 active:scale-95 hover:text-destructive"
+              className="hover:text-destructive"
             >
-              <Trash2 className="h-4 w-4 transition-transform duration-200 group-hover:rotate-12" />
+              <Trash2 className="h-4 w-4" />
             </Button>
           </div>
         </div>
@@ -291,6 +340,52 @@ export function WorkflowCard({ workflow, onDeleted, onExport, onUpdated }: Workf
         open={outputsDialogOpen}
         onOpenChange={setOutputsDialogOpen}
       />
+
+      <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Edit Workflow</DialogTitle>
+            <DialogDescription>
+              Update the name and description of this workflow.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="name">Name</Label>
+              <Input
+                id="name"
+                value={editName}
+                onChange={(e) => setEditName(e.target.value)}
+                placeholder="Workflow name"
+                disabled={saving}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="description">Description</Label>
+              <Textarea
+                id="description"
+                value={editDescription}
+                onChange={(e) => setEditDescription(e.target.value)}
+                placeholder="Describe what this workflow does"
+                rows={3}
+                disabled={saving}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setEditDialogOpen(false)}
+              disabled={saving}
+            >
+              Cancel
+            </Button>
+            <Button onClick={handleSaveEdit} disabled={saving || !editName.trim()}>
+              {saving ? 'Saving...' : 'Save'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 }
