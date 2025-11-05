@@ -1,5 +1,6 @@
 import NextAuth, { type DefaultSession } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
+import bcrypt from 'bcryptjs';
 
 /**
  * NextAuth.js v5 (Auth.js) Configuration
@@ -7,6 +8,10 @@ import Credentials from 'next-auth/providers/credentials';
  * Multi-tenant authentication with organization context
  * Each user belongs to one or more organizations
  * Personal organization is auto-created on first sign-in
+ *
+ * Supports both:
+ * - Admin login via environment variables (backward compatibility)
+ * - Database users with hashed passwords
  *
  * NOTE: Organizations module is lazy-loaded to avoid Edge Runtime issues
  */
@@ -68,7 +73,42 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           return null;
         }
 
-        // Check against environment variables (single user)
+        // First check database users
+        if (process.env.NEXT_RUNTIME !== 'edge') {
+          try {
+            const { db } = await import('./db');
+            const { usersTable } = await import('./schema');
+            const { eq } = await import('drizzle-orm');
+
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const [user] = await (db as any)
+              .select()
+              .from(usersTable)
+              .where(eq(usersTable.email, credentials.email as string))
+              .limit(1);
+
+            if (user) {
+              // Verify password
+              const passwordMatch = await bcrypt.compare(
+                credentials.password as string,
+                user.password
+              );
+
+              if (passwordMatch) {
+                return {
+                  id: user.id,
+                  email: user.email,
+                  name: user.name || user.email,
+                };
+              }
+            }
+          } catch (error) {
+            console.error('Database user lookup failed:', error);
+            // Fall through to admin check
+          }
+        }
+
+        // Fallback: Check against environment variables (admin user - backward compatibility)
         const adminEmail = process.env.ADMIN_EMAIL || 'admin@socialcat.com';
         const adminPassword = process.env.ADMIN_PASSWORD || 'admin';
 

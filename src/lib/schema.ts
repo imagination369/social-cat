@@ -81,6 +81,74 @@ export const oauthStateTablePostgres = pgTable('oauth_state', {
   createdAtIdx: pgIndex('oauth_state_created_at_idx').on(table.createdAt),
 }));
 
+// Users table for SQLite (multi-user authentication)
+export const usersTableSQLite = sqliteTable('users', {
+  id: text('id').primaryKey(),
+  email: text('email').notNull().unique(),
+  password: text('password').notNull(), // Hashed password
+  name: text('name'),
+  emailVerified: integer('email_verified', { mode: 'boolean' }).notNull().default(false),
+  createdAt: integer('created_at', { mode: 'timestamp' })
+    .notNull()
+    .default(sql`(unixepoch())`),
+  updatedAt: integer('updated_at', { mode: 'timestamp' })
+    .notNull()
+    .default(sql`(unixepoch())`),
+}, (table) => ({
+  emailIdx: sqliteUniqueIndex('users_email_idx').on(table.email),
+}));
+
+// Users table for PostgreSQL
+export const usersTablePostgres = pgTable('users', {
+  id: varchar('id', { length: 255 }).primaryKey(),
+  email: varchar('email', { length: 255 }).notNull().unique(),
+  password: varchar('password', { length: 255 }).notNull(),
+  name: varchar('name', { length: 255 }),
+  emailVerified: pgInteger('email_verified').notNull().default(0),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+}, (table) => ({
+  emailIdx: pgUniqueIndex('users_email_idx').on(table.email),
+}));
+
+// Invitations table for SQLite (email invitations to organizations)
+export const invitationsTableSQLite = sqliteTable('invitations', {
+  id: text('id').primaryKey(),
+  token: text('token').notNull().unique(),
+  email: text('email').notNull(),
+  organizationId: text('organization_id').notNull(),
+  role: text('role').notNull().default('member'), // owner | admin | member | viewer
+  invitedBy: text('invited_by').notNull(), // userId of admin who sent invite
+  expiresAt: integer('expires_at', { mode: 'timestamp' }).notNull(),
+  acceptedAt: integer('accepted_at', { mode: 'timestamp' }),
+  createdAt: integer('created_at', { mode: 'timestamp' })
+    .notNull()
+    .default(sql`(unixepoch())`),
+}, (table) => ({
+  tokenIdx: sqliteUniqueIndex('invitations_token_idx').on(table.token),
+  emailIdx: sqliteIndex('invitations_email_idx').on(table.email),
+  orgIdx: sqliteIndex('invitations_org_idx').on(table.organizationId),
+  expiresAtIdx: sqliteIndex('invitations_expires_at_idx').on(table.expiresAt),
+}));
+
+// Invitations table for PostgreSQL
+export const invitationsTablePostgres = pgTable('invitations', {
+  id: varchar('id', { length: 255 }).primaryKey(),
+  token: varchar('token', { length: 255 }).notNull().unique(),
+  email: varchar('email', { length: 255 }).notNull(),
+  organizationId: varchar('organization_id', { length: 255 }).notNull(),
+  role: varchar('role', { length: 50 }).notNull().default('member'),
+  invitedBy: varchar('invited_by', { length: 255 }).notNull(),
+  expiresAt: timestamp('expires_at').notNull(),
+  acceptedAt: timestamp('accepted_at'),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+}, (table) => ({
+  tokenIdx: pgUniqueIndex('invitations_token_idx').on(table.token),
+  emailIdx: pgIndex('invitations_email_idx').on(table.email),
+  orgIdx: pgIndex('invitations_org_idx').on(table.organizationId),
+  expiresAtIdx: pgIndex('invitations_expires_at_idx').on(table.expiresAt),
+}));
+
 // ============================================
 // SYSTEM TABLES
 // ============================================
@@ -150,6 +218,7 @@ export const organizationsTableSQLite = sqliteTable('organizations', {
   slug: text('slug').notNull().unique(),
   ownerId: text('owner_id').notNull(),
   plan: text('plan').notNull().default('free'), // free | pro | enterprise
+  status: text('status').notNull().default('active'), // active | inactive
   settings: text('settings', { mode: 'json' }).$type<Record<string, unknown>>(),
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
   updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
@@ -165,6 +234,7 @@ export const organizationsTablePostgres = pgTable('organizations', {
   slug: varchar('slug', { length: 255 }).notNull().unique(),
   ownerId: varchar('owner_id', { length: 255 }).notNull(),
   plan: varchar('plan', { length: 50 }).notNull().default('free'),
+  status: varchar('status', { length: 50 }).notNull().default('active'), // active | inactive
   settings: pgText('settings').$type<Record<string, unknown>>(),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
@@ -363,6 +433,8 @@ export const userCredentialsTablePostgres = pgTable('user_credentials', {
 // Auth tables
 export const accountsTable = useSQLite ? accountsTableSQLite : accountsTablePostgres;
 export const oauthStateTable = useSQLite ? oauthStateTableSQLite : oauthStateTablePostgres;
+export const usersTable = useSQLite ? usersTableSQLite : usersTablePostgres;
+export const invitationsTable = useSQLite ? invitationsTableSQLite : invitationsTablePostgres;
 
 // System tables
 export const appSettingsTable = useSQLite ? appSettingsTableSQLite : appSettingsTablePostgres;
@@ -385,6 +457,10 @@ export type Account = typeof accountsTableSQLite.$inferSelect;
 export type NewAccount = typeof accountsTableSQLite.$inferInsert;
 export type OAuthState = typeof oauthStateTableSQLite.$inferSelect;
 export type NewOAuthState = typeof oauthStateTableSQLite.$inferInsert;
+export type User = typeof usersTableSQLite.$inferSelect;
+export type NewUser = typeof usersTableSQLite.$inferInsert;
+export type Invitation = typeof invitationsTableSQLite.$inferSelect;
+export type NewInvitation = typeof invitationsTableSQLite.$inferInsert;
 export type AppSetting = typeof appSettingsTableSQLite.$inferSelect;
 export type NewAppSetting = typeof appSettingsTableSQLite.$inferInsert;
 export type JobLog = typeof jobLogsTableSQLite.$inferSelect;

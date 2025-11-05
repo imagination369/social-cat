@@ -3,7 +3,9 @@ import {
   workflowsTableSQLite,
   workflowRunsTableSQLite,
   workflowsTablePostgres,
-  workflowRunsTablePostgres
+  workflowRunsTablePostgres,
+  organizationsTableSQLite,
+  organizationsTablePostgres
 } from '@/lib/schema';
 import { eq } from 'drizzle-orm';
 import { logger } from '@/lib/logger';
@@ -65,6 +67,32 @@ export async function executeWorkflow(
         throw new Error(`Workflow ${workflowId} not found`);
       }
       workflow = workflows[0];
+    }
+
+    // Check if workflow belongs to an organization and if that organization is active
+    if (workflow.organizationId) {
+      let organization;
+      if (useSQLite) {
+        if (!sqliteDb) throw new Error('SQLite database not initialized');
+        const orgs = await sqliteDb
+          .select()
+          .from(organizationsTableSQLite)
+          .where(eq(organizationsTableSQLite.id, workflow.organizationId))
+          .limit(1);
+        organization = orgs[0];
+      } else {
+        if (!postgresDb) throw new Error('PostgreSQL database not initialized');
+        const orgs = await postgresDb
+          .select()
+          .from(organizationsTablePostgres)
+          .where(eq(organizationsTablePostgres.id, workflow.organizationId))
+          .limit(1);
+        organization = orgs[0];
+      }
+
+      if (organization && organization.status === 'inactive') {
+        throw new Error('Cannot execute workflow: client organization is inactive');
+      }
     }
 
     // Create workflow run record (after getting workflow for organizationId)

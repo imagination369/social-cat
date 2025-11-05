@@ -1,10 +1,10 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { db } from '@/lib/db';
 import { workflowsTable, workflowRunsTable } from '@/lib/schema';
-import { eq, count } from 'drizzle-orm';
+import { eq, count, and, isNull } from 'drizzle-orm';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     const session = await auth();
     if (!session) {
@@ -15,6 +15,23 @@ export async function GET() {
     if (!userId) {
       return NextResponse.json({ error: 'User ID not found' }, { status: 400 });
     }
+
+    // Parse query parameters
+    const { searchParams } = new URL(request.url);
+    const organizationId = searchParams.get('organizationId');
+
+    // Build where conditions
+    const runsWhereSuccess = organizationId
+      ? and(eq(workflowRunsTable.status, 'success'), eq(workflowRunsTable.organizationId, organizationId))
+      : and(eq(workflowRunsTable.status, 'success'), isNull(workflowRunsTable.organizationId));
+
+    const runsWhereError = organizationId
+      ? and(eq(workflowRunsTable.status, 'error'), eq(workflowRunsTable.organizationId, organizationId))
+      : and(eq(workflowRunsTable.status, 'error'), isNull(workflowRunsTable.organizationId));
+
+    const workflowsWhereActive = organizationId
+      ? and(eq(workflowsTable.status, 'active'), eq(workflowsTable.organizationId, organizationId))
+      : and(eq(workflowsTable.status, 'active'), isNull(workflowsTable.organizationId));
 
     // Fetch all stats in parallel for better performance
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -27,17 +44,17 @@ export async function GET() {
       // Count successful workflow executions
       dbAny.select({ count: count() })
         .from(workflowRunsTable)
-        .where(eq(workflowRunsTable.status, 'success')) as Promise<Array<{ count: number }>>,
+        .where(runsWhereSuccess) as Promise<Array<{ count: number }>>,
 
       // Count failed workflow executions
       dbAny.select({ count: count() })
         .from(workflowRunsTable)
-        .where(eq(workflowRunsTable.status, 'error')) as Promise<Array<{ count: number }>>,
+        .where(runsWhereError) as Promise<Array<{ count: number }>>,
 
       // Count active workflows (not draft or paused)
       dbAny.select({ count: count() })
         .from(workflowsTable)
-        .where(eq(workflowsTable.status, 'active')) as Promise<Array<{ count: number }>>,
+        .where(workflowsWhereActive) as Promise<Array<{ count: number }>>,
     ]);
 
     const successCount = successfulRuns[0]?.count || 0;

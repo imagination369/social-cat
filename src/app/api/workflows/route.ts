@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { postgresDb } from '@/lib/db';
 import { workflowsTablePostgres } from '@/lib/schema';
-import { eq } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 import { logger } from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
@@ -10,8 +10,10 @@ export const dynamic = 'force-dynamic';
 /**
  * GET /api/workflows
  * List all workflows for the authenticated user
+ * Query params:
+ *   - organizationId: Filter by organization/client
  */
-export async function GET() {
+export async function GET(request: Request) {
   try {
     const session = await auth();
 
@@ -21,6 +23,21 @@ export async function GET() {
 
     if (!postgresDb) {
       throw new Error('Database not initialized');
+    }
+
+    // Parse query parameters
+    const { searchParams } = new URL(request.url);
+    const organizationId = searchParams.get('organizationId');
+
+    // Build where clause
+    const whereConditions = [eq(workflowsTablePostgres.userId, session.user.id)];
+
+    if (organizationId) {
+      // Filter by specific organization
+      whereConditions.push(eq(workflowsTablePostgres.organizationId, organizationId));
+    } else {
+      // Show only admin's personal workflows (not tied to any organization)
+      whereConditions.push(eq(workflowsTablePostgres.organizationId, null));
     }
 
     const workflows = await postgresDb
@@ -38,7 +55,7 @@ export async function GET() {
         runCount: workflowsTablePostgres.runCount,
       })
       .from(workflowsTablePostgres)
-      .where(eq(workflowsTablePostgres.userId, session.user.id))
+      .where(and(...whereConditions))
       .orderBy(workflowsTablePostgres.createdAt);
 
     return NextResponse.json({ workflows });

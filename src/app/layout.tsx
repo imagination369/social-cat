@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { SessionProvider } from "@/components/providers/SessionProvider";
+import { ClientProvider } from "@/components/providers/ClientProvider";
 import { Toaster } from "@/components/ui/sonner";
 import { AppLoader } from "@/components/ui/app-loader";
 
@@ -46,7 +47,9 @@ export default function RootLayout({
       >
         <AppLoader />
         <SessionProvider>
-          {children}
+          <ClientProvider>
+            {children}
+          </ClientProvider>
         </SessionProvider>
         <Toaster />
       </body>

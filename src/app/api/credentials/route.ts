@@ -9,8 +9,10 @@ export const dynamic = 'force-dynamic';
 /**
  * GET /api/credentials
  * List all credentials for the authenticated user
+ * Query params:
+ *   - organizationId: Filter by organization/client
  */
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     const session = await auth();
 
@@ -18,7 +20,11 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const credentials = await listCredentials(session.user.id);
+    // Parse query parameters
+    const { searchParams } = new URL(request.url);
+    const organizationId = searchParams.get('organizationId');
+
+    const credentials = await listCredentials(session.user.id, organizationId || undefined);
 
     return NextResponse.json({ credentials });
   } catch (error) {

@@ -221,9 +221,29 @@ export async function updateOrganizationMemberRole(
 }
 
 /**
+ * Update an organization
+ */
+export async function updateOrganization(
+  organizationId: string,
+  updates: { name?: string; status?: 'active' | 'inactive'; plan?: 'free' | 'pro' | 'enterprise' }
+): Promise<void> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  await (db as any)
+    .update(organizationsTable)
+    .set(updates)
+    .where(eq(organizationsTable.id, organizationId));
+}
+
+/**
  * Delete an organization (and all members)
  */
-export async function deleteOrganization(organizationId: string): Promise<void> {
+export async function deleteOrganization(organizationId: string, userId: string): Promise<void> {
+  // Verify user has permission (must be owner)
+  const role = await getUserRoleInOrganization(userId, organizationId);
+  if (role !== 'owner') {
+    throw new Error('Only organization owners can delete the organization');
+  }
+
   // Delete all members first
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   await (db as any)

@@ -14,15 +14,21 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { CredentialListItem } from '@/types/workflows';
+import { useClient } from '@/components/providers/ClientProvider';
 
 export default function CredentialsPage() {
+  const { currentClient } = useClient();
   const [credentials, setCredentials] = useState<CredentialListItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAddDialog, setShowAddDialog] = useState(false);
 
   const fetchCredentials = async () => {
     try {
-      const response = await fetch('/api/credentials');
+      // Include organizationId in request if client is selected
+      const url = currentClient?.id
+        ? `/api/credentials?organizationId=${currentClient.id}`
+        : '/api/credentials';
+      const response = await fetch(url);
       const data = await response.json();
       setCredentials(data.credentials || []);
     } catch (error) {
@@ -34,7 +40,8 @@ export default function CredentialsPage() {
 
   useEffect(() => {
     fetchCredentials();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentClient]);
 
   const handleCredentialAdded = () => {
     setShowAddDialog(false);

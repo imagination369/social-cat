@@ -18,6 +18,7 @@ import {
 import { Label } from '@/components/ui/label';
 import { WorkflowListItem } from '@/types/workflows';
 import { toast } from 'sonner';
+import { useClient } from '@/components/providers/ClientProvider';
 
 export default function WorkflowsPage() {
   const [workflows, setWorkflows] = useState<WorkflowListItem[]>([]);
@@ -29,10 +30,15 @@ export default function WorkflowsPage() {
   const [importing, setImporting] = useState(false);
   const [importError, setImportError] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { currentClient } = useClient();
 
   const fetchWorkflows = async () => {
     try {
-      const response = await fetch('/api/workflows');
+      // Include organizationId in request if client is selected
+      const url = currentClient?.id
+        ? `/api/workflows?organizationId=${currentClient.id}`
+        : '/api/workflows';
+      const response = await fetch(url);
       const data = await response.json();
       setWorkflows(data.workflows || []);
     } catch (error) {
@@ -44,7 +50,8 @@ export default function WorkflowsPage() {
 
   useEffect(() => {
     fetchWorkflows();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentClient]);
 
   const handleWorkflowDeleted = () => {
     fetchWorkflows();

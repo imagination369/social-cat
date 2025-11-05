@@ -15,6 +15,20 @@
       "when": 1762241558278,
       "tag": "0001_useful_pretty_boy",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1762333973652,
+      "tag": "0002_eminent_machine_man",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1762384034957,
+      "tag": "0003_handy_glorian",
+      "breakpoints": true
     }
   ]
 }

@@ -98,7 +98,10 @@ export async function getCredential(
 /**
  * List all credentials for a user (without decrypted values)
  */
-export async function listCredentials(userId: string): Promise<
+export async function listCredentials(
+  userId: string,
+  organizationId?: string
+): Promise<
   Array<{
     id: string;
     platform: string;
@@ -112,6 +115,17 @@ export async function listCredentials(userId: string): Promise<
     throw new Error('Database not initialized');
   }
 
+  // Build where clause
+  const whereConditions = [eq(userCredentialsTablePostgres.userId, userId)];
+
+  if (organizationId) {
+    // Filter by specific organization
+    whereConditions.push(eq(userCredentialsTablePostgres.organizationId, organizationId));
+  } else {
+    // Show only admin's personal credentials (not tied to any organization)
+    whereConditions.push(eq(userCredentialsTablePostgres.organizationId, null));
+  }
+
   const credentials = await postgresDb
     .select({
       id: userCredentialsTablePostgres.id,
@@ -122,7 +136,7 @@ export async function listCredentials(userId: string): Promise<
       lastUsed: userCredentialsTablePostgres.lastUsed,
     })
     .from(userCredentialsTablePostgres)
-    .where(eq(userCredentialsTablePostgres.userId, userId));
+    .where(and(...whereConditions));
 
   return credentials;
 }

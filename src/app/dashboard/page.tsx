@@ -7,6 +7,7 @@ import { StatCardSkeleton } from '@/components/ui/card-skeleton';
 import { CheckCircle2, XCircle, Play } from 'lucide-react';
 import { AnimatedCounter } from '@/components/ui/animated-counter';
 import { isMilestone, fireMilestoneConfetti } from '@/lib/confetti';
+import { useClient } from '@/components/providers/ClientProvider';
 
 interface DashboardStats {
   automations: {
@@ -21,13 +22,18 @@ interface DashboardStats {
 }
 
 export default function DashboardPage() {
+  const { currentClient } = useClient();
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await fetch('/api/dashboard/stats');
+        // Include organizationId in request if client is selected
+        const url = currentClient?.id
+          ? `/api/dashboard/stats?organizationId=${currentClient.id}`
+          : '/api/dashboard/stats';
+        const response = await fetch(url);
         if (response.ok) {
           const data = await response.json();
           console.log('Dashboard stats:', data); // Debug log
@@ -47,7 +53,7 @@ export default function DashboardPage() {
     // Refresh stats every 30 seconds
     const interval = setInterval(fetchStats, 30000);
     return () => clearInterval(interval);
-  }, []);
+  }, [currentClient]);
 
   if (loading) {
     return (

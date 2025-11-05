@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { TableSkeleton } from '@/components/ui/card-skeleton';
 import { AlertCircle, CheckCircle2, Clock, AlertTriangle } from 'lucide-react';
+import { useClient } from '@/components/providers/ClientProvider';
 import {
   useReactTable,
   getCoreRowModel,
@@ -141,12 +142,17 @@ const columns: ColumnDef<JobLog>[] = [
 ];
 
 export default function ActivityPage() {
+  const { currentClient } = useClient();
   const [logs, setLogs] = useState<JobLog[]>([]);
   const [loading, setLoading] = useState(true);
 
   const fetchLogs = async () => {
     try {
-      const response = await fetch('/api/logs?limit=50');
+      // Include organizationId in request if client is selected
+      const url = currentClient?.id
+        ? `/api/logs?limit=50&organizationId=${currentClient.id}`
+        : '/api/logs?limit=50';
+      const response = await fetch(url);
       const data = await response.json();
       setLogs(data.logs || []);
     } catch (error) {
@@ -158,7 +164,8 @@ export default function ActivityPage() {
 
   useEffect(() => {
     fetchLogs();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentClient]);
 
   // Auto-refresh every 10 seconds
   useEffect(() => {
@@ -167,6 +174,7 @@ export default function ActivityPage() {
     }, 10000);
 
     return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const table = useReactTable({
