@@ -15,6 +15,8 @@ import { toast } from 'sonner';
 import { ChatTriggerConfig } from './trigger-configs/chat-trigger-config';
 import { WebhookTriggerConfig } from './trigger-configs/webhook-trigger-config';
 import { RunOutputModal } from './run-output-modal';
+import { useWorkflowProgress } from '@/hooks/useWorkflowProgress';
+import { WorkflowProgress } from '@/components/workflow/WorkflowProgress';
 
 interface WorkflowExecutionDialogProps {
   workflowId: string;
@@ -53,75 +55,63 @@ export function WorkflowExecutionDialog({
   const [executing, setExecuting] = useState(false);
   const [executionResult, setExecutionResult] = useState<ExecutionResult | null>(null);
   const [showOutputModal, setShowOutputModal] = useState(false);
-  const [triggerData, setTriggerData] = useState<Record<string, unknown>>({});
   const [isFullscreen, setIsFullscreen] = useState(false);
+
+  // Use the workflow progress hook for real-time updates
+  const { state: progressState, reset: resetProgress } = useWorkflowProgress(
+    executing ? workflowId : null,
+    executing
+  );
 
   // Reset state when dialog opens/closes
   useEffect(() => {
     if (!open) {
       setExecutionResult(null);
-      setTriggerData({});
       setShowOutputModal(false);
+      setExecuting(false);
+      resetProgress();
     }
-  }, [open]);
+  }, [open, resetProgress]);
 
-  const handleExecute = useCallback(async (data?: Record<string, unknown>) => {
-    setExecuting(true);
-    setExecutionResult(null);
-
-    try {
-      const response = await fetch(`/api/workflows/${workflowId}/run`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ triggerData: data || triggerData }),
-      });
-
-      const responseData = await response.json();
-
-      if (response.ok) {
-        // Fetch the latest run to get full details
-        const runsResponse = await fetch(`/api/workflows/${workflowId}/runs?limit=1`);
-        const runsData = await runsResponse.json();
-
-        if (runsData.runs && runsData.runs.length > 0) {
-          setExecutionResult(runsData.runs[0]);
-        }
-
-        toast.success('Workflow executed successfully');
-        onExecuted?.();
-      } else {
-        // Create error result
-        setExecutionResult({
-          id: 'error',
-          status: 'error',
-          startedAt: new Date().toISOString(),
-          completedAt: new Date().toISOString(),
-          duration: 0,
-          output: null,
-          error: responseData.error || 'Workflow execution failed',
-          errorStep: null,
-          triggerType: 'manual',
-        });
-        toast.error(responseData.error || 'Workflow execution failed');
-      }
-    } catch (error) {
-      console.error('Execution error:', error);
+  // Update execution result when progress completes
+  useEffect(() => {
+    if (progressState.status === 'completed') {
       setExecutionResult({
-        id: 'error',
+        id: 'completed',
+        status: 'success',
+        startedAt: new Date().toISOString(),
+        completedAt: new Date().toISOString(),
+        duration: progressState.duration || 0,
+        output: progressState.output,
+        error: null,
+        errorStep: null,
+        triggerType: 'manual',
+      });
+      setExecuting(false);
+      toast.success('Workflow executed successfully');
+      onExecuted?.();
+    } else if (progressState.status === 'failed') {
+      setExecutionResult({
+        id: 'failed',
         status: 'error',
         startedAt: new Date().toISOString(),
         completedAt: new Date().toISOString(),
         duration: 0,
         output: null,
-        error: 'Failed to execute workflow',
+        error: progressState.error || 'Workflow execution failed',
         errorStep: null,
         triggerType: 'manual',
       });
-      toast.error('Failed to execute workflow');
-    } finally {
       setExecuting(false);
+      toast.error(progressState.error || 'Workflow execution failed');
     }
-  }, [workflowId, triggerData, onExecuted]);
+  }, [progressState.status, progressState.duration, progressState.output, progressState.error, onExecuted]);
+
+  const handleExecute = useCallback(async () => {
+    setExecuting(true);
+    setExecutionResult(null);
+    resetProgress();
+  }, [resetProgress]);
 
   const getTriggerDescription = () => {
     switch (triggerType) {
@@ -134,8 +124,8 @@ export function WorkflowExecutionDialog({
     }
   };
 
-  const handleExecuteWrapper = async (data: Record<string, unknown>) => {
-    await handleExecute(data);
+  const handleExecuteWrapper = async () => {
+    await handleExecute();
     return { success: true };
   };
 
@@ -147,7 +137,7 @@ export function WorkflowExecutionDialog({
             workflowId={workflowId}
             workflowName={workflowName}
             workflowDescription={workflowDescription}
-            onConfigChange={setTriggerData}
+            onConfigChange={() => {}} // Not needed for SSE streaming
             onExecute={handleExecuteWrapper}
             onFullscreenChange={setIsFullscreen}
           />
@@ -156,7 +146,7 @@ export function WorkflowExecutionDialog({
         return (
           <WebhookTriggerConfig
             workflowId={workflowId}
-            onConfigChange={setTriggerData}
+            onConfigChange={() => {}} // Not needed for SSE streaming
             onExecute={handleExecuteWrapper}
           />
         );
@@ -198,9 +188,16 @@ export function WorkflowExecutionDialog({
             </DialogHeader>
           ) : null}
 
-          <div className={triggerType === 'chat' ? 'flex-1 min-h-0 overflow-hidden' : 'py-4'}>
-            {/* Render trigger-specific configuration */}
-            {renderTriggerConfig()}
+          <div className={triggerType === 'chat' ? 'flex-1 min-h-0 overflow-hidden' : 'py-4 space-y-4'}>
+            {/* Show real-time progress when executing */}
+            {executing && progressState.status !== 'idle' && (
+              <div className="px-6">
+                <WorkflowProgress state={progressState} mode="expanded" />
+              </div>
+            )}
+
+            {/* Render trigger-specific configuration when not executing */}
+            {!executing && renderTriggerConfig()}
           </div>
 
           {triggerType !== 'chat' && (

@@ -6,7 +6,6 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { StatCardSkeleton } from '@/components/ui/card-skeleton';
 import { CheckCircle2, XCircle, Play } from 'lucide-react';
 import { AnimatedCounter } from '@/components/ui/animated-counter';
-import { isMilestone, fireMilestoneConfetti } from '@/lib/confetti';
 import { useClient } from '@/components/providers/ClientProvider';
 import { ProductTour } from '@/components/layout/ProductTour';
 
@@ -118,12 +117,7 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent className="space-y-1">
               <div className="card-stat-large tabular-nums">
-                <AnimatedCounter
-                  value={successfulRuns}
-                  onEnd={(value) => {
-                    if (isMilestone(value)) fireMilestoneConfetti();
-                  }}
-                />
+                <AnimatedCounter value={successfulRuns} />
               </div>
               <p className="card-label">total successful executions</p>
             </CardContent>

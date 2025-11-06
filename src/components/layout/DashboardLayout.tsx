@@ -4,7 +4,6 @@ import { Header } from './Header';
 import { Navbar } from './Navbar';
 import { DecorativePaws } from '@/components/ui/decorative-paws';
 import { useKonamiCode } from '@/hooks/use-konami-code';
-import { fireMilestoneConfetti } from '@/lib/confetti';
 import { catSounds } from '@/lib/cat-sounds';
 import { toast } from 'sonner';
 
@@ -13,10 +12,8 @@ interface DashboardLayoutProps {
 }
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
-  // Easter egg: Konami code triggers epic cat party!
+  // Easter egg: Konami code triggers cat sounds!
   useKonamiCode(() => {
-    // Epic celebration!
-    fireMilestoneConfetti();
     catSounds.playMeow();
     setTimeout(() => catSounds.playPurr(), 200);
     setTimeout(() => catSounds.playChirp(), 400);

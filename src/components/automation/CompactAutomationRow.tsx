@@ -11,7 +11,6 @@ import { Input } from '@/components/ui/input';
 import { ReplyHistoryTable } from '@/components/twitter/ReplyHistoryTable';
 import { PostedThreadsHistoryTable } from '@/components/twitter/PostedThreadsHistoryTable';
 import { showTwitter403Error, showTwitter429Error, showApiError, showTwitterSuccess } from '@/lib/toast-helpers';
-import { fireSuccessConfetti } from '@/lib/confetti';
 import { NEWS_TOPICS, NEWS_LANGUAGES, NEWS_COUNTRIES } from '@/modules/external-apis/rapidapi/newsapi/constants';
 
 interface CompactAutomationRowProps {
@@ -254,7 +253,6 @@ export function CompactAutomationRow({
       if (response.ok) {
         setTestResult({ success: true, message: data.message });
         showTwitterSuccess(data.message || 'Job completed successfully');
-        fireSuccessConfetti(); // Celebrate success!
       } else {
         setTestResult({ success: false, message: data.error || 'Unknown error' });
 
