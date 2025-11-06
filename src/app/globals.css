@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
+@import "driver.js/dist/driver.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -392,5 +393,204 @@ html {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+/* ===================================
+   Product Tour Custom Styling
+   =================================== */
+
+/* Override driver.js defaults to match Vercel dark theme */
+
+/* Overlay background - LIGHT so you can see everything */
+.driver-overlay {
+  background-color: rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Active element highlight - clean and simple */
+.driver-active-element {
+  /* Soft, diffused glow - larger blur radius for smooth effect */
+  box-shadow: 0 0 80px 40px rgba(255, 255, 255, 0.6) !important;
+
+  /* Make it brighter but preserve colors */
+  filter: brightness(1.8) saturate(1.1) !important;
+
+  /* Ensure it's on top */
+  position: relative !important;
+  z-index: 9999999 !important;
+}
+
+/* Reset filter for icons and images so they don't get distorted */
+.driver-active-element svg,
+.driver-active-element img,
+.driver-active-element [class*="icon"] {
+  filter: brightness(0.55) !important;
+}
+
+/* Popover container */
+.driver-popover.product-tour-popover {
+  background: var(--gray-100) !important;
+  color: var(--gray-1000) !important;
+  border: 1px solid var(--gray-300) !important;
+  border-radius: var(--radius) !important;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 20px 25px -5px rgba(0, 0, 0, 0.5),
+    0 10px 10px -5px rgba(0, 0, 0, 0.4) !important;
+  max-width: 360px !important;
+}
+
+/* Popover arrow */
+.driver-popover.product-tour-popover .driver-popover-arrow {
+  border-color: var(--gray-100) !important;
+}
+
+.driver-popover.product-tour-popover .driver-popover-arrow-side-top {
+  border-top-color: var(--gray-100) !important;
+}
+
+.driver-popover.product-tour-popover .driver-popover-arrow-side-bottom {
+  border-bottom-color: var(--gray-100) !important;
+}
+
+.driver-popover.product-tour-popover .driver-popover-arrow-side-left {
+  border-left-color: var(--gray-100) !important;
+}
+
+.driver-popover.product-tour-popover .driver-popover-arrow-side-right {
+  border-right-color: var(--gray-100) !important;
+}
+
+/* Title styling */
+.driver-popover.product-tour-popover .driver-popover-title {
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+  color: var(--gray-1000) !important;
+  margin-bottom: 8px !important;
+  line-height: 1.4 !important;
+}
+
+/* Description styling */
+.driver-popover.product-tour-popover .driver-popover-description {
+  font-size: 0.875rem !important;
+  line-height: 1.5 !important;
+  color: var(--gray-900) !important;
+  margin-bottom: 16px !important;
+}
+
+/* Progress text */
+.driver-popover.product-tour-popover .driver-popover-progress-text {
+  font-size: 0.75rem !important;
+  color: var(--gray-700) !important;
+  font-weight: 500 !important;
+}
+
+/* Close button */
+.driver-popover.product-tour-popover .driver-popover-close-btn {
+  color: var(--gray-700) !important;
+  width: 24px !important;
+  height: 24px !important;
+  transition: all 0.2s ease !important;
+}
+
+.driver-popover.product-tour-popover .driver-popover-close-btn:hover {
+  background-color: var(--gray-alpha-200) !important;
+  color: var(--gray-1000) !important;
+}
+
+/* Footer buttons - add spacing */
+.driver-popover.product-tour-popover .driver-popover-footer {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  margin-top: 16px !important;
+}
+
+.driver-popover.product-tour-popover .driver-popover-navigation-btns {
+  gap: 0.5rem !important;
+}
+
+/* Next/Done button - default variant (primary) */
+.driver-popover.product-tour-popover .driver-popover-next-btn {
+  all: unset !important;
+  box-sizing: border-box !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0.5rem 1rem !important;
+  border-radius: calc(var(--radius) - 2px) !important;
+  font-size: 0.875rem !important;
+  font-weight: 500 !important;
+  transition: all 0.15s ease !important;
+  cursor: pointer !important;
+  text-shadow: none !important;
+  background: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+  border: none !important;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05) !important;
+}
+
+.driver-popover.product-tour-popover .driver-popover-next-btn:hover {
+  background: var(--gray-900) !important;
+}
+
+/* Previous button - outline variant */
+.driver-popover.product-tour-popover .driver-popover-prev-btn {
+  all: unset !important;
+  box-sizing: border-box !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0.5rem 1rem !important;
+  border-radius: calc(var(--radius) - 2px) !important;
+  font-size: 0.875rem !important;
+  font-weight: 500 !important;
+  transition: all 0.15s ease !important;
+  cursor: pointer !important;
+  text-shadow: none !important;
+  background: var(--background) !important;
+  color: var(--foreground) !important;
+  border: 1px solid var(--input) !important;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05) !important;
+}
+
+.driver-popover.product-tour-popover .driver-popover-prev-btn:hover {
+  background: var(--gray-200) !important;
+  color: var(--foreground) !important;
+  border-color: var(--gray-400) !important;
+}
+
+/* Close button - ghost variant */
+.driver-popover.product-tour-popover .driver-popover-close-btn {
+  background: transparent !important;
+  color: var(--foreground) !important;
+  border: 1px solid transparent !important;
+}
+
+.driver-popover.product-tour-popover .driver-popover-close-btn:hover {
+  background: var(--accent) !important;
+  color: var(--accent-foreground) !important;
+}
+
+/* Disabled state */
+.driver-popover.product-tour-popover .driver-popover-btn:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+}
+
+/* Smooth animations */
+.driver-popover.product-tour-popover {
+  animation: driver-fade-in 0.2s ease-out !important;
+}
+
+@keyframes driver-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

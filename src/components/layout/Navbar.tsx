@@ -11,7 +11,6 @@ const navigation = [
   { name: 'Credentials', href: '/dashboard/credentials' },
   { name: 'Activity', href: '/dashboard/activity' },
   { name: 'Settings', href: '/settings' },
-  { name: 'Legacy', href: '/legacy/social-media' },
 ];
 
 export function Navbar() {

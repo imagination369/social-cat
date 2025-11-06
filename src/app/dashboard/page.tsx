@@ -8,6 +8,7 @@ import { CheckCircle2, XCircle, Play } from 'lucide-react';
 import { AnimatedCounter } from '@/components/ui/animated-counter';
 import { isMilestone, fireMilestoneConfetti } from '@/lib/confetti';
 import { useClient } from '@/components/providers/ClientProvider';
+import { ProductTour } from '@/components/layout/ProductTour';
 
 interface DashboardStats {
   automations: {
@@ -25,6 +26,7 @@ export default function DashboardPage() {
   const { currentClient } = useClient();
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [shouldStartTour, setShouldStartTour] = useState(false);
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -54,6 +56,17 @@ export default function DashboardPage() {
     const interval = setInterval(fetchStats, 30000);
     return () => clearInterval(interval);
   }, [currentClient]);
+
+  // Check if user should see the tour
+  useEffect(() => {
+    if (!loading) {
+      const tourCompleted = localStorage.getItem('productTourCompleted');
+      if (!tourCompleted) {
+        // Small delay to ensure DOM is ready
+        setTimeout(() => setShouldStartTour(true), 500);
+      }
+    }
+  }, [loading]);
 
   if (loading) {
     return (
@@ -87,9 +100,10 @@ export default function DashboardPage() {
 
   return (
     <DashboardLayout>
+      <ProductTour shouldStart={shouldStartTour} />
       <div className="p-6 space-y-4">
         {/* Main Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div className="dashboard-stats grid grid-cols-1 md:grid-cols-3 gap-3">
           {/* Successful Runs */}
           <Card className="relative overflow-hidden rounded-lg rounded-lg border border-border/50 bg-surface/80 backdrop-blur-sm shadow-sm hover:shadow-lg hover:border-primary/30 transition-all duration-300 animate-slide-up">
             {/* Status bar */}

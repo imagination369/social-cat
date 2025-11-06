@@ -22,16 +22,14 @@ import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import { ClientMembersDialog } from '@/components/clients/client-members-dialog';
 
-const getRoleBadgeColor = (role: string) => {
-  switch (role) {
-    case 'owner':
-      return 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300';
-    case 'admin':
-      return 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300';
-    case 'member':
-      return 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300';
+const getStatusColor = (status: string) => {
+  switch (status) {
+    case 'active':
+      return 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300';
+    case 'inactive':
+      return 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300';
     default:
-      return 'bg-gray-100 dark:bg-gray-800/30 text-gray-700 dark:text-gray-300';
+      return 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300';
   }
 };
 
@@ -267,8 +265,8 @@ export default function ClientsPage() {
                       {isActive ? 'Active' : 'Inactive'}
                     </span>
                   </div>
-                  <Badge className={getRoleBadgeColor(client.role)}>
-                    {client.role}
+                  <Badge className={getStatusColor(clientStatus)}>
+                    {clientStatus}
                   </Badge>
                 </div>
                 <div className="flex items-center justify-between gap-2">

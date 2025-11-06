@@ -46,7 +46,6 @@ export function ClientProvider({ children }: { children: ReactNode }) {
     } else {
       setIsLoading(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status, session]);
 
   const fetchClients = async () => {
@@ -56,10 +55,8 @@ export function ClientProvider({ children }: { children: ReactNode }) {
         const data = await response.json();
         setClients(data.clients || []);
 
-        // Set first client as default if available
-        if (data.clients && data.clients.length > 0 && !currentClient) {
-          setCurrentClientState(data.clients[0]);
-        }
+        // Don't auto-select first client here - let the restoration logic handle it
+        // This prevents overriding localStorage selection
       }
     } catch (error) {
       console.error('Failed to fetch clients:', error);
@@ -87,7 +84,8 @@ export function ClientProvider({ children }: { children: ReactNode }) {
       if (client) {
         localStorage.setItem('currentClientId', client.id);
       } else {
-        localStorage.removeItem('currentClientId');
+        // Store 'admin' to distinguish from no preference
+        localStorage.setItem('currentClientId', 'admin');
       }
     }
   };
@@ -96,11 +94,22 @@ export function ClientProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (clients.length > 0 && !currentClient) {
       const storedClientId = localStorage.getItem('currentClientId');
-      if (storedClientId) {
+
+      if (storedClientId === 'admin') {
+        // User had Admin selected
+        setCurrentClientState(null);
+      } else if (storedClientId) {
+        // Try to find the stored client
         const stored = clients.find(c => c.id === storedClientId);
         if (stored) {
           setCurrentClientState(stored);
+        } else {
+          // Stored client not found (maybe deleted), default to first client
+          setCurrentClientState(clients[0]);
         }
+      } else {
+        // No stored preference, default to first client
+        setCurrentClientState(clients[0]);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
