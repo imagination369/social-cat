@@ -185,6 +185,10 @@ export function WorkflowCard({ workflow, onDeleted, onExport, onUpdated }: Workf
         return { label: 'Run Now', icon: Play };
       case 'webhook':
         return { label: 'Test', icon: Play };
+      case 'telegram':
+        return { label: 'Telegram', icon: Send };
+      case 'discord':
+        return { label: 'Discord', icon: Send };
       default:
         return { label: 'Run', icon: Play };
     }

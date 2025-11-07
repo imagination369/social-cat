@@ -73,6 +73,8 @@ async function exportWorkflow(workflowId: string, outputFile?: string): Promise<
     console.log(`   Trigger: ${trigger.type}`);
     console.log(`\n💡 Tip: Import this workflow later:`);
     console.log(`   npx tsx scripts/import-workflow.ts ${fileName}`);
+
+    process.exit(0);
   } catch (error) {
     console.error('❌ Failed to export workflow:', error);
     process.exit(1);
