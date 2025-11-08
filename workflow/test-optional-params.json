@@ -1,0 +1,45 @@
+{
+  "version": "1.0",
+  "name": "Test Optional Parameters",
+  "description": "Test that optional parameters work without providing all args",
+  "trigger": {
+    "type": "manual",
+    "config": {}
+  },
+  "config": {
+    "steps": [
+      {
+        "id": "step1",
+        "module": "utilities.string-utils.truncate",
+        "inputs": {
+          "str": "This is a very long string that should be truncated",
+          "maxLength": 20
+        },
+        "outputAs": "truncated"
+      },
+      {
+        "id": "step2",
+        "module": "utilities.string-utils.randomString",
+        "inputs": {
+          "length": 10
+        },
+        "outputAs": "randomStr"
+      },
+      {
+        "id": "step3",
+        "module": "utilities.string-utils.mask",
+        "inputs": {
+          "str": "test@example.com",
+          "visibleChars": 4
+        },
+        "outputAs": "masked"
+      }
+    ],
+    "outputDisplay": {
+      "type": "json"
+    }
+  },
+  "metadata": {
+    "requiresCredentials": []
+  }
+}

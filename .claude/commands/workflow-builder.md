@@ -168,47 +168,87 @@ Now construct the workflow JSON using the information gathered:
 - `trigger` goes at TOP LEVEL (same level as `config`, NOT inside it)
 - Module paths must be lowercase: `category.module.function`
 - For chat triggers, use `ai.ai-sdk.chat` with messages array
-- Use `{{trigger.inputVariable}}` to reference trigger inputs
 - Check module signatures for parameter format (some need `params` wrapper, others don't)
 
-Write the JSON to `/tmp/workflow.json` using the Write tool.
+**Variable Reference Syntax (CRITICAL):**
+- **Trigger inputs:** `{{trigger.inputVariable}}` (with `trigger.` prefix)
+- **Step outputs:** `{{outputAs}}` (just the outputAs name, NO step ID!)
+- **Example:**
+  ```json
+  {
+    "id": "step1",
+    "module": "utilities.array-utils.range",
+    "inputs": { "start": 1, "end": 10, "step": 1 },
+    "outputAs": "numbers"
+  },
+  {
+    "id": "step2",
+    "module": "utilities.array-utils.sum",
+    "inputs": {
+      "array": "{{numbers}}"  // ✅ Correct: Use outputAs name
+      // ❌ WRONG: "{{step1.numbers}}" - Do NOT use step ID!
+    },
+    "outputAs": "total"
+  }
+  ```
+
+**Optional Parameters (CRITICAL):**
+- Always provide ALL parameters, even optional ones with defaults
+- The executor checks parameter count strictly and doesn't use TypeScript defaults
+- Check module search output for full function signatures
+- Example: `truncate(str, maxLength, suffix = '...')` requires all 3 parameters
+
+**Generate a workflow filename** based on the workflow name (lowercase, hyphenated, e.g., `github-trending-digest.json`).
+
+Write the JSON to `workflow/{filename}` (relative to project root) using the Write tool.
 
 ### Step 6: Validate the Workflow
 
 Run validation:
 
 ```bash
-npx tsx scripts/validate-workflow.ts /tmp/workflow.json
+npx tsx scripts/validate-workflow.ts workflow/{filename}
 ```
 
 If validation fails, fix the issues and re-validate.
 
 ### Step 7: Test the Workflow
 
+**CRITICAL: You MUST test the workflow and verify it passes before importing!**
+
 For simple workflows, test directly:
 
 ```bash
-npx tsx scripts/test-workflow.ts /tmp/workflow.json
+npx tsx scripts/test-workflow.ts workflow/{filename}
 ```
 
 For complex workflows, do a dry run first:
 
 ```bash
-npx tsx scripts/test-workflow.ts /tmp/workflow.json --dry-run
+npx tsx scripts/test-workflow.ts workflow/{filename} --dry-run
 ```
 
+**You must see "✅ Workflow executed successfully!" before proceeding to Step 8.**
+
 If the test fails:
+- Fix variable references (use `{{outputAs}}` NOT `{{stepId.outputAs}}`)
 - Check for missing API credentials
 - Verify module paths are correct
 - Check parameter formats (params wrapper vs direct)
+- Verify optional parameters are provided (executor now handles them, but check if errors persist)
 - DO NOT simplify - fix the actual issue
+- Re-test after each fix until it passes
+
+**DO NOT IMPORT A FAILING WORKFLOW!**
 
 ### Step 8: Import the Workflow
 
-Once testing succeeds, import to database:
+**ONLY proceed once Step 7 testing succeeds!**
+
+Import to database:
 
 ```bash
-npx tsx scripts/import-workflow.ts /tmp/workflow.json
+npx tsx scripts/import-workflow.ts workflow/{filename}
 ```
 
 Show the user the workflow ID and next steps.

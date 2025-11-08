@@ -11,6 +11,9 @@ import { Button } from '@/components/ui/button';
 import { Copy, Download, Check } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import dynamic from 'next/dynamic';
+
+const ReactJson = dynamic(() => import('@microlink/react-json-view'), { ssr: false });
 
 interface OutputRendererProps {
   output: unknown;
@@ -272,45 +275,37 @@ function ListDisplay({ data }: { data: unknown }) {
 }
 
 function JSONDisplay({ data }: { data: unknown }) {
-  const jsonString =
-    typeof data === 'string' ? data : JSON.stringify(data, null, 2);
+  // Parse data if it's a string
+  let jsonData: unknown = data;
+  if (typeof data === 'string') {
+    try {
+      jsonData = JSON.parse(data);
+    } catch {
+      jsonData = data;
+    }
+  }
 
-  // Syntax highlighting for JSON with proper color scheme
-  const highlightJSON = (json: string) => {
-    // Apply replacements in correct order to avoid conflicts
-    return json
-      // First: Match keys (strings followed by colon)
-      .replace(/"([^"]+)"(\s*):/g, (match, key, space) => {
-        return `<span style="color: #60a5fa;">"${key}"</span>${space}:`;
-      })
-      // Second: Match string values (strings not followed by colon)
-      .replace(/"([^"]+)"(?!\s*:)/g, (match, value) => {
-        return `<span style="color: #34d399;">"${value}"</span>`;
-      })
-      // Third: Match numbers
-      .replace(/:\s*(-?\d+\.?\d*)/g, (match, num) => {
-        return `: <span style="color: #fb923c;">${num}</span>`;
-      })
-      // Fourth: Match booleans
-      .replace(/\b(true|false)\b/g, '<span style="color: #c084fc;">$1</span>')
-      // Fifth: Match null
-      .replace(/\b(null)\b/g, '<span style="color: #94a3b8;">$1</span>')
-      // Sixth: Highlight brackets and braces
-      .replace(/([{}[\]])/g, '<span style="color: #e2e8f0;">$1</span>');
-  };
+  const jsonString = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
 
   return (
     <div className="space-y-3">
       <div className="flex justify-end">
         <ActionButtons content={jsonString} filename="output" format="json" />
       </div>
-      <div className="rounded-lg border border-border/50 bg-muted/20 p-4">
-        <pre className="text-sm overflow-y-auto max-h-[70vh] font-mono whitespace-pre-wrap break-words">
-          <code
-            className="text-foreground"
-            dangerouslySetInnerHTML={{ __html: highlightJSON(jsonString) }}
-          />
-        </pre>
+      <div className="rounded-lg border border-border/50 bg-muted/20 p-4 overflow-y-auto max-h-[70vh]">
+        <ReactJson
+          src={jsonData as object}
+          theme="monokai"
+          iconStyle="circle"
+          displayDataTypes={false}
+          displayObjectSize={false}
+          enableClipboard={true}
+          collapsed={2}
+          style={{
+            backgroundColor: 'transparent',
+            fontSize: '0.875rem',
+          }}
+        />
       </div>
     </div>
   );

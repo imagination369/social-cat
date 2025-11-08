@@ -219,7 +219,7 @@ export async function executeWorkflowWithProgress(
         status: 'success',
         completedAt,
         duration: totalDuration,
-        output: lastOutput ? JSON.stringify(lastOutput) : null,
+        output: context.variables ? JSON.stringify(context.variables) : null,
       })
       .where(eq(workflowRunsTable.id, runId));
 
@@ -236,14 +236,15 @@ export async function executeWorkflowWithProgress(
     logger.info({ workflowId, runId, duration: totalDuration }, 'Workflow execution completed');
 
     // Emit workflow completed event
+    // Return all workflow variables for comprehensive output
     onProgress?.({
       type: 'workflow_completed',
       runId,
       duration: totalDuration,
-      output: lastOutput,
+      output: context.variables,
     });
 
-    return { success: true, output: lastOutput };
+    return { success: true, output: context.variables };
   } catch (error) {
     logger.error({ error, workflowId, userId }, 'Workflow execution failed');
 
@@ -490,10 +491,33 @@ async function executeModuleFunction(
         return await func(...orderedValues);
       }
 
+      // Allow partial parameter matching for optional parameters
+      if (orderedValues.length > 0 && orderedValues.length <= paramNames.length) {
+        logger.debug({
+          msg: 'Calling function with partial parameters (remaining are optional)',
+          providedParams: orderedValues.length,
+          totalParams: paramNames.length,
+          mapping: mappingLog
+        });
+        return await func(...orderedValues);
+      }
+
       if (inputKeys.length === paramNames.length) {
         const positionalValues = Object.values(inputs);
         logger.warn({
           msg: 'Using positional parameter matching (input names do not match function signature)',
+          expectedParams: paramNames,
+          providedInputs: Object.keys(inputs),
+          modulePath
+        });
+        return await func(...positionalValues);
+      }
+
+      // Allow positional matching even if fewer inputs than params (for optional parameters)
+      if (inputKeys.length > 0 && inputKeys.length <= paramNames.length) {
+        const positionalValues = Object.values(inputs);
+        logger.warn({
+          msg: 'Using positional parameter matching with partial parameters',
           expectedParams: paramNames,
           providedInputs: Object.keys(inputs),
           modulePath

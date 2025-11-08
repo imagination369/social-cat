@@ -1,0 +1,45 @@
+{
+  "version": "1.0",
+  "name": "Simple Variable Reference Test",
+  "description": "Test if variable references work between steps",
+  "trigger": {
+    "type": "manual",
+    "config": {}
+  },
+  "config": {
+    "steps": [
+      {
+        "id": "step1",
+        "module": "utilities.array-utils.range",
+        "inputs": {
+          "start": 1,
+          "end": 5,
+          "step": 1
+        },
+        "outputAs": "numbers"
+      },
+      {
+        "id": "step2",
+        "module": "utilities.array-utils.sum",
+        "inputs": {
+          "array": "{{numbers}}"
+        },
+        "outputAs": "total"
+      },
+      {
+        "id": "step3",
+        "module": "utilities.string-utils.capitalize",
+        "inputs": {
+          "str": "hello world"
+        },
+        "outputAs": "capitalized"
+      }
+    ],
+    "outputDisplay": {
+      "type": "json"
+    }
+  },
+  "metadata": {
+    "requiresCredentials": []
+  }
+}

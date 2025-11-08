@@ -1112,6 +1112,202 @@ export const PLATFORM_CONFIGS: Record<string, PlatformConfig> = {
   },
 
   // ============================================
+  // ANALYTICS
+  // ============================================
+  googleanalytics: {
+    id: 'googleanalytics',
+    name: 'Google Analytics',
+    category: 'Analytics',
+    fields: [
+      {
+        key: 'credentials',
+        label: 'Service Account JSON',
+        type: 'textarea',
+        required: true,
+        description: 'Service account credentials from Google Cloud Console'
+      },
+      {
+        key: 'property_id',
+        label: 'GA4 Property ID',
+        type: 'text',
+        required: true,
+        placeholder: '123456789',
+        description: 'Your GA4 property ID (found in Admin > Property Settings)'
+      }
+    ]
+  },
+
+  algolia: {
+    id: 'algolia',
+    name: 'Algolia',
+    category: 'Analytics',
+    fields: [
+      { key: 'app_id', label: 'Application ID', type: 'text', required: true },
+      { key: 'api_key', label: 'Admin API Key', type: 'password', required: true },
+      {
+        key: 'index_name',
+        label: 'Default Index Name',
+        type: 'text',
+        required: false,
+        description: 'Optional default index (can be overridden per operation)'
+      }
+    ]
+  },
+
+  // ============================================
+  // EMAIL MARKETING
+  // ============================================
+  mailchimp: {
+    id: 'mailchimp',
+    name: 'Mailchimp',
+    category: 'Email Marketing',
+    fields: [
+      { key: 'api_key', label: 'API Key', type: 'password', required: true },
+      {
+        key: 'server_prefix',
+        label: 'Server Prefix',
+        type: 'text',
+        required: true,
+        placeholder: 'us1',
+        description: 'Server prefix from your API key (e.g., us1, us2, etc.)'
+      }
+    ]
+  },
+
+  // ============================================
+  // PRODUCTIVITY & PROJECT MANAGEMENT
+  // ============================================
+  linear: {
+    id: 'linear',
+    name: 'Linear',
+    category: 'Productivity',
+    fields: [
+      {
+        key: 'api_key',
+        label: 'API Key',
+        type: 'password',
+        required: true,
+        description: 'Personal API key from Linear Settings'
+      }
+    ]
+  },
+
+  typeform: {
+    id: 'typeform',
+    name: 'Typeform',
+    category: 'Productivity',
+    fields: [
+      {
+        key: 'api_key',
+        label: 'API Key',
+        type: 'password',
+        required: true,
+        description: 'Personal access token from Typeform account'
+      }
+    ]
+  },
+
+  calendly: {
+    id: 'calendly',
+    name: 'Calendly',
+    category: 'Productivity',
+    fields: [
+      {
+        key: 'api_key',
+        label: 'API Key',
+        type: 'password',
+        required: true,
+        description: 'Personal access token from Calendly integrations'
+      }
+    ]
+  },
+
+  // ============================================
+  // CLOUD STORAGE
+  // ============================================
+  googledrive: {
+    id: 'googledrive',
+    name: 'Google Drive (Service Account)',
+    category: 'Cloud Storage',
+    fields: [
+      {
+        key: 'credentials',
+        label: 'Service Account JSON',
+        type: 'textarea',
+        required: true,
+        description: 'Service account credentials from Google Cloud Console'
+      }
+    ]
+  },
+
+  googledrive_oauth: {
+    id: 'googledrive_oauth',
+    name: 'Google Drive (OAuth)',
+    category: 'Cloud Storage',
+    fields: [
+      { key: 'client_id', label: 'Client ID', type: 'text', required: true },
+      { key: 'client_secret', label: 'Client Secret', type: 'password', required: true },
+      { key: 'refresh_token', label: 'Refresh Token', type: 'password', required: true }
+    ]
+  },
+
+  // ============================================
+  // DESIGN TOOLS
+  // ============================================
+  figma: {
+    id: 'figma',
+    name: 'Figma',
+    category: 'Design Tools',
+    fields: [
+      {
+        key: 'access_token',
+        label: 'Personal Access Token',
+        type: 'password',
+        required: true,
+        description: 'Personal access token from Figma account settings'
+      }
+    ]
+  },
+
+  // ============================================
+  // SOCIAL MEDIA (ADDITIONAL)
+  // ============================================
+  linkedin: {
+    id: 'linkedin',
+    name: 'LinkedIn',
+    category: 'Social Media',
+    fields: [
+      {
+        key: 'access_token',
+        label: 'Access Token',
+        type: 'password',
+        required: true,
+        description: 'OAuth 2.0 access token for LinkedIn API'
+      }
+    ]
+  },
+
+  // ============================================
+  // ENTERPRISE COMMUNICATION
+  // ============================================
+  microsoftteams: {
+    id: 'microsoftteams',
+    name: 'Microsoft Teams',
+    category: 'Communication',
+    fields: [
+      { key: 'client_id', label: 'Client ID', type: 'text', required: true },
+      { key: 'client_secret', label: 'Client Secret', type: 'password', required: true },
+      {
+        key: 'tenant_id',
+        label: 'Tenant ID',
+        type: 'text',
+        required: true,
+        description: 'Azure AD tenant ID'
+      }
+    ]
+  },
+
+  // ============================================
   // GENERAL
   // ============================================
   rapidapi: {

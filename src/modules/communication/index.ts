@@ -35,3 +35,7 @@ export * from './zendesk';
 // @ts-ignore - freshdesk exports multiple types that may conflict
 export * from './freshdesk';
 export * from './intercom';
+// @ts-ignore - mailchimp exports multiple types that may conflict
+export * from './mailchimp';
+// @ts-ignore - microsoft-teams exports multiple types that may conflict
+export * from './microsoft-teams';

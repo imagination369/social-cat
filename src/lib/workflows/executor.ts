@@ -128,11 +128,9 @@ export async function executeWorkflow(
       'Workflow parallelization analysis'
     );
 
-    let lastOutput: unknown = null;
-
     try {
       // Execute steps with automatic parallel execution
-      lastOutput = await executeStepsInParallel(
+      await executeStepsInParallel(
         normalizedSteps,
         context,
         async (step, ctx) => {
@@ -191,7 +189,7 @@ export async function executeWorkflow(
         status: 'success',
         completedAt,
         duration: completedAt.getTime() - startedAt.getTime(),
-        output: lastOutput ? JSON.stringify(lastOutput) : null,
+        output: context.variables ? JSON.stringify(context.variables) : null,
       })
       .where(eq(workflowRunsTable.id, runId));
 
@@ -208,7 +206,8 @@ export async function executeWorkflow(
 
     logger.info({ workflowId, runId, duration: completedAt.getTime() - startedAt.getTime() }, 'Workflow execution completed');
 
-    return { success: true, output: lastOutput };
+    // Return all workflow variables for comprehensive output
+    return { success: true, output: context.variables };
   } catch (error) {
     logger.error({ error, workflowId, userId }, 'Workflow execution failed');
 
@@ -451,6 +450,13 @@ async function executeModuleFunction(
 
     const inputKeys = Object.keys(actualInputs);
 
+    // Handle params wrapper - if inputs has a single 'params' key and function expects 'params'
+    // Example: inputs = { params: { items: [...], count: 3 } } and function signature is (params: { items, count })
+    if (inputKeys.length === 1 && inputKeys[0] === 'params' && params.startsWith('params')) {
+      // Unwrap the params object
+      return await func(actualInputs.params);
+    }
+
     if (inputKeys.length === 0) {
       // No parameters
       return await func();
@@ -532,12 +538,36 @@ async function executeModuleFunction(
         return await func(...orderedValues);
       }
 
+      // Allow partial parameter matching for optional parameters
+      // If we mapped some parameters but not all, try calling with what we have
+      if (orderedValues.length > 0 && orderedValues.length <= paramNames.length) {
+        logger.debug({
+          msg: 'Calling function with partial parameters (remaining are optional)',
+          providedParams: orderedValues.length,
+          totalParams: paramNames.length,
+          mapping: mappingLog
+        });
+        return await func(...orderedValues);
+      }
+
       // If we have the same number of inputs as params but names don't match,
       // try positional matching as last resort (for backward compatibility)
       if (inputKeys.length === paramNames.length) {
         const positionalValues = Object.values(inputs);
         logger.warn({
           msg: 'Using positional parameter matching (input names do not match function signature)',
+          expectedParams: paramNames,
+          providedInputs: Object.keys(inputs),
+          modulePath
+        });
+        return await func(...positionalValues);
+      }
+
+      // Allow positional matching even if fewer inputs than params (for optional parameters)
+      if (inputKeys.length > 0 && inputKeys.length <= paramNames.length) {
+        const positionalValues = Object.values(inputs);
+        logger.warn({
+          msg: 'Using positional parameter matching with partial parameters',
           expectedParams: paramNames,
           providedInputs: Object.keys(inputs),
           modulePath
@@ -713,11 +743,9 @@ export async function executeWorkflowConfig(
     'Workflow config parallelization analysis'
   );
 
-  let lastOutput: unknown = null;
-
   try {
     // Execute steps with automatic parallel execution
-    lastOutput = await executeStepsInParallel(
+    await executeStepsInParallel(
       normalizedSteps,
       context,
       async (step, ctx) => {
@@ -731,7 +759,8 @@ export async function executeWorkflowConfig(
     );
 
     logger.info({ runId }, 'Workflow config execution completed');
-    return { success: true, output: lastOutput };
+    // Return all workflow variables for comprehensive output
+    return { success: true, output: context.variables };
   } catch (error) {
     logger.error({ error, runId }, 'Workflow config execution failed');
 

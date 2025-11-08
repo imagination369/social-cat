@@ -308,6 +308,42 @@ const PLATFORM_CAPABILITIES: Record<string, PlatformCapability> = {
   'hunter': { category: 'api_key' },
   'apollo': { category: 'api_key' },
   'clearbit': { category: 'api_key' },
+
+  // Analytics & Search
+  'google-analytics': { category: 'api_key' }, // Service Account JSON
+  'algolia': { category: 'api_key' },
+
+  // Email Marketing
+  'mailchimp': { category: 'api_key' },
+
+  // Project Management & Productivity
+  'linear': { category: 'api_key' },
+  'typeform': { category: 'api_key' },
+  'calendly': { category: 'api_key' },
+
+  // Cloud Storage
+  'google-drive': {
+    category: 'both',
+    preferredMethod: 'api_key', // Service Account simpler for automation
+    functionRequirements: {
+      'listFiles': 'api_key',
+      'uploadFile': 'api_key',
+      'deleteFile': 'api_key',
+      'getFile': 'api_key',
+    },
+  },
+
+  // Design Tools
+  'figma': { category: 'api_key' },
+
+  // Enterprise Communication
+  'microsoft-teams': {
+    category: 'both',
+    preferredMethod: 'api_key', // App credentials simpler for bot scenarios
+    functionRequirements: {
+      'sendMessage': 'api_key',
+    },
+  },
 };
 
 /**
@@ -620,6 +656,27 @@ export function getPlatformDisplayName(platform: string): string {
     hunter: 'Hunter.io',
     apollo: 'Apollo.io',
     clearbit: 'Clearbit',
+
+    // Analytics & Search
+    'google-analytics': 'Google Analytics',
+    algolia: 'Algolia',
+
+    // Email Marketing
+    mailchimp: 'Mailchimp',
+
+    // Project Management & Productivity
+    linear: 'Linear',
+    typeform: 'Typeform',
+    calendly: 'Calendly',
+
+    // Cloud Storage
+    'google-drive': 'Google Drive',
+
+    // Design Tools
+    figma: 'Figma',
+
+    // Enterprise Communication
+    'microsoft-teams': 'Microsoft Teams',
   };
 
   return names[platform] || platform.charAt(0).toUpperCase() + platform.slice(1);
@@ -680,6 +737,27 @@ export function getPlatformIcon(platform: string): string {
     hunter: 'Search',
     apollo: 'Target',
     clearbit: 'Users',
+
+    // Analytics & Search
+    'google-analytics': 'BarChart3',
+    algolia: 'Search',
+
+    // Email Marketing
+    mailchimp: 'Mail',
+
+    // Project Management & Productivity
+    linear: 'CheckSquare',
+    typeform: 'ListChecks',
+    calendly: 'Calendar',
+
+    // Cloud Storage
+    'google-drive': 'FolderOpen',
+
+    // Design Tools
+    figma: 'Figma',
+
+    // Enterprise Communication
+    'microsoft-teams': 'MessageSquare',
   };
 
   return icons[platform] || 'Key';

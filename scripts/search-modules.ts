@@ -57,6 +57,13 @@ if (args[0] === '--category') {
     mod.functions.forEach((fn) => {
       console.log(`    • ${fn.name}() - ${fn.description}`);
       console.log(`      ${fn.signature}`);
+
+      // Detect params wrapper pattern - matches both "params: { ..." and "({ ... }" formats
+      const usesParamsWrapper = fn.signature.match(/^\w+\((params:\s*{|{\s*\w+)/);
+      if (usesParamsWrapper) {
+        console.log(`      ⚠️  Uses params wrapper`);
+      }
+
       if (fn.example) {
         console.log(`      Example: ${fn.example}`);
       }
@@ -120,6 +127,13 @@ registry.forEach((category) => {
         console.log(`${category.name.toLowerCase()}.${mod.name}.${fn.name}`);
         console.log(`  ${fn.description}`);
         console.log(`  ${fn.signature}`);
+
+        // Detect params wrapper pattern - matches both "params: { ..." and "({ ... }" formats
+        const usesParamsWrapper = fn.signature.match(/^\w+\((params:\s*{|{\s*\w+)/);
+        if (usesParamsWrapper) {
+          console.log(`  ⚠️  Uses params wrapper - wrap inputs in { params: { ... } }`);
+        }
+
         if (fn.example) {
           console.log(`  Example: ${fn.example}`);
         }
