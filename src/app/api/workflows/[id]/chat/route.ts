@@ -46,6 +46,10 @@ export async function POST(
       ? JSON.parse(workflow.config)
       : workflow.config;
 
+    // Extract model and provider from workflow config (if available in first step)
+    const workflowModel = config.steps?.[0]?.inputs?.model || CHAT_AI_MODEL;
+    const workflowProvider = config.steps?.[0]?.inputs?.provider || CHAT_AI_PROVIDER;
+
     // Get the last user message - handle both content and parts format
     const lastMessage = messages[messages.length - 1];
     let userInput = '';
@@ -117,32 +121,24 @@ Never use ASCII art tables with + and - characters. Always use the | and - markd
       })
       .filter((msg) => msg.content); // Remove empty messages
 
-    // Log the formatted messages for debugging
-    logger.info({ workflowId, formattedMessages, provider: CHAT_AI_PROVIDER, model: CHAT_AI_MODEL }, 'Formatted messages for AI');
-
     // Get the AI model instance based on provider
-    const modelInstance = CHAT_AI_PROVIDER === 'openai'
-      ? createOpenAI({ apiKey: process.env.OPENAI_API_KEY })(CHAT_AI_MODEL)
-      : createAnthropic({ apiKey: process.env.ANTHROPIC_API_KEY })(CHAT_AI_MODEL);
+    const modelInstance = workflowProvider === 'openai'
+      ? createOpenAI({ apiKey: process.env.OPENAI_API_KEY })(workflowModel)
+      : createAnthropic({ apiKey: process.env.ANTHROPIC_API_KEY })(workflowModel);
 
     // Stream the AI response using AI SDK
-    // Note: This uses the AI SDK (from the ai-sdk module) for streaming because:
-    // - It's optimized for UI-specific streaming (React components)
-    // - It handles SSE/streaming format automatically
-    // - The actual workflow execution uses the module system via executeWorkflowConfig
     const result = streamText({
       model: modelInstance,
       system: systemPrompt,
       messages: formattedMessages,
       async onFinish({ text }) {
-        logger.info({ workflowId, responseLength: text.length, text }, 'AI response completed, executing workflow');
+        logger.info({ workflowId, responseLength: text.length }, 'AI response completed, executing workflow');
 
         // Execute the workflow using the workflow execution engine
-        // This properly uses the module system and all workflow infrastructure
+        // Pass trigger data correctly - userMessage should be in the trigger object
         try {
           await executeWorkflowConfig(config, workflow.userId, {
-            workflowId: workflow.id,
-            userInput,
+            userMessage: userInput,
           });
           logger.info({ workflowId }, 'Workflow executed successfully');
         } catch (error) {
