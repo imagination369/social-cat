@@ -498,7 +498,7 @@ async function executeModuleFunction(
         msg: 'Parameter mapping analysis'
       });
 
-      // Common parameter aliases that LLMs might use
+      // Common parameter aliases that LLMs might use (updated)
       const paramAliases: Record<string, string[]> = {
         'days': ['amount', 'value', 'number'],
         'hours': ['amount', 'value', 'number'],
@@ -506,6 +506,10 @@ async function executeModuleFunction(
         'limit': ['maxResults', 'max', 'count'],
         'query': ['search', 'q', 'term'],
         'text': ['message', 'content', 'body'],
+        'arr': ['array', 'items', 'list'],
+        'arr1': ['array1'],
+        'arr2': ['array2'],
+        'arrays': ['array'],
       };
 
       // Try to map inputs to parameter order with alias support
