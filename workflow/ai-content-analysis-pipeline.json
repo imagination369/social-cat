@@ -1,0 +1,168 @@
+{
+  "version": "1.0",
+  "name": "AI Content Analysis & Enhancement Pipeline",
+  "description": "10-step AI-powered content generation and analysis pipeline using OpenAI. Generates multiple perspectives, summaries, and formats from a single topic.",
+  "trigger": {
+    "type": "chat-input",
+    "config": {
+      "fields": [
+        {
+          "id": "1",
+          "label": "Topic or Subject",
+          "key": "topic",
+          "type": "text",
+          "required": true,
+          "placeholder": "e.g., 'Artificial Intelligence in Healthcare'"
+        },
+        {
+          "id": "2",
+          "label": "Content Length (words)",
+          "key": "wordCount",
+          "type": "number",
+          "required": false,
+          "defaultValue": "150"
+        }
+      ]
+    }
+  },
+  "config": {
+    "steps": [
+      {
+        "id": "step1_initial_content",
+        "module": "ai.ai-sdk.generateText",
+        "inputs": {
+          "params": {
+            "prompt": "Write a comprehensive overview about {{trigger.topic}} in approximately {{trigger.wordCount}} words.",
+            "model": "gpt-4o-mini",
+            "provider": "openai",
+            "temperature": 0.7
+          }
+        },
+        "outputAs": "initialContent"
+      },
+      {
+        "id": "step2_creative_variation",
+        "module": "ai.ai-sdk.generateFast",
+        "inputs": {
+          "prompt": "Rewrite this in a creative, engaging style: {{step1_initial_content.text}}",
+          "systemPrompt": "You are a creative writer who makes content engaging and memorable."
+        },
+        "outputAs": "creativeVersion"
+      },
+      {
+        "id": "step3_professional_summary",
+        "module": "ai.ai-sdk.generateQuality",
+        "inputs": {
+          "prompt": "Create a professional executive summary of this content: {{step1_initial_content.text}}",
+          "systemPrompt": "You are a business analyst who creates clear, professional summaries."
+        },
+        "outputAs": "professionalSummary"
+      },
+      {
+        "id": "step4_structured_data",
+        "module": "ai.ai-sdk.generateText",
+        "inputs": {
+          "params": {
+            "prompt": "Extract key information from this content as JSON: {{step1_initial_content.text}}\n\nProvide: mainPoints (3-5 key points), sentiment (positive/neutral/negative), complexity (beginner/intermediate/advanced), targetAudience. Return only valid JSON.",
+            "model": "gpt-4o-mini",
+            "provider": "openai",
+            "temperature": 0.3
+          }
+        },
+        "outputAs": "structuredData"
+      },
+      {
+        "id": "step5_marketing_copy",
+        "module": "ai.ai-sdk.generateText",
+        "inputs": {
+          "params": {
+            "prompt": "Create compelling marketing copy about {{trigger.topic}} that would attract readers to learn more.",
+            "systemPrompt": "You are a marketing copywriter who creates persuasive, action-oriented content.",
+            "model": "gpt-4o-mini",
+            "provider": "openai",
+            "temperature": 0.8
+          }
+        },
+        "outputAs": "marketingCopy"
+      },
+      {
+        "id": "step6_technical_analysis",
+        "module": "ai.ai-sdk.generateQuality",
+        "inputs": {
+          "prompt": "Provide a detailed technical analysis of {{trigger.topic}}, including challenges, opportunities, and future outlook.",
+          "systemPrompt": "You are a technical expert who provides deep, analytical insights."
+        },
+        "outputAs": "technicalAnalysis"
+      },
+      {
+        "id": "step7_social_media_version",
+        "module": "ai.ai-sdk.generateFast",
+        "inputs": {
+          "prompt": "Create 3 social media posts (Twitter/X style, under 280 chars each) about {{trigger.topic}}",
+          "systemPrompt": "You are a social media manager creating viral, engaging content."
+        },
+        "outputAs": "socialMediaPosts"
+      },
+      {
+        "id": "step8_faqs",
+        "module": "ai.ai-sdk.generateText",
+        "inputs": {
+          "params": {
+            "prompt": "Generate 5 frequently asked questions and answers about {{trigger.topic}}",
+            "model": "gpt-4o-mini",
+            "provider": "openai",
+            "temperature": 0.6
+          }
+        },
+        "outputAs": "faqs"
+      },
+      {
+        "id": "step9_keywords_tags",
+        "module": "ai.ai-sdk.generateFast",
+        "inputs": {
+          "prompt": "Extract 10 relevant keywords and 5 hashtags for content about {{trigger.topic}}. Format as: Keywords: ... | Hashtags: ...",
+          "systemPrompt": "You are an SEO expert who identifies optimal keywords and tags."
+        },
+        "outputAs": "keywordsAndTags"
+      },
+      {
+        "id": "step10_compile_results",
+        "module": "ai.ai-sdk.generateText",
+        "inputs": {
+          "params": {
+            "prompt": "Create a comprehensive table showing all 10 processing steps as a JSON array. For each step, provide: step name, the generated content (limit to 200 chars), and approximate word count. Return ONLY valid JSON array with NO markdown code blocks or formatting.\n\nStep 1 - Initial Overview: {{step1_initial_content.text}}\nStep 2 - Creative Version: {{step2_creative_variation}}\nStep 3 - Professional Summary: {{step3_professional_summary}}\nStep 4 - Structured Data: {{step4_structured_data.text}}\nStep 5 - Marketing Copy: {{step5_marketing_copy.text}}\nStep 6 - Technical Analysis: {{step6_technical_analysis}}\nStep 7 - Social Media Posts: {{step7_social_media_version}}\nStep 8 - FAQs: {{step8_faqs.text}}\nStep 9 - Keywords & Tags: {{step9_keywords_tags}}\n\nFormat: [{\"step\": \"...\", \"content\": \"...\", \"wordCount\": \"...\"}]",
+            "model": "gpt-4o-mini",
+            "provider": "openai",
+            "temperature": 0.2
+          }
+        },
+        "outputAs": "compiledResults"
+      }
+    ],
+    "outputDisplay": {
+      "type": "table",
+      "columns": [
+        {
+          "key": "step",
+          "label": "Processing Step",
+          "type": "text"
+        },
+        {
+          "key": "content",
+          "label": "Generated Content",
+          "type": "text"
+        },
+        {
+          "key": "wordCount",
+          "label": "Word Count",
+          "type": "text"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "requiresCredentials": ["openai"],
+    "tags": ["ai", "openai", "content-generation", "analysis", "multi-step"],
+    "estimatedDuration": "60-90 seconds"
+  }
+}

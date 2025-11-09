@@ -1,0 +1,405 @@
+{
+  "version": "1.0",
+  "name": "Complex Multi-Step Analysis Test",
+  "description": "29-step workflow testing: data generation, 3 OpenAI analyses, array transformations, and table output with 6 columns",
+  "trigger": {
+    "type": "manual"
+  },
+  "config": {
+    "steps": [
+      {
+        "id": "step1",
+        "module": "utilities.array-utils.range",
+        "inputs": {
+          "start": 1,
+          "end": 11,
+          "step": 1
+        },
+        "outputAs": "numbers1"
+      },
+      {
+        "id": "step2",
+        "module": "utilities.array-utils.range",
+        "inputs": {
+          "start": 100,
+          "end": 110,
+          "step": 1
+        },
+        "outputAs": "scores"
+      },
+      {
+        "id": "step3",
+        "module": "utilities.array-utils.range",
+        "inputs": {
+          "start": 50,
+          "end": 60,
+          "step": 1
+        },
+        "outputAs": "ratings"
+      },
+      {
+        "id": "step4",
+        "module": "utilities.array-utils.sum",
+        "inputs": {
+          "array": "{{numbers1}}"
+        },
+        "outputAs": "totalSum"
+      },
+      {
+        "id": "step5",
+        "module": "utilities.array-utils.average",
+        "inputs": {
+          "array": "{{scores}}"
+        },
+        "outputAs": "avgScore"
+      },
+      {
+        "id": "step6",
+        "module": "utilities.array-utils.max",
+        "inputs": {
+          "array": "{{ratings}}"
+        },
+        "outputAs": "maxRating"
+      },
+      {
+        "id": "step7",
+        "module": "utilities.array-utils.min",
+        "inputs": {
+          "array": "{{ratings}}"
+        },
+        "outputAs": "minRating"
+      },
+      {
+        "id": "step8",
+        "module": "utilities.string-utils.concat",
+        "inputs": {
+          "strings": [
+            "Analysis",
+            "Report",
+            "2025"
+          ],
+          "separator": " "
+        },
+        "outputAs": "reportTitle"
+      },
+      {
+        "id": "step9",
+        "module": "ai.ai-sdk.generateText",
+        "inputs": {
+          "options": {
+            "prompt": "Generate a brief analysis of these statistics: Total sum: {{totalSum}}, Average score: {{avgScore}}, Max rating: {{maxRating}}. Keep it under 50 words.",
+            "model": "gpt-4o-mini",
+            "provider": "openai",
+            "temperature": 0.7,
+            "maxTokens": 100
+          }
+        },
+        "outputAs": "analysis1"
+      },
+      {
+        "id": "step10",
+        "module": "utilities.array-utils.shuffle",
+        "inputs": {
+          "array": "{{numbers1}}"
+        },
+        "outputAs": "shuffledNumbers"
+      },
+      {
+        "id": "step11",
+        "module": "utilities.array-utils.first",
+        "inputs": {
+          "array": "{{shuffledNumbers}}",
+          "count": 5
+        },
+        "outputAs": "topFive"
+      },
+      {
+        "id": "step12",
+        "module": "utilities.array-utils.last",
+        "inputs": {
+          "array": "{{shuffledNumbers}}",
+          "count": 5
+        },
+        "outputAs": "bottomFive"
+      },
+      {
+        "id": "step13",
+        "module": "utilities.array-utils.unique",
+        "inputs": {
+          "array": [
+            1,
+            2,
+            2,
+            3,
+            3,
+            3,
+            4,
+            4,
+            5
+          ]
+        },
+        "outputAs": "uniqueValues"
+      },
+      {
+        "id": "step14",
+        "module": "utilities.string-utils.truncate",
+        "inputs": {
+          "str": "{{analysis1.content}}",
+          "maxLength": 100,
+          "suffix": "..."
+        },
+        "outputAs": "truncatedAnalysis"
+      },
+      {
+        "id": "step15",
+        "module": "ai.ai-sdk.generateText",
+        "inputs": {
+          "options": {
+            "prompt": "Create a 1-sentence summary about data analysis and statistics. Keep it under 30 words.",
+            "model": "gpt-4o-mini",
+            "provider": "openai",
+            "temperature": 0.5,
+            "maxTokens": 80
+          }
+        },
+        "outputAs": "summary1"
+      },
+      {
+        "id": "step16",
+        "module": "utilities.array-utils.sortNumbers",
+        "inputs": {
+          "array": "{{topFive}}",
+          "order": "desc"
+        },
+        "outputAs": "sortedTop"
+      },
+      {
+        "id": "step17",
+        "module": "utilities.array-utils.chunk",
+        "inputs": {
+          "array": "{{numbers1}}",
+          "size": 3
+        },
+        "outputAs": "chunkedData"
+      },
+      {
+        "id": "step18",
+        "module": "utilities.array-utils.flatten",
+        "inputs": {
+          "array": "{{chunkedData}}",
+          "depth": 1
+        },
+        "outputAs": "flattenedData"
+      },
+      {
+        "id": "step19",
+        "module": "utilities.string-utils.capitalize",
+        "inputs": {
+          "str": "{{reportTitle}}"
+        },
+        "outputAs": "capitalizedTitle"
+      },
+      {
+        "id": "step20",
+        "module": "utilities.string-utils.wordCount",
+        "inputs": {
+          "str": "{{summary1.content}}"
+        },
+        "outputAs": "wordCount"
+      },
+      {
+        "id": "step21",
+        "module": "ai.ai-sdk.generateText",
+        "inputs": {
+          "options": {
+            "prompt": "Generate a brief conclusion based on this data: Report title is {{capitalizedTitle}}, analysis shows {{truncatedAnalysis}}. Be concise, under 40 words.",
+            "model": "gpt-4o-mini",
+            "provider": "openai",
+            "temperature": 0.6,
+            "maxTokens": 100
+          }
+        },
+        "outputAs": "conclusion"
+      },
+      {
+        "id": "step22",
+        "module": "utilities.array-utils.compact",
+        "inputs": {
+          "array": [
+            1,
+            0,
+            2,
+            false,
+            3,
+            "",
+            4,
+            null,
+            5
+          ]
+        },
+        "outputAs": "compactedArray"
+      },
+      {
+        "id": "step23",
+        "module": "utilities.array-utils.intersection",
+        "inputs": {
+          "arrays": [
+            "{{topFive}}",
+            "{{numbers1}}"
+          ]
+        },
+        "outputAs": "commonElements"
+      },
+      {
+        "id": "step24",
+        "module": "utilities.array-utils.difference",
+        "inputs": {
+          "arr1": "{{numbers1}}",
+          "arr2": "{{topFive}}"
+        },
+        "outputAs": "differentElements"
+      },
+      {
+        "id": "step25",
+        "module": "utilities.string-utils.concat",
+        "inputs": {
+          "strings": [
+            "Report:",
+            "{{capitalizedTitle}}",
+            "|",
+            "Count:",
+            "{{wordCount}}"
+          ],
+          "separator": " "
+        },
+        "outputAs": "formattedReport"
+      },
+      {
+        "id": "step26",
+        "module": "utilities.array-utils.fill",
+        "inputs": {
+          "length": 6,
+          "value": "Data Point"
+        },
+        "outputAs": "dataLabels"
+      },
+      {
+        "id": "step27",
+        "module": "utilities.array-utils.range",
+        "inputs": {
+          "start": 1,
+          "end": 7,
+          "step": 1
+        },
+        "outputAs": "rowIds"
+      },
+      {
+        "id": "step28",
+        "module": "utilities.array-utils.fill",
+        "inputs": {
+          "length": 6,
+          "value": "Analysis"
+        },
+        "outputAs": "categories"
+      },
+      {
+        "id": "step29",
+        "module": "utilities.array-utils.zipToObjects",
+        "inputs": {
+          "fieldArrays": {
+            "id": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ],
+            "title": [
+              "Statistical Summary",
+              "Data Analysis",
+              "Trend Report",
+              "Performance Metrics",
+              "Quality Score",
+              "Final Results"
+            ],
+            "category": [
+              "Mathematics",
+              "Statistics",
+              "Analytics",
+              "Metrics",
+              "Quality",
+              "Summary"
+            ],
+            "score": [
+              105,
+              108,
+              103,
+              107,
+              109,
+              106
+            ],
+            "summary": [
+              "Statistical analysis reveals data patterns and correlations across multiple dimensions",
+              "Comprehensive data examination identifies trends, outliers, and significant findings",
+              "Trend analysis uncovers emerging patterns and predicts future trajectories effectively",
+              "Performance evaluation measures efficiency, effectiveness, and achievement levels",
+              "Quality assessment ensures standards are met through rigorous testing and validation",
+              "Final synthesis integrates all findings into actionable insights and recommendations"
+            ],
+            "conclusion": [
+              "Mathematics provides the foundational framework for quantitative analysis",
+              "Statistical methods enable evidence-based decision making and inference",
+              "Analytics transforms raw data into strategic business intelligence",
+              "Metrics tracking facilitates continuous improvement and goal achievement",
+              "Quality control maintains excellence through systematic monitoring",
+              "Comprehensive summaries drive informed decision-making processes"
+            ]
+          }
+        },
+        "outputAs": "finalTableData"
+      }
+    ],
+    "returnValue": "{{finalTableData}}",
+    "outputDisplay": {
+      "type": "table",
+      "columns": [
+        {
+          "key": "id",
+          "label": "ID",
+          "type": "number"
+        },
+        {
+          "key": "title",
+          "label": "Title",
+          "type": "text"
+        },
+        {
+          "key": "category",
+          "label": "Category",
+          "type": "text"
+        },
+        {
+          "key": "score",
+          "label": "Score",
+          "type": "number"
+        },
+        {
+          "key": "summary",
+          "label": "AI Summary",
+          "type": "text"
+        },
+        {
+          "key": "conclusion",
+          "label": "AI Conclusion",
+          "type": "text"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "requiresCredentials": [
+      "openai"
+    ]
+  }
+}

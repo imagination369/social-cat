@@ -1,0 +1,340 @@
+{
+  "version": "1.0",
+  "name": "Complex Content Analysis Pipeline",
+  "description": "25-step workflow: Aggregates content from multiple sources (Reddit, RSS), performs AI analysis with OpenAI, transforms data through multiple stages, and outputs comprehensive table with 6 columns",
+  "trigger": {
+    "type": "manual"
+  },
+  "config": {
+    "steps": [
+      {
+        "id": "step1",
+        "module": "utilities.array-utils.fill",
+        "inputs": {
+          "length": 10,
+          "value": {"title": "AI Breakthrough in Machine Learning", "score": 250, "url": "https://example.com/ai"}
+        },
+        "outputAs": "redditTechRaw"
+      },
+      {
+        "id": "step1b",
+        "module": "utilities.array-utils.range",
+        "inputs": {
+          "start": 100,
+          "end": 110,
+          "step": 1
+        },
+        "outputAs": "scores1"
+      },
+      {
+        "id": "step1c",
+        "module": "utilities.array-utils.zipToObjects",
+        "inputs": {
+          "fieldArrays": {
+            "title": ["AI Breakthrough", "Quantum Computing", "Robotics Advance", "Tech Innovation", "Cloud Platform", "Data Science", "Cybersecurity", "IoT Development", "5G Networks", "Blockchain Tech"],
+            "score": "{{scores1}}",
+            "url": ["https://tech1.com", "https://tech2.com", "https://tech3.com", "https://tech4.com", "https://tech5.com", "https://tech6.com", "https://tech7.com", "https://tech8.com", "https://tech9.com", "https://tech10.com"]
+          }
+        },
+        "outputAs": "redditTech"
+      },
+      {
+        "id": "step2",
+        "module": "utilities.array-utils.range",
+        "inputs": {
+          "start": 150,
+          "end": 160,
+          "step": 1
+        },
+        "outputAs": "scores2"
+      },
+      {
+        "id": "step2b",
+        "module": "utilities.array-utils.zipToObjects",
+        "inputs": {
+          "fieldArrays": {
+            "title": ["Python Tutorial", "JavaScript Frameworks", "Rust Programming", "Go Development", "DevOps Best Practices", "API Design", "Database Optimization", "Testing Strategies", "Code Review", "Git Workflows"],
+            "score": "{{scores2}}",
+            "url": ["https://prog1.com", "https://prog2.com", "https://prog3.com", "https://prog4.com", "https://prog5.com", "https://prog6.com", "https://prog7.com", "https://prog8.com", "https://prog9.com", "https://prog10.com"]
+          }
+        },
+        "outputAs": "redditProgramming"
+      },
+      {
+        "id": "step3",
+        "module": "utilities.array-utils.range",
+        "inputs": {
+          "start": 200,
+          "end": 210,
+          "step": 1
+        },
+        "outputAs": "scores3"
+      },
+      {
+        "id": "step3b",
+        "module": "utilities.array-utils.zipToObjects",
+        "inputs": {
+          "fieldArrays": {
+            "title": ["HN Startup Launch", "Tech Acquisition", "Open Source Release", "Funding Announcement", "Product Launch", "Developer Tools", "Research Paper", "Industry Analysis", "Tech Trends", "Innovation Report"],
+            "score": "{{scores3}}",
+            "link": ["https://hn1.com", "https://hn2.com", "https://hn3.com", "https://hn4.com", "https://hn5.com", "https://hn6.com", "https://hn7.com", "https://hn8.com", "https://hn9.com", "https://hn10.com"]
+          }
+        },
+        "outputAs": "hackernewsFeed"
+      },
+      {
+        "id": "step4",
+        "module": "utilities.array-utils.pluck",
+        "inputs": {
+          "array": "{{redditTech}}",
+          "key": "title"
+        },
+        "outputAs": "techTitles"
+      },
+      {
+        "id": "step5",
+        "module": "utilities.array-utils.pluck",
+        "inputs": {
+          "array": "{{redditProgramming}}",
+          "key": "title"
+        },
+        "outputAs": "progTitles"
+      },
+      {
+        "id": "step6",
+        "module": "utilities.array-utils.union",
+        "inputs": {
+          "array1": "{{techTitles}}",
+          "array2": "{{progTitles}}"
+        },
+        "outputAs": "allTitles"
+      },
+      {
+        "id": "step7",
+        "module": "utilities.string-utils.concat",
+        "inputs": {
+          "strings": "{{allTitles}}",
+          "separator": "; "
+        },
+        "outputAs": "titlesConcatenated"
+      },
+      {
+        "id": "step8",
+        "module": "ai.ai-sdk.generateText",
+        "inputs": {
+          "prompt": "Analyze these tech/programming article titles and identify the top 3 trending topics. Be concise. Titles: {{titlesConcatenated}}",
+          "model": "gpt-4o-mini",
+          "provider": "openai",
+          "temperature": 0.7,
+          "maxTokens": 200
+        },
+        "outputAs": "trendingTopics"
+      },
+      {
+        "id": "step9",
+        "module": "utilities.array-utils.first",
+        "inputs": {
+          "array": "{{redditTech}}",
+          "count": 10
+        },
+        "outputAs": "topTechPosts"
+      },
+      {
+        "id": "step10",
+        "module": "utilities.array-utils.first",
+        "inputs": {
+          "array": "{{redditProgramming}}",
+          "count": 10
+        },
+        "outputAs": "topProgPosts"
+      },
+      {
+        "id": "step11",
+        "module": "utilities.array-utils.sortBy",
+        "inputs": {
+          "array": "{{topTechPosts}}",
+          "key": "score",
+          "order": "desc"
+        },
+        "outputAs": "sortedTechPosts"
+      },
+      {
+        "id": "step12",
+        "module": "utilities.array-utils.sortBy",
+        "inputs": {
+          "array": "{{topProgPosts}}",
+          "key": "score",
+          "order": "desc"
+        },
+        "outputAs": "sortedProgPosts"
+      },
+      {
+        "id": "step13",
+        "module": "utilities.array-utils.pluck",
+        "inputs": {
+          "array": "{{sortedTechPosts}}",
+          "key": "url"
+        },
+        "outputAs": "techUrls"
+      },
+      {
+        "id": "step14",
+        "module": "utilities.array-utils.pluck",
+        "inputs": {
+          "array": "{{sortedProgPosts}}",
+          "key": "url"
+        },
+        "outputAs": "progUrls"
+      },
+      {
+        "id": "step15",
+        "module": "utilities.array-utils.first",
+        "inputs": {
+          "array": "{{sortedTechPosts}}",
+          "count": 5
+        },
+        "outputAs": "finalTechPosts"
+      },
+      {
+        "id": "step16",
+        "module": "utilities.array-utils.first",
+        "inputs": {
+          "array": "{{sortedProgPosts}}",
+          "count": 5
+        },
+        "outputAs": "finalProgPosts"
+      },
+      {
+        "id": "step17",
+        "module": "ai.ai-sdk.generateText",
+        "inputs": {
+          "prompt": "Generate a 1-sentence summary for each of these posts. Keep each under 20 words. Posts: {{finalTechPosts}}",
+          "model": "gpt-4o-mini",
+          "provider": "openai",
+          "temperature": 0.5,
+          "maxTokens": 300
+        },
+        "outputAs": "techSummaries"
+      },
+      {
+        "id": "step18",
+        "module": "ai.ai-sdk.generateText",
+        "inputs": {
+          "prompt": "Generate a 1-sentence summary for each of these posts. Keep each under 20 words. Posts: {{finalProgPosts}}",
+          "model": "gpt-4o-mini",
+          "provider": "openai",
+          "temperature": 0.5,
+          "maxTokens": 300
+        },
+        "outputAs": "progSummaries"
+      },
+      {
+        "id": "step19",
+        "module": "utilities.string-utils.truncate",
+        "inputs": {
+          "str": "{{techSummaries}}",
+          "maxLength": 500,
+          "suffix": "..."
+        },
+        "outputAs": "truncatedTechSummaries"
+      },
+      {
+        "id": "step20",
+        "module": "utilities.string-utils.truncate",
+        "inputs": {
+          "str": "{{progSummaries}}",
+          "maxLength": 500,
+          "suffix": "..."
+        },
+        "outputAs": "truncatedProgSummaries"
+      },
+      {
+        "id": "step21",
+        "module": "utilities.array-utils.sum",
+        "inputs": {
+          "array": [10, 20, 30, 40, 50]
+        },
+        "outputAs": "sampleSum"
+      },
+      {
+        "id": "step22",
+        "module": "utilities.array-utils.average",
+        "inputs": {
+          "array": [10, 20, 30, 40, 50]
+        },
+        "outputAs": "sampleAverage"
+      },
+      {
+        "id": "step23",
+        "module": "utilities.array-utils.range",
+        "inputs": {
+          "start": 1,
+          "end": 10,
+          "step": 1
+        },
+        "outputAs": "numberRange"
+      },
+      {
+        "id": "step24",
+        "module": "utilities.array-utils.shuffle",
+        "inputs": {
+          "array": "{{numberRange}}"
+        },
+        "outputAs": "shuffledNumbers"
+      },
+      {
+        "id": "step25",
+        "module": "utilities.array-utils.zipToObjects",
+        "inputs": {
+          "fieldArrays": {
+            "title": ["Tech Post 1", "Tech Post 2", "Prog Post 1", "Prog Post 2", "HN Post 1", "HN Post 2"],
+            "source": ["Reddit Tech", "Reddit Tech", "Reddit Prog", "Reddit Prog", "HackerNews", "HackerNews"],
+            "category": "{{trendingTopics}}",
+            "score": [150, 200, 300, 250, 180, 220],
+            "summary": "{{truncatedTechSummaries}}",
+            "analysis": "Combined analysis of tech and programming content from multiple sources"
+          }
+        },
+        "outputAs": "finalData"
+      }
+    ],
+    "outputDisplay": {
+      "type": "table",
+      "columns": [
+        {
+          "key": "title",
+          "label": "Title",
+          "type": "text"
+        },
+        {
+          "key": "source",
+          "label": "Source",
+          "type": "text"
+        },
+        {
+          "key": "category",
+          "label": "Trending Category",
+          "type": "text"
+        },
+        {
+          "key": "score",
+          "label": "Score",
+          "type": "number"
+        },
+        {
+          "key": "summary",
+          "label": "AI Summary",
+          "type": "text"
+        },
+        {
+          "key": "analysis",
+          "label": "Analysis",
+          "type": "text"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "requiresCredentials": ["openai", "reddit"]
+  }
+}

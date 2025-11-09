@@ -1,0 +1,1085 @@
+{
+  "version": "1.0",
+  "name": "Comprehensive Module Test - 100+ Nodes",
+  "description": "Extensive workflow testing as many modules as possible with deterministic data generation, multiple transformations, and table output",
+  "trigger": {
+    "type": "manual",
+    "config": {}
+  },
+  "config": {
+    "steps": [
+      {
+        "id": "step1",
+        "module": "utilities.array-utils.range",
+        "inputs": {
+          "start": 1,
+          "end": 20,
+          "step": 1
+        },
+        "outputAs": "baseNumbers"
+      },
+      {
+        "id": "step2",
+        "module": "utilities.array-utils.shuffle",
+        "inputs": {
+          "array": "{{baseNumbers}}"
+        },
+        "outputAs": "shuffledNumbers"
+      },
+      {
+        "id": "step3",
+        "module": "utilities.array-utils.first",
+        "inputs": {
+          "array": "{{shuffledNumbers}}",
+          "count": 10
+        },
+        "outputAs": "firstTen"
+      },
+      {
+        "id": "step4",
+        "module": "utilities.array-utils.last",
+        "inputs": {
+          "array": "{{shuffledNumbers}}",
+          "count": 10
+        },
+        "outputAs": "lastTen"
+      },
+      {
+        "id": "step5",
+        "module": "utilities.array-utils.sum",
+        "inputs": {
+          "array": "{{firstTen}}"
+        },
+        "outputAs": "sumFirstTen"
+      },
+      {
+        "id": "step6",
+        "module": "utilities.array-utils.average",
+        "inputs": {
+          "array": "{{lastTen}}"
+        },
+        "outputAs": "avgLastTen"
+      },
+      {
+        "id": "step7",
+        "module": "utilities.array-utils.min",
+        "inputs": {
+          "array": "{{baseNumbers}}"
+        },
+        "outputAs": "minNumber"
+      },
+      {
+        "id": "step8",
+        "module": "utilities.array-utils.max",
+        "inputs": {
+          "array": "{{baseNumbers}}"
+        },
+        "outputAs": "maxNumber"
+      },
+      {
+        "id": "step9",
+        "module": "utilities.array-utils.unique",
+        "inputs": {
+          "array": "{{shuffledNumbers}}"
+        },
+        "outputAs": "uniqueNumbers"
+      },
+      {
+        "id": "step10",
+        "module": "utilities.array-utils.chunk",
+        "inputs": {
+          "array": "{{baseNumbers}}",
+          "size": 5
+        },
+        "outputAs": "chunkedArrays"
+      },
+      {
+        "id": "step11",
+        "module": "utilities.array-utils.flatten",
+        "inputs": {
+          "array": "{{chunkedArrays}}",
+          "depth": 1
+        },
+        "outputAs": "flattenedNumbers"
+      },
+      {
+        "id": "step12",
+        "module": "utilities.array-utils.sortNumbers",
+        "inputs": {
+          "array": "{{shuffledNumbers}}",
+          "order": "asc"
+        },
+        "outputAs": "sortedAsc"
+      },
+      {
+        "id": "step13",
+        "module": "utilities.array-utils.sortNumbers",
+        "inputs": {
+          "array": "{{shuffledNumbers}}",
+          "order": "desc"
+        },
+        "outputAs": "sortedDesc"
+      },
+      {
+        "id": "step14",
+        "module": "utilities.math.add",
+        "inputs": {
+          "a": "{{sumFirstTen}}",
+          "b": "{{avgLastTen}}"
+        },
+        "outputAs": "addResult"
+      },
+      {
+        "id": "step15",
+        "module": "utilities.math.multiply",
+        "inputs": {
+          "a": "{{minNumber}}",
+          "b": 10
+        },
+        "outputAs": "multiplyResult"
+      },
+      {
+        "id": "step16",
+        "module": "utilities.math.divide",
+        "inputs": {
+          "a": "{{maxNumber}}",
+          "b": 2
+        },
+        "outputAs": "divideResult"
+      },
+      {
+        "id": "step17",
+        "module": "utilities.math.round",
+        "inputs": {
+          "value": "{{avgLastTen}}",
+          "decimals": 2
+        },
+        "outputAs": "roundedAvg"
+      },
+      {
+        "id": "step18",
+        "module": "utilities.math.floor",
+        "inputs": {
+          "value": "{{avgLastTen}}"
+        },
+        "outputAs": "floorResult"
+      },
+      {
+        "id": "step19",
+        "module": "utilities.math.ceil",
+        "inputs": {
+          "value": "{{avgLastTen}}"
+        },
+        "outputAs": "ceilResult"
+      },
+      {
+        "id": "step20",
+        "module": "utilities.math.abs",
+        "inputs": {
+          "value": -42
+        },
+        "outputAs": "absResult"
+      },
+      {
+        "id": "step21",
+        "module": "utilities.math.power",
+        "inputs": {
+          "base": 2,
+          "exponent": 8
+        },
+        "outputAs": "powerResult"
+      },
+      {
+        "id": "step22",
+        "module": "utilities.math.sqrt",
+        "inputs": {
+          "value": 144
+        },
+        "outputAs": "sqrtResult"
+      },
+      {
+        "id": "step23",
+        "module": "utilities.math.modulo",
+        "inputs": {
+          "a": 17,
+          "b": 5
+        },
+        "outputAs": "moduloResult"
+      },
+      {
+        "id": "step24",
+        "module": "utilities.math.percentage",
+        "inputs": {
+          "value": "{{sumFirstTen}}",
+          "total": 200
+        },
+        "outputAs": "percentageResult"
+      },
+      {
+        "id": "step25",
+        "module": "utilities.math.clamp",
+        "inputs": {
+          "value": 150,
+          "min": 0,
+          "max": 100
+        },
+        "outputAs": "clampResult"
+      },
+      {
+        "id": "step26",
+        "module": "utilities.string-utils.toSlug",
+        "inputs": {
+          "text": "Hello World! This is a TEST",
+          "options": {}
+        },
+        "outputAs": "slugResult"
+      },
+      {
+        "id": "step27",
+        "module": "utilities.string-utils.toCamelCase",
+        "inputs": {
+          "str": "hello world test"
+        },
+        "outputAs": "camelCase"
+      },
+      {
+        "id": "step28",
+        "module": "utilities.string-utils.toPascalCase",
+        "inputs": {
+          "str": "hello world test"
+        },
+        "outputAs": "pascalCase"
+      },
+      {
+        "id": "step29",
+        "module": "utilities.string-utils.toSnakeCase",
+        "inputs": {
+          "str": "helloWorldTest"
+        },
+        "outputAs": "snakeCase"
+      },
+      {
+        "id": "step30",
+        "module": "utilities.string-utils.toKebabCase",
+        "inputs": {
+          "str": "helloWorldTest"
+        },
+        "outputAs": "kebabCase"
+      },
+      {
+        "id": "step31",
+        "module": "utilities.string-utils.capitalize",
+        "inputs": {
+          "str": "hello world"
+        },
+        "outputAs": "capitalized"
+      },
+      {
+        "id": "step32",
+        "module": "utilities.string-utils.capitalizeWords",
+        "inputs": {
+          "str": "hello world from claude"
+        },
+        "outputAs": "capitalizedWords"
+      },
+      {
+        "id": "step33",
+        "module": "utilities.string-utils.reverse",
+        "inputs": {
+          "str": "automation"
+        },
+        "outputAs": "reversedString"
+      },
+      {
+        "id": "step34",
+        "module": "utilities.string-utils.truncate",
+        "inputs": {
+          "str": "This is a very long string that needs truncation",
+          "maxLength": 20,
+          "suffix": "..."
+        },
+        "outputAs": "truncatedString"
+      },
+      {
+        "id": "step35",
+        "module": "utilities.string-utils.stripHtml",
+        "inputs": {
+          "str": "<p>Hello <strong>World</strong></p>"
+        },
+        "outputAs": "strippedHtml"
+      },
+      {
+        "id": "step36",
+        "module": "utilities.string-utils.escapeHtml",
+        "inputs": {
+          "str": "<script>alert('test')</script>"
+        },
+        "outputAs": "escapedHtml"
+      },
+      {
+        "id": "step37",
+        "module": "utilities.encryption.hashSHA256",
+        "inputs": {
+          "data": "hello world"
+        },
+        "outputAs": "sha256Hash"
+      },
+      {
+        "id": "step38",
+        "module": "utilities.encryption.hashMD5",
+        "inputs": {
+          "data": "hello world"
+        },
+        "outputAs": "md5Hash"
+      },
+      {
+        "id": "step39",
+        "module": "utilities.encryption.encodeBase64",
+        "inputs": {
+          "data": "Hello World!"
+        },
+        "outputAs": "base64Encoded"
+      },
+      {
+        "id": "step40",
+        "module": "utilities.encryption.decodeBase64",
+        "inputs": {
+          "data": "{{base64Encoded}}"
+        },
+        "outputAs": "base64Decoded"
+      },
+      {
+        "id": "step41",
+        "module": "utilities.encryption.generateUUID",
+        "inputs": {},
+        "outputAs": "uuid1"
+      },
+      {
+        "id": "step42",
+        "module": "utilities.encryption.generateUUID",
+        "inputs": {},
+        "outputAs": "uuid2"
+      },
+      {
+        "id": "step43",
+        "module": "utilities.encryption.generateRandomString",
+        "inputs": {
+          "length": 16,
+          "chars": "abcdefghijklmnopqrstuvwxyz0123456789"
+        },
+        "outputAs": "randomString"
+      },
+      {
+        "id": "step44",
+        "module": "utilities.datetime.now",
+        "inputs": {},
+        "outputAs": "currentDate"
+      },
+      {
+        "id": "step45",
+        "module": "utilities.datetime.formatDate",
+        "inputs": {
+          "date": "{{currentDate}}",
+          "formatString": "yyyy-MM-dd"
+        },
+        "outputAs": "formattedDate"
+      },
+      {
+        "id": "step46",
+        "module": "utilities.datetime.addDays",
+        "inputs": {
+          "date": "{{currentDate}}",
+          "days": 7
+        },
+        "outputAs": "futureDate"
+      },
+      {
+        "id": "step47",
+        "module": "utilities.datetime.subDays",
+        "inputs": {
+          "date": "{{currentDate}}",
+          "days": 7
+        },
+        "outputAs": "pastDate"
+      },
+      {
+        "id": "step48",
+        "module": "utilities.datetime.addHours",
+        "inputs": {
+          "date": "{{currentDate}}",
+          "hours": 24
+        },
+        "outputAs": "date24HoursLater"
+      },
+      {
+        "id": "step49",
+        "module": "utilities.datetime.toISO",
+        "inputs": {
+          "date": "{{currentDate}}"
+        },
+        "outputAs": "isoDate"
+      },
+      {
+        "id": "step50",
+        "module": "ai.ai-sdk.generateText",
+        "inputs": {
+          "options": {
+            "prompt": "Generate a single creative product name for a tech gadget. Return ONLY the product name, nothing else.",
+            "model": "gpt-4o-mini",
+            "provider": "openai",
+            "temperature": 0.9,
+            "maxTokens": 20
+          }
+        },
+        "outputAs": "aiProductName"
+      },
+      {
+        "id": "step51",
+        "module": "ai.ai-sdk.generateText",
+        "inputs": {
+          "options": {
+            "prompt": "Generate a short tagline (max 10 words) for a workflow automation platform. Return ONLY the tagline.",
+            "model": "gpt-4o-mini",
+            "provider": "openai",
+            "temperature": 0.8,
+            "maxTokens": 30
+          }
+        },
+        "outputAs": "aiTagline"
+      },
+      {
+        "id": "step52",
+        "module": "ai.ai-sdk.generateText",
+        "inputs": {
+          "options": {
+            "prompt": "Generate a 2-sentence description of AI workflow automation. Be concise.",
+            "model": "gpt-4o-mini",
+            "provider": "openai",
+            "temperature": 0.7,
+            "maxTokens": 100
+          }
+        },
+        "outputAs": "aiDescription"
+      },
+      {
+        "id": "step53",
+        "module": "utilities.array-utils.range",
+        "inputs": {
+          "start": 101,
+          "end": 110,
+          "step": 1
+        },
+        "outputAs": "idRange"
+      },
+      {
+        "id": "step54",
+        "module": "utilities.array-utils.fill",
+        "inputs": {
+          "value": "Active",
+          "length": 10
+        },
+        "outputAs": "statusArray"
+      },
+      {
+        "id": "step55",
+        "module": "utilities.array-utils.fill",
+        "inputs": {
+          "value": "Tech",
+          "length": 10
+        },
+        "outputAs": "categoryArray"
+      },
+      {
+        "id": "step56",
+        "module": "utilities.array-utils.range",
+        "inputs": {
+          "start": 100,
+          "end": 1000,
+          "step": 100
+        },
+        "outputAs": "priceRange"
+      },
+      {
+        "id": "step57",
+        "module": "utilities.array-utils.range",
+        "inputs": {
+          "start": 1,
+          "end": 6,
+          "step": 1
+        },
+        "outputAs": "ratingRange"
+      },
+      {
+        "id": "step58",
+        "module": "utilities.array-utils.shuffle",
+        "inputs": {
+          "array": "{{priceRange}}"
+        },
+        "outputAs": "shuffledPrices"
+      },
+      {
+        "id": "step59",
+        "module": "utilities.array-utils.first",
+        "inputs": {
+          "array": "{{shuffledPrices}}",
+          "count": 10
+        },
+        "outputAs": "selectedPrices"
+      },
+      {
+        "id": "step60",
+        "module": "utilities.array-utils.shuffle",
+        "inputs": {
+          "array": "{{ratingRange}}"
+        },
+        "outputAs": "shuffledRatings"
+      },
+      {
+        "id": "step61",
+        "module": "utilities.array-utils.fill",
+        "inputs": {
+          "value": "{{shuffledRatings}}",
+          "length": 2
+        },
+        "outputAs": "extendedRatings"
+      },
+      {
+        "id": "step62",
+        "module": "utilities.array-utils.flatten",
+        "inputs": {
+          "array": "{{extendedRatings}}",
+          "depth": 1
+        },
+        "outputAs": "flatRatings"
+      },
+      {
+        "id": "step63",
+        "module": "utilities.array-utils.first",
+        "inputs": {
+          "array": "{{flatRatings}}",
+          "count": 10
+        },
+        "outputAs": "selectedRatings"
+      },
+      {
+        "id": "step64",
+        "module": "utilities.array-utils.range",
+        "inputs": {
+          "start": 50,
+          "end": 500,
+          "step": 50
+        },
+        "outputAs": "stockRange"
+      },
+      {
+        "id": "step65",
+        "module": "utilities.array-utils.first",
+        "inputs": {
+          "array": "{{stockRange}}",
+          "count": 10
+        },
+        "outputAs": "selectedStock"
+      },
+      {
+        "id": "step66",
+        "module": "utilities.array-utils.fill",
+        "inputs": {
+          "value": true,
+          "length": 10
+        },
+        "outputAs": "inStockArray"
+      },
+      {
+        "id": "step67",
+        "module": "utilities.array-utils.fill",
+        "inputs": {
+          "value": "{{aiProductName.content}}",
+          "length": 10
+        },
+        "outputAs": "productNameArray"
+      },
+      {
+        "id": "step68",
+        "module": "utilities.array-utils.fill",
+        "inputs": {
+          "value": "{{aiTagline.content}}",
+          "length": 10
+        },
+        "outputAs": "taglineArray"
+      },
+      {
+        "id": "step69",
+        "module": "utilities.array-utils.fill",
+        "inputs": {
+          "value": "{{aiDescription.content}}",
+          "length": 10
+        },
+        "outputAs": "descriptionArray"
+      },
+      {
+        "id": "step70",
+        "module": "utilities.string-utils.wordCount",
+        "inputs": {
+          "str": "{{aiDescription.content}}"
+        },
+        "outputAs": "descWordCount"
+      },
+      {
+        "id": "step71",
+        "module": "utilities.string-utils.charCount",
+        "inputs": {
+          "str": "{{aiTagline.content}}"
+        },
+        "outputAs": "taglineCharCount"
+      },
+      {
+        "id": "step72",
+        "module": "utilities.string-utils.isEmail",
+        "inputs": {
+          "str": "test@example.com"
+        },
+        "outputAs": "isEmailValid"
+      },
+      {
+        "id": "step73",
+        "module": "utilities.string-utils.isUrl",
+        "inputs": {
+          "str": "https://example.com"
+        },
+        "outputAs": "isUrlValid"
+      },
+      {
+        "id": "step74",
+        "module": "utilities.array-utils.intersection",
+        "inputs": {
+          "arrays": [
+            "{{firstTen}}",
+            "{{lastTen}}"
+          ]
+        },
+        "outputAs": "intersection"
+      },
+      {
+        "id": "step75",
+        "module": "utilities.array-utils.union",
+        "inputs": {
+          "arrays": [
+            "{{firstTen}}",
+            "{{lastTen}}"
+          ]
+        },
+        "outputAs": "union"
+      },
+      {
+        "id": "step76",
+        "module": "utilities.array-utils.difference",
+        "inputs": {
+          "arr1": "{{firstTen}}",
+          "arr2": "{{lastTen}}"
+        },
+        "outputAs": "difference"
+      },
+      {
+        "id": "step77",
+        "module": "utilities.json-transform.get",
+        "inputs": {
+          "obj": {
+            "user": {
+              "name": "Test User",
+              "age": 30
+            }
+          },
+          "path": "user.name"
+        },
+        "outputAs": "nestedValue"
+      },
+      {
+        "id": "step78",
+        "module": "utilities.json-transform.flatten",
+        "inputs": {
+          "obj": {
+            "user": {
+              "name": "Test",
+              "profile": {
+                "bio": "Developer"
+              }
+            }
+          },
+          "separator": "."
+        },
+        "outputAs": "flattenedObj"
+      },
+      {
+        "id": "step79",
+        "module": "utilities.json-transform.pick",
+        "inputs": {
+          "obj": {
+            "id": 1,
+            "name": "Product",
+            "price": 100,
+            "internal": "secret"
+          },
+          "keys": [
+            "id",
+            "name",
+            "price"
+          ]
+        },
+        "outputAs": "pickedObject"
+      },
+      {
+        "id": "step80",
+        "module": "utilities.json-transform.omit",
+        "inputs": {
+          "obj": {
+            "id": 1,
+            "name": "Product",
+            "password": "secret"
+          },
+          "keys": [
+            "password"
+          ]
+        },
+        "outputAs": "omittedObject"
+      },
+      {
+        "id": "step81",
+        "module": "utilities.json-transform.deepClone",
+        "inputs": {
+          "obj": {
+            "nested": {
+              "data": [
+                1,
+                2,
+                3
+              ]
+            }
+          }
+        },
+        "outputAs": "clonedObject"
+      },
+      {
+        "id": "step82",
+        "module": "utilities.array-utils.compact",
+        "inputs": {
+          "array": [
+            0,
+            1,
+            false,
+            2,
+            "",
+            3,
+            null,
+            4,
+            5
+          ]
+        },
+        "outputAs": "compactedArray"
+      },
+      {
+        "id": "step83",
+        "module": "utilities.array-utils.random",
+        "inputs": {
+          "array": [
+            "Option A",
+            "Option B",
+            "Option C",
+            "Option D"
+          ]
+        },
+        "outputAs": "randomChoice"
+      },
+      {
+        "id": "step84",
+        "module": "utilities.array-utils.sample",
+        "inputs": {
+          "array": "{{baseNumbers}}",
+          "count": 3
+        },
+        "outputAs": "sampledNumbers"
+      },
+      {
+        "id": "step85",
+        "module": "utilities.math.isEven",
+        "inputs": {
+          "value": "{{maxNumber}}"
+        },
+        "outputAs": "isMaxEven"
+      },
+      {
+        "id": "step86",
+        "module": "utilities.math.isOdd",
+        "inputs": {
+          "value": "{{minNumber}}"
+        },
+        "outputAs": "isMinOdd"
+      },
+      {
+        "id": "step87",
+        "module": "utilities.validation.validateEmail",
+        "inputs": {
+          "email": "test@example.com"
+        },
+        "outputAs": "emailValidation"
+      },
+      {
+        "id": "step88",
+        "module": "utilities.validation.validateUrl",
+        "inputs": {
+          "url": "https://example.com/workflow"
+        },
+        "outputAs": "urlValidation"
+      },
+      {
+        "id": "step89",
+        "module": "utilities.validation.validateRange",
+        "inputs": {
+          "value": 75,
+          "min": 0,
+          "max": 100
+        },
+        "outputAs": "rangeValidation"
+      },
+      {
+        "id": "step90",
+        "module": "utilities.validation.validateLength",
+        "inputs": {
+          "value": "Hello World",
+          "min": 5,
+          "max": 50
+        },
+        "outputAs": "lengthValidation"
+      },
+      {
+        "id": "step91",
+        "module": "utilities.string-utils.concat",
+        "inputs": {
+          "strings": [
+            "Product:",
+            "{{aiProductName.content}}",
+            "-",
+            "{{aiTagline.content}}"
+          ]
+        },
+        "outputAs": "concatenatedTitle"
+      },
+      {
+        "id": "step92",
+        "module": "utilities.array-utils.fill",
+        "inputs": {
+          "value": "{{concatenatedTitle}}",
+          "length": 10
+        },
+        "outputAs": "titleArray"
+      },
+      {
+        "id": "step93",
+        "module": "utilities.array-utils.fill",
+        "inputs": {
+          "value": "{{formattedDate}}",
+          "length": 10
+        },
+        "outputAs": "dateArray"
+      },
+      {
+        "id": "step94",
+        "module": "utilities.array-utils.fill",
+        "inputs": {
+          "value": "{{uuid1}}",
+          "length": 5
+        },
+        "outputAs": "uuid1Array"
+      },
+      {
+        "id": "step95",
+        "module": "utilities.array-utils.fill",
+        "inputs": {
+          "value": "{{uuid2}}",
+          "length": 5
+        },
+        "outputAs": "uuid2Array"
+      },
+      {
+        "id": "step96",
+        "module": "utilities.array-utils.union",
+        "inputs": {
+          "arrays": [
+            "{{uuid1Array}}",
+            "{{uuid2Array}}"
+          ]
+        },
+        "outputAs": "allUUIDs"
+      },
+      {
+        "id": "step97",
+        "module": "utilities.array-utils.first",
+        "inputs": {
+          "array": "{{allUUIDs}}",
+          "count": 10
+        },
+        "outputAs": "uuidArray"
+      },
+      {
+        "id": "step98",
+        "module": "utilities.array-utils.fill",
+        "inputs": {
+          "value": "{{slugResult}}",
+          "length": 10
+        },
+        "outputAs": "slugArray"
+      },
+      {
+        "id": "step99",
+        "module": "utilities.array-utils.fill",
+        "inputs": {
+          "value": "{{sha256Hash}}",
+          "length": 10
+        },
+        "outputAs": "hashArray"
+      },
+      {
+        "id": "step100",
+        "module": "utilities.array-utils.zipToObjects",
+        "inputs": {
+          "fieldArrays": {
+            "id": "{{idRange}}",
+            "title": "{{titleArray}}",
+            "productName": "{{productNameArray}}",
+            "tagline": "{{taglineArray}}",
+            "description": "{{descriptionArray}}",
+            "price": "{{selectedPrices}}",
+            "rating": "{{selectedRatings}}",
+            "stock": "{{selectedStock}}",
+            "inStock": "{{inStockArray}}",
+            "category": "{{categoryArray}}",
+            "status": "{{statusArray}}",
+            "slug": "{{slugArray}}",
+            "uuid": "{{uuidArray}}",
+            "hash": "{{hashArray}}",
+            "createdDate": "{{dateArray}}"
+          }
+        },
+        "outputAs": "productTable"
+      },
+      {
+        "id": "step101",
+        "module": "utilities.array-utils.sortBy",
+        "inputs": {
+          "key": "price",
+          "order": "desc",
+          "arr": "{{productTable}}"
+        },
+        "outputAs": "sortedProducts"
+      },
+      {
+        "id": "step102",
+        "module": "utilities.array-utils.pluck",
+        "inputs": {
+          "key": "price",
+          "arr": "{{sortedProducts}}"
+        },
+        "outputAs": "priceList"
+      },
+      {
+        "id": "step103",
+        "module": "utilities.array-utils.sum",
+        "inputs": {
+          "array": "{{priceList}}"
+        },
+        "outputAs": "totalRevenue"
+      },
+      {
+        "id": "step104",
+        "module": "utilities.array-utils.average",
+        "inputs": {
+          "array": "{{priceList}}"
+        },
+        "outputAs": "avgPrice"
+      },
+      {
+        "id": "step105",
+        "module": "utilities.math.round",
+        "inputs": {
+          "value": "{{avgPrice}}",
+          "decimals": 2
+        },
+        "outputAs": "roundedAvgPrice"
+      },
+      {
+        "id": "step106",
+        "module": "utilities.array-utils.groupBy",
+        "inputs": {
+          "key": "category",
+          "arr": "{{sortedProducts}}"
+        },
+        "outputAs": "groupedByCategory"
+      }
+    ],
+    "outputDisplay": {
+      "type": "table",
+      "columns": [
+        {
+          "key": "id",
+          "label": "ID",
+          "type": "number"
+        },
+        {
+          "key": "title",
+          "label": "Full Title",
+          "type": "text"
+        },
+        {
+          "key": "productName",
+          "label": "Product",
+          "type": "text"
+        },
+        {
+          "key": "tagline",
+          "label": "Tagline",
+          "type": "text"
+        },
+        {
+          "key": "price",
+          "label": "Price ($)",
+          "type": "number"
+        },
+        {
+          "key": "rating",
+          "label": "Rating",
+          "type": "number"
+        },
+        {
+          "key": "stock",
+          "label": "Stock",
+          "type": "number"
+        },
+        {
+          "key": "inStock",
+          "label": "Available",
+          "type": "boolean"
+        },
+        {
+          "key": "category",
+          "label": "Category",
+          "type": "text"
+        },
+        {
+          "key": "status",
+          "label": "Status",
+          "type": "text"
+        },
+        {
+          "key": "createdDate",
+          "label": "Created",
+          "type": "date"
+        }
+      ]
+    },
+    "returnValue": "{{sortedProducts}}"
+  },
+  "metadata": {
+    "requiresCredentials": [
+      "openai"
+    ]
+  }
+}

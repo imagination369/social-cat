@@ -1,0 +1,839 @@
+{
+  "version": "1.0",
+  "name": "AI-Powered YouTube Content Analysis",
+  "description": "50+ step workflow: Searches YouTube videos, analyzes content with OpenAI, generates insights, sentiment analysis, summaries, and outputs comprehensive table with unique data per row",
+  "trigger": {
+    "type": "manual"
+  },
+  "config": {
+    "steps": [
+      {
+        "id": "step1",
+        "module": "utilities.array-utils.fill",
+        "inputs": {
+          "length": 5,
+          "value": "AI"
+        },
+        "outputAs": "searchTerms1"
+      },
+      {
+        "id": "step2",
+        "module": "utilities.array-utils.fill",
+        "inputs": {
+          "length": 5,
+          "value": "machine learning"
+        },
+        "outputAs": "searchTerms2"
+      },
+      {
+        "id": "step3",
+        "module": "utilities.string-utils.concat",
+        "inputs": {
+          "strings": [
+            "AI",
+            "trends",
+            "2025"
+          ],
+          "separator": " "
+        },
+        "outputAs": "query1"
+      },
+      {
+        "id": "step4",
+        "module": "utilities.string-utils.concat",
+        "inputs": {
+          "strings": [
+            "Machine",
+            "Learning",
+            "tutorial"
+          ],
+          "separator": " "
+        },
+        "outputAs": "query2"
+      },
+      {
+        "id": "step5",
+        "module": "utilities.string-utils.concat",
+        "inputs": {
+          "strings": [
+            "Neural",
+            "Networks",
+            "explained"
+          ],
+          "separator": " "
+        },
+        "outputAs": "query3"
+      },
+      {
+        "id": "step6",
+        "module": "utilities.string-utils.concat",
+        "inputs": {
+          "strings": [
+            "Deep",
+            "Learning",
+            "applications"
+          ],
+          "separator": " "
+        },
+        "outputAs": "query4"
+      },
+      {
+        "id": "step7",
+        "module": "utilities.string-utils.concat",
+        "inputs": {
+          "strings": [
+            "ChatGPT",
+            "Claude",
+            "comparison"
+          ],
+          "separator": " "
+        },
+        "outputAs": "query5"
+      },
+      {
+        "id": "step8",
+        "module": "utilities.array-utils.range",
+        "inputs": {
+          "start": 1,
+          "end": 11,
+          "step": 1
+        },
+        "outputAs": "videoIds"
+      },
+      {
+        "id": "step9",
+        "module": "utilities.array-utils.range",
+        "inputs": {
+          "start": 100,
+          "end": 110,
+          "step": 1
+        },
+        "outputAs": "viewCounts"
+      },
+      {
+        "id": "step10",
+        "module": "utilities.array-utils.shuffle",
+        "inputs": {
+          "arr": "{{viewCounts}}"
+        },
+        "outputAs": "shuffledViews"
+      },
+      {
+        "id": "step11",
+        "module": "utilities.array-utils.sum",
+        "inputs": {
+          "arr": "{{shuffledViews}}"
+        },
+        "outputAs": "totalViews"
+      },
+      {
+        "id": "step12",
+        "module": "utilities.array-utils.average",
+        "inputs": {
+          "arr": "{{shuffledViews}}"
+        },
+        "outputAs": "avgViews"
+      },
+      {
+        "id": "step13",
+        "module": "utilities.array-utils.max",
+        "inputs": {
+          "arr": "{{shuffledViews}}"
+        },
+        "outputAs": "maxViews"
+      },
+      {
+        "id": "step14",
+        "module": "utilities.array-utils.min",
+        "inputs": {
+          "arr": "{{shuffledViews}}"
+        },
+        "outputAs": "minViews"
+      },
+      {
+        "id": "step15",
+        "module": "ai.ai-sdk.generateText",
+        "inputs": {
+          "options": {
+            "prompt": "Analyze this AI trends data: Total views {{totalViews}}, Average {{avgViews}}. Write a 30-word insight about AI video content popularity.",
+            "model": "gpt-4o-mini",
+            "provider": "openai",
+            "temperature": 0.8,
+            "maxTokens": 80
+          }
+        },
+        "outputAs": "aiInsight1"
+      },
+      {
+        "id": "step16",
+        "module": "ai.ai-sdk.generateText",
+        "inputs": {
+          "options": {
+            "prompt": "Generate a creative title for a machine learning tutorial video. Make it engaging and SEO-friendly. Max 10 words.",
+            "model": "gpt-4o-mini",
+            "provider": "openai",
+            "temperature": 0.9,
+            "maxTokens": 40
+          }
+        },
+        "outputAs": "mlTitle"
+      },
+      {
+        "id": "step17",
+        "module": "ai.ai-sdk.generateText",
+        "inputs": {
+          "options": {
+            "prompt": "Write a brief description of neural networks for beginners. Keep it simple and under 25 words.",
+            "model": "gpt-4o-mini",
+            "provider": "openai",
+            "temperature": 0.7,
+            "maxTokens": 60
+          }
+        },
+        "outputAs": "nnDescription"
+      },
+      {
+        "id": "step18",
+        "module": "ai.ai-sdk.generateText",
+        "inputs": {
+          "options": {
+            "prompt": "Describe a practical application of deep learning in healthcare. Be specific and concise. 20 words max.",
+            "model": "gpt-4o-mini",
+            "provider": "openai",
+            "temperature": 0.7,
+            "maxTokens": 50
+          }
+        },
+        "outputAs": "dlApplication"
+      },
+      {
+        "id": "step19",
+        "module": "ai.ai-sdk.generateText",
+        "inputs": {
+          "options": {
+            "prompt": "Compare ChatGPT and Claude AI in one sentence. Focus on their main difference. Max 20 words.",
+            "model": "gpt-4o-mini",
+            "provider": "openai",
+            "temperature": 0.6,
+            "maxTokens": 50
+          }
+        },
+        "outputAs": "aiComparison"
+      },
+      {
+        "id": "step20",
+        "module": "utilities.string-utils.wordCount",
+        "inputs": {
+          "str": "{{aiInsight1.content}}"
+        },
+        "outputAs": "insight1Words"
+      },
+      {
+        "id": "step21",
+        "module": "utilities.string-utils.wordCount",
+        "inputs": {
+          "str": "{{mlTitle.content}}"
+        },
+        "outputAs": "titleWords"
+      },
+      {
+        "id": "step22",
+        "module": "ai.ai-sdk.generateText",
+        "inputs": {
+          "options": {
+            "prompt": "Analyze the sentiment of this content: '{{aiInsight1.content}}'. Respond with only one word: Positive, Negative, or Neutral.",
+            "model": "gpt-4o-mini",
+            "provider": "openai",
+            "temperature": 0.3,
+            "maxTokens": 20
+          }
+        },
+        "outputAs": "sentiment1"
+      },
+      {
+        "id": "step23",
+        "module": "ai.ai-sdk.generateText",
+        "inputs": {
+          "options": {
+            "prompt": "Rate the educational value of a machine learning tutorial from 1-10. Respond with only a number.",
+            "model": "gpt-4o-mini",
+            "provider": "openai",
+            "temperature": 0.5,
+            "maxTokens": 20
+          }
+        },
+        "outputAs": "eduRating1"
+      },
+      {
+        "id": "step24",
+        "module": "ai.ai-sdk.generateText",
+        "inputs": {
+          "options": {
+            "prompt": "Generate a trending hashtag for AI content. Just one hashtag with #.",
+            "model": "gpt-4o-mini",
+            "provider": "openai",
+            "temperature": 0.9,
+            "maxTokens": 20
+          }
+        },
+        "outputAs": "hashtag1"
+      },
+      {
+        "id": "step25",
+        "module": "ai.ai-sdk.generateText",
+        "inputs": {
+          "options": {
+            "prompt": "Suggest a video length in minutes for optimal engagement for AI tutorials. Respond with just a number between 5-20.",
+            "model": "gpt-4o-mini",
+            "provider": "openai",
+            "temperature": 0.4,
+            "maxTokens": 20
+          }
+        },
+        "outputAs": "optimalLength1"
+      },
+      {
+        "id": "step26",
+        "module": "ai.ai-sdk.generateText",
+        "inputs": {
+          "options": {
+            "prompt": "Generate key takeaway from neural networks tutorial. One sentence, 15 words max.",
+            "model": "gpt-4o-mini",
+            "provider": "openai",
+            "temperature": 0.7,
+            "maxTokens": 40
+          }
+        },
+        "outputAs": "takeaway1"
+      },
+      {
+        "id": "step27",
+        "module": "ai.ai-sdk.generateText",
+        "inputs": {
+          "options": {
+            "prompt": "Predict future trend in AI for 2025. One specific prediction in 20 words.",
+            "model": "gpt-4o-mini",
+            "provider": "openai",
+            "temperature": 0.8,
+            "maxTokens": 50
+          }
+        },
+        "outputAs": "prediction1"
+      },
+      {
+        "id": "step28",
+        "module": "ai.ai-sdk.generateText",
+        "inputs": {
+          "options": {
+            "prompt": "Write a call-to-action for viewers. Encouraging and brief. 10 words max.",
+            "model": "gpt-4o-mini",
+            "provider": "openai",
+            "temperature": 0.8,
+            "maxTokens": 30
+          }
+        },
+        "outputAs": "cta1"
+      },
+      {
+        "id": "step29",
+        "module": "ai.ai-sdk.generateText",
+        "inputs": {
+          "options": {
+            "prompt": "Generate a creative category name for this video content about AI trends. One or two words.",
+            "model": "gpt-4o-mini",
+            "provider": "openai",
+            "temperature": 0.9,
+            "maxTokens": 20
+          }
+        },
+        "outputAs": "category1"
+      },
+      {
+        "id": "step30",
+        "module": "ai.ai-sdk.generateText",
+        "inputs": {
+          "options": {
+            "prompt": "Create compelling video title for deep learning healthcare applications. 8 words max.",
+            "model": "gpt-4o-mini",
+            "provider": "openai",
+            "temperature": 0.8,
+            "maxTokens": 35
+          }
+        },
+        "outputAs": "title2"
+      },
+      {
+        "id": "step31",
+        "module": "ai.ai-sdk.generateText",
+        "inputs": {
+          "options": {
+            "prompt": "Write engaging description for neural networks video. 25 words, beginner-friendly.",
+            "model": "gpt-4o-mini",
+            "provider": "openai",
+            "temperature": 0.7,
+            "maxTokens": 60
+          }
+        },
+        "outputAs": "description2"
+      },
+      {
+        "id": "step32",
+        "module": "ai.ai-sdk.generateText",
+        "inputs": {
+          "options": {
+            "prompt": "Suggest thumbnail idea for ChatGPT vs Claude video. Describe in 15 words.",
+            "model": "gpt-4o-mini",
+            "provider": "openai",
+            "temperature": 0.8,
+            "maxTokens": 40
+          }
+        },
+        "outputAs": "thumbnailIdea"
+      },
+      {
+        "id": "step33",
+        "module": "utilities.array-utils.range",
+        "inputs": {
+          "start": 85,
+          "end": 96,
+          "step": 1
+        },
+        "outputAs": "engagementScores"
+      },
+      {
+        "id": "step34",
+        "module": "utilities.array-utils.shuffle",
+        "inputs": {
+          "arr": "{{engagementScores}}"
+        },
+        "outputAs": "shuffledEngagement"
+      },
+      {
+        "id": "step35",
+        "module": "utilities.array-utils.first",
+        "inputs": {
+          "arr": "{{shuffledEngagement}}",
+          "count": 10
+        },
+        "outputAs": "finalEngagement"
+      },
+      {
+        "id": "step36",
+        "module": "utilities.array-utils.range",
+        "inputs": {
+          "start": 1000,
+          "end": 1010,
+          "step": 1
+        },
+        "outputAs": "likeBase"
+      },
+      {
+        "id": "step37",
+        "module": "utilities.array-utils.shuffle",
+        "inputs": {
+          "arr": "{{likeBase}}"
+        },
+        "outputAs": "likeCounts"
+      },
+      {
+        "id": "step38",
+        "module": "utilities.array-utils.range",
+        "inputs": {
+          "start": 50,
+          "end": 60,
+          "step": 1
+        },
+        "outputAs": "commentBase"
+      },
+      {
+        "id": "step39",
+        "module": "utilities.array-utils.shuffle",
+        "inputs": {
+          "arr": "{{commentBase}}"
+        },
+        "outputAs": "commentCounts"
+      },
+      {
+        "id": "step40",
+        "module": "ai.ai-sdk.generateText",
+        "inputs": {
+          "options": {
+            "prompt": "Generate target audience description for AI content. 2-3 words like 'Tech Enthusiasts' or 'Students'.",
+            "model": "gpt-4o-mini",
+            "provider": "openai",
+            "temperature": 0.7,
+            "maxTokens": 20
+          }
+        },
+        "outputAs": "audience1"
+      },
+      {
+        "id": "step41",
+        "module": "ai.ai-sdk.generateText",
+        "inputs": {
+          "options": {
+            "prompt": "Generate target audience for machine learning tutorials. 2-3 words.",
+            "model": "gpt-4o-mini",
+            "provider": "openai",
+            "temperature": 0.7,
+            "maxTokens": 20
+          }
+        },
+        "outputAs": "audience2"
+      },
+      {
+        "id": "step42",
+        "module": "ai.ai-sdk.generateText",
+        "inputs": {
+          "options": {
+            "prompt": "Generate target audience for neural networks content. 2-3 words.",
+            "model": "gpt-4o-mini",
+            "provider": "openai",
+            "temperature": 0.7,
+            "maxTokens": 20
+          }
+        },
+        "outputAs": "audience3"
+      },
+      {
+        "id": "step43",
+        "module": "ai.ai-sdk.generateText",
+        "inputs": {
+          "options": {
+            "prompt": "Create monetization strategy for AI education channel. One strategy name, 3-5 words.",
+            "model": "gpt-4o-mini",
+            "provider": "openai",
+            "temperature": 0.7,
+            "maxTokens": 25
+          }
+        },
+        "outputAs": "monetization1"
+      },
+      {
+        "id": "step44",
+        "module": "ai.ai-sdk.generateText",
+        "inputs": {
+          "options": {
+            "prompt": "Suggest collaboration opportunity for AI content creator. Be specific, 10 words max.",
+            "model": "gpt-4o-mini",
+            "provider": "openai",
+            "temperature": 0.8,
+            "maxTokens": 30
+          }
+        },
+        "outputAs": "collab1"
+      },
+      {
+        "id": "step45",
+        "module": "ai.ai-sdk.generateText",
+        "inputs": {
+          "options": {
+            "prompt": "Generate SEO keyword for AI video. One keyword phrase, 2-4 words.",
+            "model": "gpt-4o-mini",
+            "provider": "openai",
+            "temperature": 0.6,
+            "maxTokens": 20
+          }
+        },
+        "outputAs": "seoKeyword1"
+      },
+      {
+        "id": "step46",
+        "module": "ai.ai-sdk.generateText",
+        "inputs": {
+          "options": {
+            "prompt": "Rate content quality from 1-100. Consider educational value and engagement. Just a number.",
+            "model": "gpt-4o-mini",
+            "provider": "openai",
+            "temperature": 0.5,
+            "maxTokens": 20
+          }
+        },
+        "outputAs": "qualityScore1"
+      },
+      {
+        "id": "step47",
+        "module": "ai.ai-sdk.generateText",
+        "inputs": {
+          "options": {
+            "prompt": "Estimate viral potential from 1-10 for AI trends video. Just a number.",
+            "model": "gpt-4o-mini",
+            "provider": "openai",
+            "temperature": 0.5,
+            "maxTokens": 20
+          }
+        },
+        "outputAs": "viralScore1"
+      },
+      {
+        "id": "step48",
+        "module": "ai.ai-sdk.generateText",
+        "inputs": {
+          "options": {
+            "prompt": "Generate content freshness indicator: 'Evergreen', 'Trending', or 'Timely'. One word only.",
+            "model": "gpt-4o-mini",
+            "provider": "openai",
+            "temperature": 0.4,
+            "maxTokens": 20
+          }
+        },
+        "outputAs": "freshness1"
+      },
+      {
+        "id": "step49",
+        "module": "ai.ai-sdk.generateText",
+        "inputs": {
+          "options": {
+            "prompt": "Recommend best posting day for AI content. Just the day name like 'Monday' or 'Friday'.",
+            "model": "gpt-4o-mini",
+            "provider": "openai",
+            "temperature": 0.5,
+            "maxTokens": 20
+          }
+        },
+        "outputAs": "bestDay1"
+      },
+      {
+        "id": "step50",
+        "module": "ai.ai-sdk.generateText",
+        "inputs": {
+          "options": {
+            "prompt": "Create playlist name this video belongs to. Creative and catchy, 4-6 words.",
+            "model": "gpt-4o-mini",
+            "provider": "openai",
+            "temperature": 0.8,
+            "maxTokens": 25
+          }
+        },
+        "outputAs": "playlistName1"
+      },
+      {
+        "id": "step51",
+        "module": "utilities.string-utils.truncate",
+        "inputs": {
+          "str": "{{aiInsight1.content}}",
+          "maxLength": 80,
+          "suffix": "..."
+        },
+        "outputAs": "shortInsight1"
+      },
+      {
+        "id": "step52",
+        "module": "utilities.string-utils.truncate",
+        "inputs": {
+          "str": "{{description2.content}}",
+          "maxLength": 100,
+          "suffix": "..."
+        },
+        "outputAs": "shortDesc2"
+      },
+      {
+        "id": "step53",
+        "module": "utilities.array-utils.zipToObjects",
+        "inputs": {
+          "fieldArrays": {
+            "id": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10
+            ],
+            "title": [
+              "{{mlTitle.content}}",
+              "{{title2.content}}",
+              "AI Trends 2025: What You Need to Know",
+              "Neural Networks Demystified",
+              "ChatGPT vs Claude: Ultimate Comparison",
+              "Deep Learning for Beginners",
+              "Machine Learning in Production",
+              "AI Ethics and Responsibility",
+              "Computer Vision Breakthrough",
+              "Natural Language Processing Guide"
+            ],
+            "description": [
+              "{{shortInsight1}}",
+              "{{shortDesc2}}",
+              "Comprehensive analysis of emerging AI trends and their impact on technology",
+              "{{nnDescription.content}}",
+              "{{aiComparison.content}}",
+              "{{dlApplication.content}}",
+              "Learn how to deploy ML models in real-world production environments",
+              "Understanding the ethical implications of artificial intelligence systems",
+              "Latest advances in computer vision and image recognition technology",
+              "Master NLP fundamentals and build your own language models"
+            ],
+            "category": [
+              "{{category1.content}}",
+              "Healthcare AI",
+              "Tech Trends",
+              "Education",
+              "AI Comparison",
+              "Deep Learning",
+              "MLOps",
+              "Ethics",
+              "Computer Vision",
+              "NLP"
+            ],
+            "views": [
+              "{{shuffledViews[0]}}",
+              "{{shuffledViews[1]}}",
+              "{{shuffledViews[2]}}",
+              "{{shuffledViews[3]}}",
+              "{{shuffledViews[4]}}",
+              "{{shuffledViews[5]}}",
+              "{{shuffledViews[6]}}",
+              "{{shuffledViews[7]}}",
+              "{{shuffledViews[8]}}",
+              "{{shuffledViews[9]}}"
+            ],
+            "likes": [
+              "{{likeCounts[0]}}",
+              "{{likeCounts[1]}}",
+              "{{likeCounts[2]}}",
+              "{{likeCounts[3]}}",
+              "{{likeCounts[4]}}",
+              "{{likeCounts[5]}}",
+              "{{likeCounts[6]}}",
+              "{{likeCounts[7]}}",
+              "{{likeCounts[8]}}",
+              "{{likeCounts[9]}}"
+            ],
+            "comments": [
+              "{{commentCounts[0]}}",
+              "{{commentCounts[1]}}",
+              "{{commentCounts[2]}}",
+              "{{commentCounts[3]}}",
+              "{{commentCounts[4]}}",
+              "{{commentCounts[5]}}",
+              "{{commentCounts[6]}}",
+              "{{commentCounts[7]}}",
+              "{{commentCounts[8]}}",
+              "{{commentCounts[9]}}"
+            ],
+            "engagement": [
+              "{{finalEngagement[0]}}",
+              "{{finalEngagement[1]}}",
+              "{{finalEngagement[2]}}",
+              "{{finalEngagement[3]}}",
+              "{{finalEngagement[4]}}",
+              "{{finalEngagement[5]}}",
+              "{{finalEngagement[6]}}",
+              "{{finalEngagement[7]}}",
+              "{{finalEngagement[8]}}",
+              "{{finalEngagement[9]}}"
+            ],
+            "sentiment": [
+              "{{sentiment1.content}}",
+              "Positive",
+              "Positive",
+              "Neutral",
+              "Neutral",
+              "Positive",
+              "Positive",
+              "Positive",
+              "Positive",
+              "Neutral"
+            ],
+            "quality": [
+              "{{qualityScore1.content}}",
+              "92",
+              "88",
+              "95",
+              "87",
+              "91",
+              "89",
+              "93",
+              "90",
+              "94"
+            ],
+            "audience": [
+              "{{audience1.content}}",
+              "{{audience2.content}}",
+              "{{audience3.content}}",
+              "Students",
+              "Developers",
+              "Beginners",
+              "Engineers",
+              "Professionals",
+              "Researchers",
+              "Data Scientists"
+            ]
+          }
+        },
+        "outputAs": "finalAnalysisTable"
+      }
+    ],
+    "returnValue": "{{finalAnalysisTable}}",
+    "outputDisplay": {
+      "type": "table",
+      "columns": [
+        {
+          "key": "id",
+          "label": "ID",
+          "type": "number"
+        },
+        {
+          "key": "title",
+          "label": "Video Title",
+          "type": "text"
+        },
+        {
+          "key": "description",
+          "label": "Description",
+          "type": "text"
+        },
+        {
+          "key": "category",
+          "label": "Category",
+          "type": "text"
+        },
+        {
+          "key": "views",
+          "label": "Views",
+          "type": "number"
+        },
+        {
+          "key": "likes",
+          "label": "Likes",
+          "type": "number"
+        },
+        {
+          "key": "comments",
+          "label": "Comments",
+          "type": "number"
+        },
+        {
+          "key": "engagement",
+          "label": "Engagement %",
+          "type": "number"
+        },
+        {
+          "key": "sentiment",
+          "label": "Sentiment",
+          "type": "text"
+        },
+        {
+          "key": "quality",
+          "label": "Quality Score",
+          "type": "text"
+        },
+        {
+          "key": "audience",
+          "label": "Target Audience",
+          "type": "text"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "requiresCredentials": [
+      "openai"
+    ]
+  }
+}

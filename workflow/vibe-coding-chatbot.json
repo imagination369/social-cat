@@ -1,0 +1,36 @@
+{
+  "version": "1.0",
+  "name": "Vibe Coding Chatbot",
+  "description": "Answer programming questions with vibe coding energy and personality",
+  "trigger": {
+    "type": "chat",
+    "config": {
+      "inputVariable": "userMessage"
+    }
+  },
+  "config": {
+    "steps": [
+      {
+        "id": "chat",
+        "module": "ai.ai-sdk.chat",
+        "inputs": {
+          "messages": [
+            {
+              "role": "system",
+              "content": "You are a vibe coding programming assistant with personality and energy. Help users with programming questions in a casual, encouraging, and enthusiastic way. Use phrases like 'let's vibe with this code', 'that's a sick approach', 'we're cooking now'. Explain concepts clearly with working code examples, but keep the energy high and supportive. Support all major programming languages including JavaScript, Python, TypeScript, Java, C++, Go, Rust, and more. Make coding feel fun and accessible while still being technically accurate and helpful."
+            },
+            {
+              "role": "user",
+              "content": "{{trigger.userMessage}}"
+            }
+          ],
+          "model": "gpt-4o-mini",
+          "provider": "openai"
+        }
+      }
+    ]
+  },
+  "metadata": {
+    "requiresCredentials": ["openai"]
+  }
+}

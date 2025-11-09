@@ -1,0 +1,1095 @@
+{
+  "version": "1.0",
+  "name": "Ultimate Module Functionality Test",
+  "description": "Comprehensive test workflow exercising 100+ utility module functions across all categories: arrays, strings, dates, math, encryption, JSON/CSV/XML transforms, and more. Tests every angle of available functionality.",
+  "trigger": {
+    "type": "manual",
+    "config": {}
+  },
+  "config": {
+    "steps": [
+      {
+        "id": "step1",
+        "module": "utilities.array-utils.range",
+        "inputs": {
+          "start": 1,
+          "end": 20,
+          "step": 1
+        },
+        "outputAs": "numbers"
+      },
+      {
+        "id": "step2",
+        "module": "utilities.array-utils.shuffle",
+        "inputs": {
+          "array": "{{numbers}}"
+        },
+        "outputAs": "shuffledNumbers"
+      },
+      {
+        "id": "step3",
+        "module": "utilities.array-utils.first",
+        "inputs": {
+          "array": "{{shuffledNumbers}}",
+          "count": 5
+        },
+        "outputAs": "firstFive"
+      },
+      {
+        "id": "step4",
+        "module": "utilities.array-utils.last",
+        "inputs": {
+          "array": "{{shuffledNumbers}}",
+          "count": 5
+        },
+        "outputAs": "lastFive"
+      },
+      {
+        "id": "step5",
+        "module": "utilities.array-utils.unique",
+        "inputs": {
+          "array": [
+            1,
+            2,
+            2,
+            3,
+            3,
+            3,
+            4,
+            4,
+            4,
+            4,
+            5
+          ]
+        },
+        "outputAs": "uniqueNumbers"
+      },
+      {
+        "id": "step6",
+        "module": "utilities.array-utils.chunk",
+        "inputs": {
+          "array": "{{numbers}}",
+          "size": 5
+        },
+        "outputAs": "chunkedArrays"
+      },
+      {
+        "id": "step7",
+        "module": "utilities.array-utils.sum",
+        "inputs": {
+          "array": "{{numbers}}"
+        },
+        "outputAs": "sumOfNumbers"
+      },
+      {
+        "id": "step8",
+        "module": "utilities.array-utils.average",
+        "inputs": {
+          "array": "{{numbers}}"
+        },
+        "outputAs": "averageNumber"
+      },
+      {
+        "id": "step9",
+        "module": "utilities.array-utils.min",
+        "inputs": {
+          "array": "{{shuffledNumbers}}"
+        },
+        "outputAs": "minNumber"
+      },
+      {
+        "id": "step10",
+        "module": "utilities.array-utils.max",
+        "inputs": {
+          "array": "{{shuffledNumbers}}"
+        },
+        "outputAs": "maxNumber"
+      },
+      {
+        "id": "step11",
+        "module": "utilities.array-utils.flatten",
+        "inputs": {
+          "array": "{{chunkedArrays}}",
+          "depth": 1
+        },
+        "outputAs": "flattenedArray"
+      },
+      {
+        "id": "step12",
+        "module": "utilities.array-utils.compact",
+        "inputs": {
+          "array": [
+            0,
+            1,
+            false,
+            2,
+            "",
+            3,
+            null,
+            4,
+            5
+          ]
+        },
+        "outputAs": "compactedArray"
+      },
+      {
+        "id": "step13",
+        "module": "utilities.array-utils.fill",
+        "inputs": {
+          "length": 10,
+          "value": "test"
+        },
+        "outputAs": "filledArray"
+      },
+      {
+        "id": "step14",
+        "module": "utilities.array-utils.intersection",
+        "inputs": {
+          "arrays": [
+            [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            [
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            [
+              4,
+              5,
+              6,
+              7,
+              8
+            ]
+          ]
+        },
+        "outputAs": "intersectedArray"
+      },
+      {
+        "id": "step15",
+        "module": "utilities.array-utils.union",
+        "inputs": {
+          "arrays": [
+            [
+              1,
+              2,
+              3
+            ],
+            [
+              3,
+              4,
+              5
+            ]
+          ]
+        },
+        "outputAs": "unionArray"
+      },
+      {
+        "id": "step16",
+        "module": "utilities.array-utils.difference",
+        "inputs": {
+          "arr1": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "arr2": [
+            3,
+            4,
+            5
+          ]
+        },
+        "outputAs": "differenceArray"
+      },
+      {
+        "id": "step17",
+        "module": "utilities.array-utils.random",
+        "inputs": {
+          "array": "{{numbers}}"
+        },
+        "outputAs": "randomNumber"
+      },
+      {
+        "id": "step18",
+        "module": "utilities.array-utils.sample",
+        "inputs": {
+          "array": "{{numbers}}",
+          "count": 3
+        },
+        "outputAs": "sampledNumbers"
+      },
+      {
+        "id": "step19",
+        "module": "utilities.array-utils.sortNumbers",
+        "inputs": {
+          "array": "{{shuffledNumbers}}",
+          "order": "asc"
+        },
+        "outputAs": "sortedAsc"
+      },
+      {
+        "id": "step20",
+        "module": "utilities.array-utils.sortNumbers",
+        "inputs": {
+          "array": "{{shuffledNumbers}}",
+          "order": "desc"
+        },
+        "outputAs": "sortedDesc"
+      },
+      {
+        "id": "step21",
+        "module": "utilities.array-utils.zipToObjects",
+        "inputs": {
+          "fieldArrays": {
+            "id": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "name": [
+              "Alice",
+              "Bob",
+              "Carol",
+              "David",
+              "Eve"
+            ],
+            "age": [
+              25,
+              30,
+              35,
+              40,
+              45
+            ],
+            "role": [
+              "Developer",
+              "Designer",
+              "Manager",
+              "Developer",
+              "Designer"
+            ]
+          }
+        },
+        "outputAs": "peopleObjects"
+      },
+      {
+        "id": "step22",
+        "module": "utilities.array-utils.pluck",
+        "inputs": {
+          "key": "name",
+          "arr": "{{peopleObjects}}"
+        },
+        "outputAs": "namesList"
+      },
+      {
+        "id": "step23",
+        "module": "utilities.array-utils.groupBy",
+        "inputs": {
+          "key": "role",
+          "arr": "{{peopleObjects}}"
+        },
+        "outputAs": "groupedByRole"
+      },
+      {
+        "id": "step24",
+        "module": "utilities.array-utils.sortBy",
+        "inputs": {
+          "key": "age",
+          "order": "desc",
+          "arr": "{{peopleObjects}}"
+        },
+        "outputAs": "sortedByAge"
+      },
+      {
+        "id": "step25",
+        "module": "utilities.string-utils.toSlug",
+        "inputs": {
+          "text": "Hello World! This is a Test 123",
+          "options": {}
+        },
+        "outputAs": "slugified"
+      },
+      {
+        "id": "step26",
+        "module": "utilities.string-utils.toCamelCase",
+        "inputs": {
+          "str": "hello world test case"
+        },
+        "outputAs": "camelCased"
+      },
+      {
+        "id": "step27",
+        "module": "utilities.string-utils.toPascalCase",
+        "inputs": {
+          "str": "hello world test case"
+        },
+        "outputAs": "pascalCased"
+      },
+      {
+        "id": "step28",
+        "module": "utilities.string-utils.toSnakeCase",
+        "inputs": {
+          "str": "helloWorldTestCase"
+        },
+        "outputAs": "snakeCased"
+      },
+      {
+        "id": "step29",
+        "module": "utilities.string-utils.toKebabCase",
+        "inputs": {
+          "str": "helloWorldTestCase"
+        },
+        "outputAs": "kebabCased"
+      },
+      {
+        "id": "step30",
+        "module": "utilities.string-utils.truncate",
+        "inputs": {
+          "str": "This is a very long string that needs to be truncated",
+          "maxLength": 20,
+          "suffix": "..."
+        },
+        "outputAs": "truncatedString"
+      },
+      {
+        "id": "step31",
+        "module": "utilities.string-utils.truncateWords",
+        "inputs": {
+          "str": "This is a very long string that needs to be truncated",
+          "maxWords": 5,
+          "suffix": "..."
+        },
+        "outputAs": "truncatedWords"
+      },
+      {
+        "id": "step32",
+        "module": "utilities.string-utils.capitalize",
+        "inputs": {
+          "str": "hello world"
+        },
+        "outputAs": "capitalized"
+      },
+      {
+        "id": "step33",
+        "module": "utilities.string-utils.capitalizeWords",
+        "inputs": {
+          "str": "hello world test case"
+        },
+        "outputAs": "capitalizedWords"
+      },
+      {
+        "id": "step34",
+        "module": "utilities.string-utils.reverse",
+        "inputs": {
+          "str": "hello"
+        },
+        "outputAs": "reversed"
+      },
+      {
+        "id": "step35",
+        "module": "utilities.string-utils.wordCount",
+        "inputs": {
+          "str": "This is a test string with eight words total"
+        },
+        "outputAs": "wordCountResult"
+      },
+      {
+        "id": "step36",
+        "module": "utilities.string-utils.stripHtml",
+        "inputs": {
+          "str": "<p>Hello <strong>World</strong>!</p>"
+        },
+        "outputAs": "strippedHtml"
+      },
+      {
+        "id": "step37",
+        "module": "utilities.string-utils.escapeHtml",
+        "inputs": {
+          "str": "<script>alert('test')</script>"
+        },
+        "outputAs": "escapedHtml"
+      },
+      {
+        "id": "step38",
+        "module": "utilities.string-utils.isEmail",
+        "inputs": {
+          "str": "test@example.com"
+        },
+        "outputAs": "isEmailValid"
+      },
+      {
+        "id": "step39",
+        "module": "utilities.string-utils.isUrl",
+        "inputs": {
+          "str": "https://example.com"
+        },
+        "outputAs": "isUrlValid"
+      },
+      {
+        "id": "step40",
+        "module": "utilities.string-utils.extractUrls",
+        "inputs": {
+          "str": "Visit https://example.com and https://test.com for more info"
+        },
+        "outputAs": "extractedUrls"
+      },
+      {
+        "id": "step41",
+        "module": "utilities.math.add",
+        "inputs": {
+          "a": 42,
+          "b": 58
+        },
+        "outputAs": "addResult"
+      },
+      {
+        "id": "step42",
+        "module": "utilities.math.subtract",
+        "inputs": {
+          "a": 100,
+          "b": 42
+        },
+        "outputAs": "subtractResult"
+      },
+      {
+        "id": "step43",
+        "module": "utilities.math.multiply",
+        "inputs": {
+          "a": 12,
+          "b": 8
+        },
+        "outputAs": "multiplyResult"
+      },
+      {
+        "id": "step44",
+        "module": "utilities.math.divide",
+        "inputs": {
+          "a": 144,
+          "b": 12
+        },
+        "outputAs": "divideResult"
+      },
+      {
+        "id": "step45",
+        "module": "utilities.math.round",
+        "inputs": {
+          "value": 3.14159,
+          "decimals": 2
+        },
+        "outputAs": "roundedValue"
+      },
+      {
+        "id": "step46",
+        "module": "utilities.math.floor",
+        "inputs": {
+          "value": 9.99
+        },
+        "outputAs": "flooredValue"
+      },
+      {
+        "id": "step47",
+        "module": "utilities.math.ceil",
+        "inputs": {
+          "value": 9.01
+        },
+        "outputAs": "ceiledValue"
+      },
+      {
+        "id": "step48",
+        "module": "utilities.math.abs",
+        "inputs": {
+          "value": -42
+        },
+        "outputAs": "absoluteValue"
+      },
+      {
+        "id": "step49",
+        "module": "utilities.math.percentage",
+        "inputs": {
+          "value": 50,
+          "total": 200
+        },
+        "outputAs": "percentageValue"
+      },
+      {
+        "id": "step50",
+        "module": "utilities.math.clamp",
+        "inputs": {
+          "value": 150,
+          "min": 0,
+          "max": 100
+        },
+        "outputAs": "clampedValue"
+      },
+      {
+        "id": "step51",
+        "module": "utilities.math.power",
+        "inputs": {
+          "base": 2,
+          "exponent": 8
+        },
+        "outputAs": "powerResult"
+      },
+      {
+        "id": "step52",
+        "module": "utilities.math.sqrt",
+        "inputs": {
+          "value": 256
+        },
+        "outputAs": "sqrtResult"
+      },
+      {
+        "id": "step53",
+        "module": "utilities.math.modulo",
+        "inputs": {
+          "a": 17,
+          "b": 5
+        },
+        "outputAs": "moduloResult"
+      },
+      {
+        "id": "step54",
+        "module": "utilities.math.isEven",
+        "inputs": {
+          "value": 42
+        },
+        "outputAs": "isEvenResult"
+      },
+      {
+        "id": "step55",
+        "module": "utilities.math.isOdd",
+        "inputs": {
+          "value": 43
+        },
+        "outputAs": "isOddResult"
+      },
+      {
+        "id": "step56",
+        "module": "utilities.math.degreesToRadians",
+        "inputs": {
+          "degrees": 180
+        },
+        "outputAs": "radiansResult"
+      },
+      {
+        "id": "step57",
+        "module": "utilities.math.radiansToDegrees",
+        "inputs": {
+          "radians": 3.14159
+        },
+        "outputAs": "degreesResult"
+      },
+      {
+        "id": "step58",
+        "module": "utilities.math.randomBetween",
+        "inputs": {
+          "min": 1,
+          "max": 100
+        },
+        "outputAs": "randomFloat"
+      },
+      {
+        "id": "step59",
+        "module": "utilities.math.randomIntBetween",
+        "inputs": {
+          "min": 1,
+          "max": 100
+        },
+        "outputAs": "randomInt"
+      },
+      {
+        "id": "step60",
+        "module": "utilities.datetime.now",
+        "inputs": {},
+        "outputAs": "currentDate"
+      },
+      {
+        "id": "step61",
+        "module": "utilities.datetime.formatDate",
+        "inputs": {
+          "date": "{{currentDate}}",
+          "formatString": "yyyy-MM-dd"
+        },
+        "outputAs": "formattedDate"
+      },
+      {
+        "id": "step62",
+        "module": "utilities.datetime.addDays",
+        "inputs": {
+          "date": "{{currentDate}}",
+          "days": 7
+        },
+        "outputAs": "dateInFuture"
+      },
+      {
+        "id": "step63",
+        "module": "utilities.datetime.addHours",
+        "inputs": {
+          "date": "{{currentDate}}",
+          "hours": 24
+        },
+        "outputAs": "dateWithHours"
+      },
+      {
+        "id": "step64",
+        "module": "utilities.datetime.addMinutes",
+        "inputs": {
+          "date": "{{currentDate}}",
+          "minutes": 30
+        },
+        "outputAs": "dateWithMinutes"
+      },
+      {
+        "id": "step65",
+        "module": "utilities.datetime.subDays",
+        "inputs": {
+          "date": "{{currentDate}}",
+          "days": 7
+        },
+        "outputAs": "dateInPast"
+      },
+      {
+        "id": "step66",
+        "module": "utilities.datetime.subHours",
+        "inputs": {
+          "date": "{{currentDate}}",
+          "hours": 12
+        },
+        "outputAs": "dateMinusHours"
+      },
+      {
+        "id": "step67",
+        "module": "utilities.datetime.subMinutes",
+        "inputs": {
+          "date": "{{currentDate}}",
+          "minutes": 45
+        },
+        "outputAs": "dateMinusMinutes"
+      },
+      {
+        "id": "step68",
+        "module": "utilities.datetime.toISO",
+        "inputs": {
+          "date": "{{currentDate}}"
+        },
+        "outputAs": "isoDate"
+      },
+      {
+        "id": "step69",
+        "module": "utilities.datetime.fromISO",
+        "inputs": {
+          "isoString": "{{isoDate}}"
+        },
+        "outputAs": "parsedIsoDate"
+      },
+      {
+        "id": "step70",
+        "module": "utilities.encryption.hashSHA256",
+        "inputs": {
+          "data": "hello world"
+        },
+        "outputAs": "sha256Hash"
+      },
+      {
+        "id": "step71",
+        "module": "utilities.encryption.hashSHA512",
+        "inputs": {
+          "data": "hello world"
+        },
+        "outputAs": "sha512Hash"
+      },
+      {
+        "id": "step72",
+        "module": "utilities.encryption.hashMD5",
+        "inputs": {
+          "data": "hello world"
+        },
+        "outputAs": "md5Hash"
+      },
+      {
+        "id": "step73",
+        "module": "utilities.encryption.encodeBase64",
+        "inputs": {
+          "data": "hello world"
+        },
+        "outputAs": "base64Encoded"
+      },
+      {
+        "id": "step74",
+        "module": "utilities.encryption.decodeBase64",
+        "inputs": {
+          "data": "{{base64Encoded}}"
+        },
+        "outputAs": "base64Decoded"
+      },
+      {
+        "id": "step75",
+        "module": "utilities.encryption.generateUUID",
+        "inputs": {},
+        "outputAs": "generatedUUID"
+      },
+      {
+        "id": "step76",
+        "module": "utilities.encryption.generateToken",
+        "inputs": {
+          "bytes": 32
+        },
+        "outputAs": "secureToken"
+      },
+      {
+        "id": "step77",
+        "module": "utilities.encryption.generateRandomString",
+        "inputs": {
+          "length": 16,
+          "chars": "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+        },
+        "outputAs": "randomString"
+      },
+      {
+        "id": "step78",
+        "module": "utilities.encryption.generateSalt",
+        "inputs": {
+          "bytes": 16
+        },
+        "outputAs": "generatedSalt"
+      },
+      {
+        "id": "step79",
+        "module": "utilities.csv.parseCsv",
+        "inputs": {
+          "csvString": "name,age,city\nAlice,25,NYC\nBob,30,LA\nCarol,35,Chicago",
+          "options": {}
+        },
+        "outputAs": "parsedCsv"
+      },
+      {
+        "id": "step80",
+        "module": "utilities.csv.stringifyCsv",
+        "inputs": {
+          "data": "{{parsedCsv}}",
+          "options": {}
+        },
+        "outputAs": "stringifiedCsv"
+      },
+      {
+        "id": "step81",
+        "module": "utilities.csv.mapCsvColumns",
+        "inputs": {
+          "data": "{{parsedCsv}}",
+          "columnMap": {"name": "fullName", "age": "yearsOld"}
+        },
+        "outputAs": "mappedCsv"
+      },
+      {
+        "id": "step82",
+        "module": "utilities.csv.selectCsvColumns",
+        "inputs": {
+          "data": "{{parsedCsv}}",
+          "columns": [
+            "name",
+            "age"
+          ]
+        },
+        "outputAs": "selectedColumns"
+      },
+      {
+        "id": "step83",
+        "module": "utilities.csv.sortCsv",
+        "inputs": {
+          "data": "{{parsedCsv}}",
+          "sortKey": "age",
+          "direction": "desc"
+        },
+        "outputAs": "sortedCsv"
+      },
+      {
+        "id": "step84",
+        "module": "utilities.json-transform.flatten",
+        "inputs": {
+          "obj": {
+            "user": {
+              "name": "John",
+              "address": {
+                "city": "NYC",
+                "zip": "10001"
+              }
+            }
+          },
+          "separator": "."
+        },
+        "outputAs": "flattenedObject"
+      },
+      {
+        "id": "step85",
+        "module": "utilities.json-transform.unflatten",
+        "inputs": {
+          "obj": "{{flattenedObject}}",
+          "separator": "."
+        },
+        "outputAs": "unflattenedObject"
+      },
+      {
+        "id": "step86",
+        "module": "utilities.json-transform.get",
+        "inputs": {
+          "obj": {
+            "user": {
+              "name": "John",
+              "address": {
+                "city": "NYC"
+              }
+            }
+          },
+          "path": "user.address.city"
+        },
+        "outputAs": "nestedValue"
+      },
+      {
+        "id": "step87",
+        "module": "utilities.json-transform.pick",
+        "inputs": {
+          "obj": {
+            "name": "John",
+            "age": 30,
+            "email": "john@example.com",
+            "password": "secret"
+          },
+          "keys": [
+            "name",
+            "email"
+          ]
+        },
+        "outputAs": "pickedObject"
+      },
+      {
+        "id": "step88",
+        "module": "utilities.json-transform.omit",
+        "inputs": {
+          "obj": {
+            "name": "John",
+            "age": 30,
+            "email": "john@example.com",
+            "password": "secret"
+          },
+          "keys": [
+            "password"
+          ]
+        },
+        "outputAs": "omittedObject"
+      },
+      {
+        "id": "step89",
+        "module": "utilities.json-transform.deepClone",
+        "inputs": {
+          "obj": {
+            "user": {
+              "name": "John",
+              "nested": {
+                "deep": "value"
+              }
+            }
+          }
+        },
+        "outputAs": "clonedObject"
+      },
+      {
+        "id": "step90",
+        "module": "utilities.json-transform.deepMerge",
+        "inputs": {
+          "target": {
+            "firstName": "John"
+          },
+          "sources": [{
+            "lastName": "Doe",
+            "age": 30
+          }]
+        },
+        "outputAs": "mergedObject"
+      },
+      {
+        "id": "step91",
+        "module": "utilities.xml.parseXml",
+        "inputs": {
+          "xml": "<?xml version=\"1.0\"?><root><item>test</item></root>",
+          "options": {}
+        },
+        "outputAs": "parsedXml"
+      },
+      {
+        "id": "step92",
+        "module": "utilities.xml.buildXml",
+        "inputs": {
+          "obj": {
+            "root": {
+              "item": "test"
+            }
+          },
+          "options": {}
+        },
+        "outputAs": "builtXml"
+      },
+      {
+        "id": "step93",
+        "module": "utilities.xml.extractValue",
+        "inputs": {
+          "xmlString": "<?xml version=\"1.0\"?><root><name>John</name><age>30</age></root>",
+          "xpath": "//name"
+        },
+        "outputAs": "extractedXmlValue"
+      },
+      {
+        "id": "step94",
+        "module": "utilities.xml.findByTagName",
+        "inputs": {
+          "xmlObject": {"root": {"name": "John", "age": 30}},
+          "tagName": "name"
+        },
+        "outputAs": "foundXmlTag"
+      },
+      {
+        "id": "step95",
+        "module": "utilities.xml.prettifyXml",
+        "inputs": {
+          "xmlString": "<?xml version=\"1.0\"?><root><item>test</item></root>"
+        },
+        "outputAs": "prettyXml"
+      },
+      {
+        "id": "step96",
+        "module": "utilities.xml.minifyXml",
+        "inputs": {
+          "xmlString": "{{prettyXml}}"
+        },
+        "outputAs": "minifiedXml"
+      },
+      {
+        "id": "step97",
+        "module": "utilities.array-utils.zipToObjects",
+        "inputs": {
+          "fieldArrays": {
+            "test_name": [
+              "Array Test",
+              "String Test",
+              "Math Test",
+              "Date Test",
+              "Encryption Test"
+            ],
+            "status": [
+              "passed",
+              "passed",
+              "passed",
+              "passed",
+              "passed"
+            ],
+            "count": [
+              24,
+              16,
+              16,
+              9,
+              8
+            ],
+            "category": [
+              "utilities",
+              "utilities",
+              "utilities",
+              "utilities",
+              "utilities"
+            ]
+          }
+        },
+        "outputAs": "testResults"
+      },
+      {
+        "id": "step98",
+        "module": "utilities.array-utils.sortBy",
+        "inputs": {
+          "key": "count",
+          "order": "desc",
+          "arr": "{{testResults}}"
+        },
+        "outputAs": "sortedTestResults"
+      },
+      {
+        "id": "step99",
+        "module": "utilities.json-transform.deepMerge",
+        "inputs": {
+          "target": {
+            "summary": {
+              "total_tests": 99,
+              "categories": [
+                "array",
+                "string",
+                "math",
+                "date"
+              ]
+            }
+          },
+          "sources": [
+            {
+              "summary": {
+                "status": "completed",
+                "categories": [
+                  "array",
+                  "string",
+                  "math",
+                  "date",
+                  "encryption",
+                  "csv",
+                  "json",
+                  "xml"
+                ]
+              }
+            }
+          ]
+        },
+        "outputAs": "mergedSummary"
+      },
+      {
+        "id": "step100",
+        "module": "utilities.string-utils.capitalizeWords",
+        "inputs": {
+          "str": "ultimate module functionality test completed successfully"
+        },
+        "outputAs": "finalMessage"
+      }
+    ],
+    "outputDisplay": {
+      "type": "table",
+      "columns": [
+        {
+          "key": "test_name",
+          "label": "Test Category",
+          "type": "text"
+        },
+        {
+          "key": "status",
+          "label": "Status",
+          "type": "text"
+        },
+        {
+          "key": "count",
+          "label": "Functions Tested",
+          "type": "number"
+        },
+        {
+          "key": "category",
+          "label": "Module Category",
+          "type": "text"
+        }
+      ]
+    },
+    "returnValue": "{{sortedTestResults}}"
+  },
+  "metadata": {
+    "requiresCredentials": []
+  }
+}

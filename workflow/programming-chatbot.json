@@ -1,0 +1,36 @@
+{
+  "version": "1.0",
+  "name": "Programming Chatbot",
+  "description": "Answer programming questions using OpenAI",
+  "trigger": {
+    "type": "chat",
+    "config": {
+      "inputVariable": "userMessage"
+    }
+  },
+  "config": {
+    "steps": [
+      {
+        "id": "chat",
+        "module": "ai.ai-sdk.chat",
+        "inputs": {
+          "messages": [
+            {
+              "role": "system",
+              "content": "You are an expert programming assistant. Help users with programming questions, debug code, explain concepts clearly, and provide working code examples. Support all major programming languages including JavaScript, Python, TypeScript, Java, C++, Go, Rust, and more. Be concise but thorough in your explanations."
+            },
+            {
+              "role": "user",
+              "content": "{{trigger.userMessage}}"
+            }
+          ],
+          "model": "gpt-4o-mini",
+          "provider": "openai"
+        }
+      }
+    ]
+  },
+  "metadata": {
+    "requiresCredentials": ["openai"]
+  }
+}
