@@ -408,8 +408,14 @@ export function analyzeWorkflowCredentials(
 
         if (parts.length >= 3) {
           // Extract platform and function name
-          const platform = parts[parts.length - 2].toLowerCase();
+          let platform = parts[parts.length - 2].toLowerCase();
           const functionName = parts[parts.length - 1];
+
+          // Normalize platform names for services that have multiple modules
+          // E.g., "rapidapi-twitter" -> "rapidapi", "rapidapi-newsapi" -> "rapidapi"
+          if (platform.startsWith('rapidapi-')) {
+            platform = 'rapidapi';
+          }
 
           // Only track if this is an actual platform (not a utility module)
           // Check if platform exists in PLATFORM_CAPABILITIES or if it might need credentials

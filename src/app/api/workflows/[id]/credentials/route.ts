@@ -141,6 +141,9 @@ export async function GET(
       'slack': ['slack_oauth', 'slack'],
       'discord': ['discord_oauth', 'discord'],
       'stripe': ['stripe_connect', 'stripe'],
+      'rapidapi': ['rapidapi_api_key', 'rapidapi'],
+      'openai': ['openai_api_key', 'openai'],
+      'anthropic': ['anthropic_api_key', 'anthropic'],
     };
 
     // Build credential status list

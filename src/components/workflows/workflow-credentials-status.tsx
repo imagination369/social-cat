@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import { Check, X, ExternalLink, Key, Unplug } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -41,6 +42,7 @@ interface WorkflowCredentialsStatusProps {
 }
 
 export function WorkflowCredentialsStatus({ workflowId }: WorkflowCredentialsStatusProps) {
+  const router = useRouter();
   const [credentials, setCredentials] = useState<CredentialStatus[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCredentials, setSelectedCredentials] = useState<Record<string, string>>({});
@@ -105,8 +107,8 @@ export function WorkflowCredentialsStatus({ workflowId }: WorkflowCredentialsSta
   };
 
   const handleAddApiKey = (platform: string) => {
-    // Navigate to credentials page with platform pre-selected
-    window.location.href = `/dashboard/credentials?platform=${platform}`;
+    // Navigate to credentials page with platform pre-selected (client-side navigation)
+    router.push(`/dashboard/credentials?platform=${platform}`);
   };
 
   if (loading) {

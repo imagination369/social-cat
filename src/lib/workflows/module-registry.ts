@@ -71,6 +71,391 @@ export function getModuleRegistry(): ModuleCategory[] {
             },
           ],
         },
+        {
+          name: 'chroma',
+          functions: [
+            {
+              name: 'getOrCreateCollection',
+              description: "Create or get a collection (protected)",
+              signature: 'getOrCreateCollection(collectionName, metadata?)',
+            },
+            {
+              name: 'addDocuments',
+              description: "Add documents to a collection (protected)",
+              signature: 'addDocuments(collectionName, documents)',
+            },
+            {
+              name: 'queryDocuments',
+              description: "Query documents from a collection (protected)",
+              signature: 'queryDocuments(collectionName, queryTexts, nResults?, where?)',
+            },
+            {
+              name: 'deleteDocuments',
+              description: "Delete documents from a collection (protected)",
+              signature: 'deleteDocuments(collectionName, ids)',
+            },
+            {
+              name: 'getDocuments',
+              description: "Get documents by IDs (protected)",
+              signature: 'getDocuments(collectionName, ids)',
+            },
+            {
+              name: 'updateDocuments',
+              description: "Update documents in a collection (protected)",
+              signature: 'updateDocuments(collectionName, documents)',
+            },
+            {
+              name: 'listCollections',
+              description: "List all collections (protected)",
+              signature: 'listCollections()',
+            },
+            {
+              name: 'deleteCollection',
+              description: "Delete a collection (protected)",
+              signature: 'deleteCollection(collectionName)',
+            },
+          ],
+        },
+        {
+          name: 'cohere',
+          functions: [
+            {
+              name: 'generate',
+              description: "Execute generate",
+              signature: 'generate(prompt, model?, maxTokens?, temperature?, stopSequences?)',
+            },
+            {
+              name: 'embed',
+              description: "Execute embed",
+              signature: 'embed(texts, model?, inputType?)',
+            },
+            {
+              name: 'rerank',
+              description: "Execute rerank",
+              signature: 'rerank(query, documents, topN?, model?)',
+            },
+          ],
+        },
+        {
+          name: 'heygen-advanced',
+          functions: [
+            {
+              name: 'createCustomAvatar',
+              description: "Create custom avatar from video (protected)",
+              signature: 'createCustomAvatar(videoUrl, avatarName)',
+            },
+            {
+              name: 'generateVideo',
+              description: "Generate video with avatar (protected)",
+              signature: 'generateVideo(avatarId, script, voice?, background?)',
+            },
+            {
+              name: 'getVideoStatus',
+              description: "Get video status (protected)",
+              signature: 'getVideoStatus(videoId)',
+            },
+            {
+              name: 'listAvatars',
+              description: "List available avatars (protected)",
+              signature: 'listAvatars()',
+            },
+            {
+              name: 'listVoices',
+              description: "List available voices (protected)",
+              signature: 'listVoices()',
+            },
+            {
+              name: 'addBackground',
+              description: "Add background to video (protected)",
+              signature: 'addBackground(videoId, background)',
+            },
+            {
+              name: 'translateVideo',
+              description: "Translate video to another language (protected)",
+              signature: 'translateVideo(videoId, targetLanguage, voiceId?)',
+            },
+            {
+              name: 'listVideos',
+              description: "List all videos (protected)",
+              signature: 'listVideos(limit?, offset?)',
+            },
+          ],
+        },
+        {
+          name: 'mubert',
+          functions: [
+            {
+              name: 'generateTrack',
+              description: "Generate track based on mood/genre tags (protected)",
+              signature: 'generateTrack(tags, duration?, format?)',
+            },
+            {
+              name: 'generateFromPrompt',
+              description: "Generate track from prompt (protected)",
+              signature: 'generateFromPrompt(prompt, duration?, format?)',
+            },
+            {
+              name: 'getTrack',
+              description: "Get track status and download URL (protected)",
+              signature: 'getTrack(trackId)',
+            },
+            {
+              name: 'searchTracks',
+              description: "Search for tracks by tags (protected)",
+              signature: 'searchTracks(tags, limit?)',
+            },
+            {
+              name: 'getTags',
+              description: "Get available tags/genres (protected)",
+              signature: 'getTags()',
+            },
+            {
+              name: 'startStream',
+              description: "Start streaming session (protected)",
+              signature: 'startStream(tags, bitrate?)',
+            },
+            {
+              name: 'stopStream',
+              description: "Stop streaming session (protected)",
+              signature: 'stopStream(sessionId)',
+            },
+          ],
+        },
+        {
+          name: 'pinecone',
+          functions: [
+            {
+              name: 'upsertVectors',
+              description: "Upsert vectors into Pinecone index (protected)",
+              signature: 'upsertVectors(indexName, vectors, namespace?)',
+            },
+            {
+              name: 'queryVectors',
+              description: "Query vectors from Pinecone index (protected)",
+              signature: 'queryVectors(indexName, vector, topK?, namespace?, filter?)',
+            },
+            {
+              name: 'deleteVectors',
+              description: "Delete vectors from Pinecone index (protected)",
+              signature: 'deleteVectors(indexName, ids, namespace?)',
+            },
+            {
+              name: 'deleteNamespace',
+              description: "Delete all vectors in a namespace (protected)",
+              signature: 'deleteNamespace(indexName, namespace)',
+            },
+            {
+              name: 'listIndexes',
+              description: "List all indexes (protected)",
+              signature: 'listIndexes()',
+            },
+            {
+              name: 'getIndexStats',
+              description: "Get index statistics (protected)",
+              signature: 'getIndexStats(indexName)',
+            },
+            {
+              name: 'fetchVectors',
+              description: "Fetch vectors by IDs (protected)",
+              signature: 'fetchVectors(indexName, ids, namespace?)',
+            },
+          ],
+        },
+        {
+          name: 'replicate-video',
+          functions: [
+            {
+              name: 'generateVideo',
+              description: "Execute generateVideo",
+              signature: 'generateVideo(modelVersion, prompt, duration?, additionalInputs?)',
+            },
+            {
+              name: 'getPrediction',
+              description: "Execute getPrediction",
+              signature: 'getPrediction(predictionId)',
+            },
+            {
+              name: 'listModels',
+              description: "Execute listModels",
+              signature: 'listModels(query?)',
+            },
+            {
+              name: 'getModel',
+              description: "Execute getModel",
+              signature: 'getModel(owner, name)',
+            },
+          ],
+        },
+        {
+          name: 'runway-video',
+          functions: [
+            {
+              name: 'generateVideo',
+              description: "Generate video from text prompt (protected)",
+              signature: 'generateVideo(prompt, duration?, aspectRatio?, style?)',
+            },
+            {
+              name: 'getGenerationStatus',
+              description: "Get video generation status (protected)",
+              signature: 'getGenerationStatus(generationId)',
+            },
+            {
+              name: 'extendVideo',
+              description: "Extend an existing video (protected)",
+              signature: 'extendVideo(videoUrl, prompt, duration?)',
+            },
+            {
+              name: 'interpolateFrames',
+              description: "Interpolate frames between two images (protected)",
+              signature: 'interpolateFrames(startImageUrl, endImageUrl, frames?)',
+            },
+            {
+              name: 'upscaleVideo',
+              description: "Upscale video resolution (protected)",
+              signature: 'upscaleVideo(videoUrl, scale?)',
+            },
+            {
+              name: 'imageToVideo',
+              description: "Generate video from image (protected)",
+              signature: 'imageToVideo(imageUrl, prompt, duration?)',
+            },
+            {
+              name: 'removeBackground',
+              description: "Remove background from video (protected)",
+              signature: 'removeBackground(videoUrl)',
+            },
+            {
+              name: 'listGenerations',
+              description: "List all generations (protected)",
+              signature: 'listGenerations(limit?, offset?)',
+            },
+          ],
+        },
+        {
+          name: 'stabilityai',
+          functions: [
+            {
+              name: 'generateImage',
+              description: "Generate image from text prompt (protected)",
+              signature: 'generateImage(prompt, negativePrompt?, width?, height?, samples?, steps?, cfgScale?, engine?)',
+            },
+            {
+              name: 'upscaleImage',
+              description: "Upscale an image (protected)",
+              signature: 'upscaleImage(imageBase64, width?, height?, engine?)',
+            },
+            {
+              name: 'editImage',
+              description: "Edit an image using a mask (protected)",
+              signature: 'editImage(imageBase64, maskBase64, prompt, engine?)',
+            },
+            {
+              name: 'removeBackground',
+              description: "Remove background from an image (protected)",
+              signature: 'removeBackground(imageBase64)',
+            },
+            {
+              name: 'imageToImage',
+              description: "Image-to-image transformation (protected)",
+              signature: 'imageToImage(imageBase64, prompt, strength?, steps?, engine?)',
+            },
+            {
+              name: 'listEngines',
+              description: "List available engines/models (protected)",
+              signature: 'listEngines()',
+            },
+            {
+              name: 'getBalance',
+              description: "Get account balance/credits (protected)",
+              signature: 'getBalance()',
+            },
+          ],
+        },
+        {
+          name: 'suno',
+          functions: [
+            {
+              name: 'generateMusic',
+              description: "Generate music from text prompt (protected)",
+              signature: 'generateMusic(prompt, lyrics?, style?, duration?, instrumental?)',
+            },
+            {
+              name: 'generateSong',
+              description: "Generate song with custom lyrics (protected)",
+              signature: 'generateSong(lyrics, title, genre?, mood?)',
+            },
+            {
+              name: 'getGeneration',
+              description: "Get generation status (protected)",
+              signature: 'getGeneration(generationId)',
+            },
+            {
+              name: 'listGenerations',
+              description: "List all generations (protected)",
+              signature: 'listGenerations(limit?, offset?)',
+            },
+            {
+              name: 'extendMusic',
+              description: "Extend/continue existing music (protected)",
+              signature: 'extendMusic(generationId, duration?)',
+            },
+            {
+              name: 'getCredits',
+              description: "Get credits/usage information (protected)",
+              signature: 'getCredits()',
+            },
+            {
+              name: 'deleteGeneration',
+              description: "Delete a generation (protected)",
+              signature: 'deleteGeneration(generationId)',
+            },
+          ],
+        },
+        {
+          name: 'weaviate',
+          functions: [
+            {
+              name: 'createObject',
+              description: "Create a new object in Weaviate (protected)",
+              signature: 'createObject(className, properties, vector?)',
+            },
+            {
+              name: 'queryObjects',
+              description: "Query objects from Weaviate (protected)",
+              signature: 'queryObjects(className, fields, limit?, nearVector?, where?)',
+            },
+            {
+              name: 'deleteObject',
+              description: "Delete an object from Weaviate (protected)",
+              signature: 'deleteObject(className, id)',
+            },
+            {
+              name: 'updateObject',
+              description: "Update an object in Weaviate (protected)",
+              signature: 'updateObject(className, id, properties)',
+            },
+            {
+              name: 'getObjectById',
+              description: "Get object by ID (protected)",
+              signature: 'getObjectById(className, id)',
+            },
+            {
+              name: 'getSchema',
+              description: "Get schema for a class (protected)",
+              signature: 'getSchema(className?)',
+            },
+            {
+              name: 'createClass',
+              description: "Create a new class in schema (protected)",
+              signature: 'createClass(classObj)',
+            },
+            {
+              name: 'deleteClass',
+              description: "Delete a class from schema (protected)",
+              signature: 'deleteClass(className)',
+            },
+          ],
+        },
       ],
     },
     {
@@ -660,6 +1045,11 @@ export function getModuleRegistry(): ModuleCategory[] {
           name: 'email',
           functions: [
             {
+              name: 'sendEmail',
+              description: "Execute sendEmail",
+              signature: 'sendEmail(options)',
+            },
+            {
               name: 'sendTextEmail',
               description: "Send simple text email (convenience function)",
               signature: 'sendTextEmail(from, to, subject, text)',
@@ -1074,6 +1464,361 @@ export function getModuleRegistry(): ModuleCategory[] {
       ],
     },
     {
+      name: 'Content',
+      modules: [
+        {
+          name: 'bannerbear',
+          functions: [
+            {
+              name: 'generateImage',
+              description: "Execute generateImage",
+              signature: 'generateImage(config, templateUid, modifications, metadata?, webhookUrl?)',
+            },
+            {
+              name: 'getImage',
+              description: "Execute getImage",
+              signature: 'getImage(config, imageUid)',
+            },
+            {
+              name: 'listTemplates',
+              description: "Execute listTemplates",
+              signature: 'listTemplates(config, page?, limit?, tag?)',
+            },
+            {
+              name: 'getTemplate',
+              description: "Execute getTemplate",
+              signature: 'getTemplate(config, templateUid)',
+            },
+            {
+              name: 'waitForImage',
+              description: "Execute waitForImage",
+              signature: 'waitForImage(config, imageUid, maxAttempts?, pollInterval?)',
+            },
+            {
+              name: 'generateVideo',
+              description: "Execute generateVideo",
+              signature: 'generateVideo(config, movieUid, input, metadata?, webhookUrl?)',
+            },
+            {
+              name: 'getVideo',
+              description: "Execute getVideo",
+              signature: 'getVideo(config, videoUid)',
+            },
+            {
+              name: 'waitForVideo',
+              description: "Execute waitForVideo",
+              signature: 'waitForVideo(config, videoUid, maxAttempts?, pollInterval?)',
+            },
+            {
+              name: 'generateImageAndWait',
+              description: "Execute generateImageAndWait",
+              signature: 'generateImageAndWait(config, templateUid, modifications, metadata?)',
+            },
+          ],
+        },
+        {
+          name: 'canva',
+          functions: [
+            {
+              name: 'createDesignFromTemplate',
+              description: "Execute createDesignFromTemplate",
+              signature: 'createDesignFromTemplate(config, templateId, title?)',
+            },
+            {
+              name: 'getDesign',
+              description: "Execute getDesign",
+              signature: 'getDesign(config, designId)',
+            },
+            {
+              name: 'listDesigns',
+              description: "Execute listDesigns",
+              signature: 'listDesigns(config, options?)',
+            },
+            {
+              name: 'exportDesign',
+              description: "Execute exportDesign",
+              signature: 'exportDesign(config, designId, format?, options?)',
+            },
+            {
+              name: 'getExportJob',
+              description: "Execute getExportJob",
+              signature: 'getExportJob(config, jobId)',
+            },
+            {
+              name: 'waitForExport',
+              description: "Execute waitForExport",
+              signature: 'waitForExport(config, jobId, maxAttempts?, pollInterval?)',
+            },
+            {
+              name: 'getBrandTemplates',
+              description: "Execute getBrandTemplates",
+              signature: 'getBrandTemplates(config, options?)',
+            },
+            {
+              name: 'createAndExportDesign',
+              description: "Execute createAndExportDesign",
+              signature: 'createAndExportDesign(config, templateId, format?, title?, exportOptions?)',
+            },
+          ],
+        },
+        {
+          name: 'figma',
+          functions: [
+            {
+              name: 'getFile',
+              description: "Execute getFile",
+              signature: 'getFile(fileKey)',
+            },
+            {
+              name: 'listFiles',
+              description: "Execute listFiles",
+              signature: 'listFiles(teamId)',
+            },
+            {
+              name: 'exportNode',
+              description: "Execute exportNode",
+              signature: 'exportNode(fileKey, nodeIds, options?)',
+            },
+            {
+              name: 'getComments',
+              description: "Execute getComments",
+              signature: 'getComments(fileKey)',
+            },
+          ],
+        },
+        {
+          name: 'ghost',
+          functions: [
+            {
+              name: 'createPost',
+              description: "Execute createPost",
+              signature: 'createPost(config, postData)',
+            },
+            {
+              name: 'updatePost',
+              description: "Execute updatePost",
+              signature: 'updatePost(config, postId, postData, updatedAt)',
+            },
+            {
+              name: 'getPosts',
+              description: "Execute getPosts",
+              signature: 'getPosts(config, options?)',
+            },
+            {
+              name: 'getPostById',
+              description: "Execute getPostById",
+              signature: 'getPostById(config, postId, include?)',
+            },
+            {
+              name: 'deletePost',
+              description: "Execute deletePost",
+              signature: 'deletePost(config, postId)',
+            },
+            {
+              name: 'publishPost',
+              description: "Execute publishPost",
+              signature: 'publishPost(config, postId, updatedAt)',
+            },
+            {
+              name: 'unpublishPost',
+              description: "Execute unpublishPost",
+              signature: 'unpublishPost(config, postId, updatedAt)',
+            },
+            {
+              name: 'createTag',
+              description: "Execute createTag",
+              signature: 'createTag(config, tagData)',
+            },
+          ],
+        },
+        {
+          name: 'medium',
+          functions: [
+            {
+              name: 'getUser',
+              description: "Execute getUser",
+              signature: 'getUser(config)',
+            },
+            {
+              name: 'getUserPublications',
+              description: "Execute getUserPublications",
+              signature: 'getUserPublications(config, userId)',
+            },
+            {
+              name: 'createPost',
+              description: "Execute createPost",
+              signature: 'createPost(config, userId, postData)',
+            },
+            {
+              name: 'createPublicationPost',
+              description: "Execute createPublicationPost",
+              signature: 'createPublicationPost(config, publicationId, postData)',
+            },
+            {
+              name: 'getPublicationContributors',
+              description: "Execute getPublicationContributors",
+              signature: 'getPublicationContributors(config, publicationId)',
+            },
+            {
+              name: 'validateToken',
+              description: "Execute validateToken",
+              signature: 'validateToken(config)',
+            },
+            {
+              name: 'createDraft',
+              description: "Execute createDraft",
+              signature: 'createDraft(config, userId, postData)',
+            },
+          ],
+        },
+        {
+          name: 'pexels',
+          functions: [
+            {
+              name: 'searchPhotos',
+              description: "Execute searchPhotos",
+              signature: 'searchPhotos(config, query, options?)',
+            },
+            {
+              name: 'getCuratedPhotos',
+              description: "Execute getCuratedPhotos",
+              signature: 'getCuratedPhotos(config, options?)',
+            },
+            {
+              name: 'getPhotoById',
+              description: "Execute getPhotoById",
+              signature: 'getPhotoById(config, photoId)',
+            },
+            {
+              name: 'searchVideos',
+              description: "Execute searchVideos",
+              signature: 'searchVideos(config, query, options?)',
+            },
+            {
+              name: 'getPopularVideos',
+              description: "Execute getPopularVideos",
+              signature: 'getPopularVideos(config, options?)',
+            },
+            {
+              name: 'getVideoById',
+              description: "Execute getVideoById",
+              signature: 'getVideoById(config, videoId)',
+            },
+            {
+              name: 'downloadPhoto',
+              description: "Execute downloadPhoto",
+              signature: 'downloadPhoto(config, photo, size?)',
+            },
+            {
+              name: 'searchAndDownloadPhoto',
+              description: "Execute searchAndDownloadPhoto",
+              signature: 'searchAndDownloadPhoto(config, query, size?)',
+            },
+          ],
+        },
+        {
+          name: 'placid',
+          functions: [
+            {
+              name: 'generateImage',
+              description: "Execute generateImage",
+              signature: 'generateImage(config, templateUuid, layers, options?)',
+            },
+            {
+              name: 'getImage',
+              description: "Execute getImage",
+              signature: 'getImage(config, imageUuid)',
+            },
+            {
+              name: 'listTemplates',
+              description: "Execute listTemplates",
+              signature: 'listTemplates(config)',
+            },
+            {
+              name: 'getTemplate',
+              description: "Execute getTemplate",
+              signature: 'getTemplate(config, templateUuid)',
+            },
+            {
+              name: 'waitForImage',
+              description: "Execute waitForImage",
+              signature: 'waitForImage(config, imageUuid, maxAttempts?, pollInterval?)',
+            },
+            {
+              name: 'generateVideo',
+              description: "Execute generateVideo",
+              signature: 'generateVideo(config, templateUuid, layers, options?)',
+            },
+            {
+              name: 'getVideo',
+              description: "Execute getVideo",
+              signature: 'getVideo(config, videoUuid)',
+            },
+            {
+              name: 'waitForVideo',
+              description: "Execute waitForVideo",
+              signature: 'waitForVideo(config, videoUuid, maxAttempts?, pollInterval?)',
+            },
+            {
+              name: 'generateImageAndWait',
+              description: "Execute generateImageAndWait",
+              signature: 'generateImageAndWait(config, templateUuid, layers)',
+            },
+            {
+              name: 'generateVideoAndWait',
+              description: "Execute generateVideoAndWait",
+              signature: 'generateVideoAndWait(config, templateUuid, layers, duration?)',
+            },
+          ],
+        },
+        {
+          name: 'unsplash',
+          functions: [
+            {
+              name: 'searchPhotos',
+              description: "Execute searchPhotos",
+              signature: 'searchPhotos(config, query, options?)',
+            },
+            {
+              name: 'getRandomPhoto',
+              description: "Execute getRandomPhoto",
+              signature: 'getRandomPhoto(config, options?)',
+            },
+            {
+              name: 'getPhotoById',
+              description: "Execute getPhotoById",
+              signature: 'getPhotoById(config, photoId)',
+            },
+            {
+              name: 'trackDownload',
+              description: "Execute trackDownload",
+              signature: 'trackDownload(config, downloadLocation)',
+            },
+            {
+              name: 'downloadPhoto',
+              description: "Execute downloadPhoto",
+              signature: 'downloadPhoto(config, photo, size?)',
+            },
+            {
+              name: 'listPhotos',
+              description: "Execute listPhotos",
+              signature: 'listPhotos(config, options?)',
+            },
+            {
+              name: 'getPhotoStats',
+              description: "Execute getPhotoStats",
+              signature: 'getPhotoStats(config, photoId)',
+            },
+            {
+              name: 'searchAndDownload',
+              description: "Execute searchAndDownload",
+              signature: 'searchAndDownload(config, query, size?)',
+            },
+          ],
+        },
+      ],
+    },
+    {
       name: 'Data',
       modules: [
         {
@@ -1238,6 +1983,31 @@ export function getModuleRegistry(): ModuleCategory[] {
               name: 'getTopEvents',
               description: "Convenience function: Get top events",
               signature: 'getTopEvents(dateRange, limit?)',
+            },
+          ],
+        },
+        {
+          name: 'google-drive',
+          functions: [
+            {
+              name: 'listFiles',
+              description: "Execute listFiles",
+              signature: 'listFiles(options)',
+            },
+            {
+              name: 'uploadFile',
+              description: "Execute uploadFile",
+              signature: 'uploadFile(fileName, fileContent, parentId?, mimeType?)',
+            },
+            {
+              name: 'deleteFile',
+              description: "Execute deleteFile",
+              signature: 'deleteFile(fileId)',
+            },
+            {
+              name: 'getFile',
+              description: "Execute getFile",
+              signature: 'getFile(fileId)',
             },
           ],
         },
@@ -1517,12 +2287,267 @@ export function getModuleRegistry(): ModuleCategory[] {
       name: 'Dataprocessing',
       modules: [
         {
+          name: 'bigquery',
+          functions: [
+            {
+              name: 'runQuery',
+              description: "Execute runQuery",
+              signature: 'runQuery(query, options?, config?)',
+            },
+            {
+              name: 'loadData',
+              description: "Execute loadData",
+              signature: 'loadData(datasetId, tableId, sourceUri, sourceFormat?, config?)',
+            },
+            {
+              name: 'createDataset',
+              description: "Execute createDataset",
+              signature: 'createDataset(datasetId, location?, config?)',
+            },
+            {
+              name: 'getJobResults',
+              description: "Execute getJobResults",
+              signature: 'getJobResults(jobId, config?)',
+            },
+            {
+              name: 'listDatasets',
+              description: "Execute listDatasets",
+              signature: 'listDatasets(config?)',
+            },
+            {
+              name: 'listTables',
+              description: "Execute listTables",
+              signature: 'listTables(datasetId, config?)',
+            },
+            {
+              name: 'insertRows',
+              description: "Execute insertRows",
+              signature: 'insertRows(datasetId, tableId, rows, config?)',
+            },
+          ],
+        },
+        {
+          name: 'huggingface',
+          functions: [
+            {
+              name: 'runInference',
+              description: "Execute runInference",
+              signature: 'runInference(modelId, inputs, options?, config?)',
+            },
+            {
+              name: 'listModels',
+              description: "Execute listModels",
+              signature: 'listModels(filters?, config?)',
+            },
+            {
+              name: 'getModelInfo',
+              description: "Execute getModelInfo",
+              signature: 'getModelInfo(modelId, config?)',
+            },
+            {
+              name: 'generateText',
+              description: "Execute generateText",
+              signature: 'generateText(modelId, prompt, parameters?, config?)',
+            },
+            {
+              name: 'classifyText',
+              description: "Execute classifyText",
+              signature: 'classifyText(modelId, text, config?)',
+            },
+            {
+              name: 'answerQuestion',
+              description: "Execute answerQuestion",
+              signature: 'answerQuestion(modelId, question, context, config?)',
+            },
+            {
+              name: 'classifyImage',
+              description: "Execute classifyImage",
+              signature: 'classifyImage(modelId, imageUrl, config?)',
+            },
+          ],
+        },
+        {
+          name: 'kafka',
+          functions: [
+            {
+              name: 'produceMessage',
+              description: "Execute produceMessage",
+              signature: 'produceMessage(topic, messages, config?)',
+            },
+            {
+              name: 'createTopic',
+              description: "Execute createTopic",
+              signature: 'createTopic(topic, topicConfig?, config?)',
+            },
+            {
+              name: 'getTopicInfo',
+              description: "Execute getTopicInfo",
+              signature: 'getTopicInfo(topic, config?)',
+            },
+            {
+              name: 'listTopics',
+              description: "Execute listTopics",
+              signature: 'listTopics(config?)',
+            },
+            {
+              name: 'deleteTopic',
+              description: "Execute deleteTopic",
+              signature: 'deleteTopic(topic, config?)',
+            },
+            {
+              name: 'listConsumerGroups',
+              description: "Execute listConsumerGroups",
+              signature: 'listConsumerGroups(config?)',
+            },
+          ],
+        },
+        {
+          name: 'rabbitmq',
+          functions: [
+            {
+              name: 'publishMessage',
+              description: "Execute publishMessage",
+              signature: 'publishMessage(message, options?, config?)',
+            },
+            {
+              name: 'createQueue',
+              description: "Execute createQueue",
+              signature: 'createQueue(queueName, queueConfig?, config?)',
+            },
+            {
+              name: 'getQueueInfo',
+              description: "Execute getQueueInfo",
+              signature: 'getQueueInfo(queueName, config?)',
+            },
+            {
+              name: 'createExchange',
+              description: "Execute createExchange",
+              signature: 'createExchange(exchangeName, exchangeConfig, config?)',
+            },
+            {
+              name: 'bindQueue',
+              description: "Execute bindQueue",
+              signature: 'bindQueue(queueName, exchangeName, routingKey?, config?)',
+            },
+            {
+              name: 'deleteQueue',
+              description: "Execute deleteQueue",
+              signature: 'deleteQueue(queueName, config?)',
+            },
+            {
+              name: 'purgeQueue',
+              description: "Execute purgeQueue",
+              signature: 'purgeQueue(queueName, config?)',
+            },
+          ],
+        },
+        {
+          name: 'redshift',
+          functions: [
+            {
+              name: 'executeQuery',
+              description: "Execute executeQuery",
+              signature: 'executeQuery(query, parameters?, config?)',
+            },
+            {
+              name: 'loadData',
+              description: "Execute loadData",
+              signature: 'loadData(tableName, s3Path, iamRole, options?, config?)',
+            },
+            {
+              name: 'createTable',
+              description: "Execute createTable",
+              signature: 'createTable(tableName, definition, config?)',
+            },
+            {
+              name: 'getQueryResults',
+              description: "Execute getQueryResults",
+              signature: 'getQueryResults(queryId, config?)',
+            },
+            {
+              name: 'listTables',
+              description: "Execute listTables",
+              signature: 'listTables(schema?, config?)',
+            },
+            {
+              name: 'vacuumTable',
+              description: "Execute vacuumTable",
+              signature: 'vacuumTable(tableName, options?, config?)',
+            },
+          ],
+        },
+        {
           name: 'replicate',
           functions: [
+            {
+              name: 'runPrediction',
+              description: "Execute runPrediction",
+              signature: 'runPrediction(modelVersion, input, config?)',
+            },
+            {
+              name: 'getPrediction',
+              description: "Execute getPrediction",
+              signature: 'getPrediction(predictionId, config?)',
+            },
+            {
+              name: 'cancelPrediction',
+              description: "Execute cancelPrediction",
+              signature: 'cancelPrediction(predictionId, config?)',
+            },
+            {
+              name: 'listModels',
+              description: "Execute listModels",
+              signature: 'listModels(config?)',
+            },
+            {
+              name: 'getModelInfo',
+              description: "Execute getModelInfo",
+              signature: 'getModelInfo(owner, name, config?)',
+            },
+            {
+              name: 'waitForPrediction',
+              description: "Execute waitForPrediction",
+              signature: 'waitForPrediction(predictionId, maxWaitTime?, pollInterval?, config?)',
+            },
             {
               name: 'runAndWait',
               description: "Run prediction and wait for completion (convenience function)",
               signature: 'runAndWait(modelVersion, input, maxWaitTime?, config?)',
+            },
+          ],
+        },
+        {
+          name: 'snowflake',
+          functions: [
+            {
+              name: 'executeQuery',
+              description: "Execute executeQuery",
+              signature: 'executeQuery(query, binds?, config?)',
+            },
+            {
+              name: 'loadData',
+              description: "Execute loadData",
+              signature: 'loadData(tableName, stagePath, fileFormat, config?)',
+            },
+            {
+              name: 'createTable',
+              description: "Execute createTable",
+              signature: 'createTable(tableName, definition, config?)',
+            },
+            {
+              name: 'getQueryResults',
+              description: "Execute getQueryResults",
+              signature: 'getQueryResults(queryId, config?)',
+            },
+            {
+              name: 'listTables',
+              description: "Execute listTables",
+              signature: 'listTables(database?, schema?, config?)',
+            },
+            {
+              name: 'dropTable',
+              description: "Execute dropTable",
+              signature: 'dropTable(tableName, ifExists?, config?)',
             },
           ],
         },
@@ -2004,11 +3029,573 @@ export function getModuleRegistry(): ModuleCategory[] {
       ],
     },
     {
+      name: 'Ecommerce',
+      modules: [
+        {
+          name: 'amazon-sp',
+          functions: [
+            {
+              name: 'listProducts',
+              description: "List products in Amazon catalog",
+              signature: 'listProducts(params?)',
+            },
+            {
+              name: 'getProduct',
+              description: "Get product details by ASIN",
+              signature: 'getProduct(asin)',
+            },
+            {
+              name: 'updateInventory',
+              description: "Update inventory quantity for a SKU",
+              signature: 'updateInventory(sku, quantity)',
+            },
+            {
+              name: 'getOrders',
+              description: "Get orders with optional filters",
+              signature: 'getOrders(params?)',
+            },
+            {
+              name: 'getOrder',
+              description: "Get a single order by ID",
+              signature: 'getOrder(orderId)',
+            },
+            {
+              name: 'getOrderItems',
+              description: "Get items for a specific order",
+              signature: 'getOrderItems(orderId)',
+            },
+            {
+              name: 'getInventory',
+              description: "Get inventory summaries",
+              signature: 'getInventory(params?)',
+            },
+            {
+              name: 'createReport',
+              description: "Create a report (for analytics, inventory, etc.)",
+              signature: 'createReport(reportType)',
+            },
+            {
+              name: 'getReport',
+              description: "Get report status and details",
+              signature: 'getReport(reportId)',
+            },
+            {
+              name: 'getSalesMetrics',
+              description: "Get sales metrics and order statistics",
+              signature: 'getSalesMetrics(params?)',
+            },
+          ],
+        },
+        {
+          name: 'ebay',
+          functions: [
+            {
+              name: 'createInventoryItem',
+              description: "Create or update an inventory item",
+              signature: 'createInventoryItem(item)',
+            },
+            {
+              name: 'createOffer',
+              description: "Create an offer for an inventory item",
+              signature: 'createOffer(offer)',
+            },
+            {
+              name: 'publishOffer',
+              description: "Publish an offer to create a live listing",
+              signature: 'publishOffer(offerId)',
+            },
+            {
+              name: 'getInventoryItem',
+              description: "Get an inventory item by SKU",
+              signature: 'getInventoryItem(sku)',
+            },
+            {
+              name: 'listInventoryItems',
+              description: "List all inventory items",
+              signature: 'listInventoryItems(params?)',
+            },
+            {
+              name: 'updateInventory',
+              description: "Update inventory quantity for a SKU",
+              signature: 'updateInventory(sku, quantity)',
+            },
+            {
+              name: 'getOrders',
+              description: "Get orders with optional filters",
+              signature: 'getOrders(params?)',
+            },
+            {
+              name: 'getOrder',
+              description: "Get a single order by ID",
+              signature: 'getOrder(orderId)',
+            },
+            {
+              name: 'fulfillOrder',
+              description: "Mark an order as fulfilled/shipped",
+              signature: 'fulfillOrder(orderId, trackingNumber?)',
+            },
+            {
+              name: 'getAnalytics',
+              description: "Get sales analytics (revenue, orders, etc.)",
+              signature: 'getAnalytics(params?)',
+            },
+          ],
+        },
+        {
+          name: 'etsy',
+          functions: [
+            {
+              name: 'createListing',
+              description: "Create a new listing on Etsy",
+              signature: 'createListing(listing)',
+            },
+            {
+              name: 'updateListing',
+              description: "Update an existing Etsy listing",
+              signature: 'updateListing(listingId, updates)',
+            },
+            {
+              name: 'getListing',
+              description: "Get a single listing by ID",
+              signature: 'getListing(listingId)',
+            },
+            {
+              name: 'listListings',
+              description: "List listings with optional filters",
+              signature: 'listListings(params?)',
+            },
+            {
+              name: 'deleteListing',
+              description: "Delete a listing by ID",
+              signature: 'deleteListing(listingId)',
+            },
+            {
+              name: 'getOrders',
+              description: "Get orders/receipts with optional filters",
+              signature: 'getOrders(params?)',
+            },
+            {
+              name: 'getOrder',
+              description: "Get a single order by receipt ID",
+              signature: 'getOrder(receiptId)',
+            },
+            {
+              name: 'updateInventory',
+              description: "Update inventory for a listing",
+              signature: 'updateInventory(listingId, inventory)',
+            },
+            {
+              name: 'getInventory',
+              description: "Get inventory for a listing",
+              signature: 'getInventory(listingId)',
+            },
+            {
+              name: 'getShopStats',
+              description: "Get shop statistics (revenue, orders, etc.)",
+              signature: 'getShopStats(params?)',
+            },
+          ],
+        },
+        {
+          name: 'printful',
+          functions: [
+            {
+              name: 'createProduct',
+              description: "Create a new sync product in Printful",
+              signature: 'createProduct(externalId, name, variants)',
+            },
+            {
+              name: 'submitOrder',
+              description: "Submit a new order to Printful for fulfillment",
+              signature: 'submitOrder(recipient, items, externalId?)',
+            },
+            {
+              name: 'getShippingRates',
+              description: "Calculate shipping rates for an order",
+              signature: 'getShippingRates(recipient, items)',
+            },
+            {
+              name: 'getProduct',
+              description: "Get a single sync product by ID",
+              signature: 'getProduct(productId)',
+            },
+            {
+              name: 'listProducts',
+              description: "List sync products with optional pagination",
+              signature: 'listProducts(params?)',
+            },
+            {
+              name: 'deleteProduct',
+              description: "Delete a sync product by ID",
+              signature: 'deleteProduct(productId)',
+            },
+            {
+              name: 'getOrder',
+              description: "Get a single order by ID",
+              signature: 'getOrder(orderId)',
+            },
+            {
+              name: 'listOrders',
+              description: "List orders with optional filters",
+              signature: 'listOrders(params?)',
+            },
+            {
+              name: 'getCatalogProduct',
+              description: "Get a product from the Printful catalog",
+              signature: 'getCatalogProduct(productId)',
+            },
+            {
+              name: 'getCatalogVariant',
+              description: "Get a product variant from the Printful catalog",
+              signature: 'getCatalogVariant(variantId)',
+            },
+          ],
+        },
+        {
+          name: 'shopify',
+          functions: [
+            {
+              name: 'createProduct',
+              description: "Create a new product in Shopify",
+              signature: 'createProduct(product)',
+            },
+            {
+              name: 'updateProduct',
+              description: "Update an existing Shopify product",
+              signature: 'updateProduct(productId, updates)',
+            },
+            {
+              name: 'getProduct',
+              description: "Get a single product by ID",
+              signature: 'getProduct(productId)',
+            },
+            {
+              name: 'listProducts',
+              description: "List products with optional filters",
+              signature: 'listProducts(params?)',
+            },
+            {
+              name: 'deleteProduct',
+              description: "Delete a product by ID",
+              signature: 'deleteProduct(productId)',
+            },
+            {
+              name: 'getOrder',
+              description: "Get a single order by ID",
+              signature: 'getOrder(orderId)',
+            },
+            {
+              name: 'listOrders',
+              description: "List orders with optional filters",
+              signature: 'listOrders(params?)',
+            },
+            {
+              name: 'createCustomer',
+              description: "Create a new customer",
+              signature: 'createCustomer(customer)',
+            },
+            {
+              name: 'updateInventory',
+              description: "Update inventory levels for a product variant",
+              signature: 'updateInventory(inventoryItemId, locationId, availableQuantity)',
+            },
+            {
+              name: 'getAnalytics',
+              description: "Get store analytics (revenue, orders, average order value)",
+              signature: 'getAnalytics(params?)',
+            },
+          ],
+        },
+        {
+          name: 'square',
+          functions: [
+            {
+              name: 'createProduct',
+              description: "Create a new product in Square catalog",
+              signature: 'createProduct(product)',
+            },
+            {
+              name: 'updateProduct',
+              description: "Update an existing Square product",
+              signature: 'updateProduct(productId, updates)',
+            },
+            {
+              name: 'getProduct',
+              description: "Get a single product by ID",
+              signature: 'getProduct(productId)',
+            },
+            {
+              name: 'listProducts',
+              description: "List all products in catalog",
+              signature: 'listProducts(params?)',
+            },
+            {
+              name: 'deleteProduct',
+              description: "Delete a product by ID",
+              signature: 'deleteProduct(productId)',
+            },
+            {
+              name: 'processPayment',
+              description: "Process a payment",
+              signature: 'processPayment(payment)',
+            },
+            {
+              name: 'getTransactions',
+              description: "Get transactions for a location",
+              signature: 'getTransactions(params?)',
+            },
+            {
+              name: 'createCustomer',
+              description: "Create a new customer",
+              signature: 'createCustomer(customer)',
+            },
+            {
+              name: 'createOrder',
+              description: "Create a new order",
+              signature: 'createOrder(order)',
+            },
+            {
+              name: 'getRevenueReport',
+              description: "Get revenue report with transaction statistics",
+              signature: 'getRevenueReport(params?)',
+            },
+          ],
+        },
+        {
+          name: 'woocommerce',
+          functions: [
+            {
+              name: 'createProduct',
+              description: "Create a new product in WooCommerce",
+              signature: 'createProduct(product)',
+            },
+            {
+              name: 'updateProduct',
+              description: "Update an existing WooCommerce product",
+              signature: 'updateProduct(productId, updates)',
+            },
+            {
+              name: 'getProduct',
+              description: "Get a single product by ID",
+              signature: 'getProduct(productId)',
+            },
+            {
+              name: 'listProducts',
+              description: "List products with optional filters",
+              signature: 'listProducts(params?)',
+            },
+            {
+              name: 'deleteProduct',
+              description: "Delete a product by ID",
+              signature: 'deleteProduct(productId)',
+            },
+            {
+              name: 'getOrder',
+              description: "Get a single order by ID",
+              signature: 'getOrder(orderId)',
+            },
+            {
+              name: 'listOrders',
+              description: "List orders with optional filters",
+              signature: 'listOrders(params?)',
+            },
+            {
+              name: 'updateOrderStatus',
+              description: "Update order status",
+              signature: 'updateOrderStatus(orderId, status)',
+            },
+            {
+              name: 'createCustomer',
+              description: "Create a new customer",
+              signature: 'createCustomer(customer)',
+            },
+            {
+              name: 'getSalesReport',
+              description: "Get sales report with revenue and order statistics",
+              signature: 'getSalesReport(params?)',
+            },
+          ],
+        },
+      ],
+    },
+    {
+      name: 'External Apis',
+      modules: [
+        {
+          name: 'rapidapi-newsapi',
+          functions: [
+            {
+              name: 'getTrendingNews',
+              description: "Get trending news articles",
+              signature: 'getTrendingNews(params)',
+              example: "const articles = await getTrendingNews({ apiKey: \"YOUR_KEY\", topic: \"technology\", limit: 10 });",
+            },
+            {
+              name: 'getArticleContent',
+              description: "Get full article content",
+              signature: 'getArticleContent(params)',
+              example: "const article = await getArticleContent({ apiKey: \"YOUR_KEY\", articleUrl: \"https://...\" });",
+            },
+            {
+              name: 'getSupportedTopics',
+              description: "Get supported news topics with subtopics",
+              signature: 'getSupportedTopics(params)',
+              example: "const topics = await getSupportedTopics({ apiKey: \"YOUR_KEY\" });",
+            },
+            {
+              name: 'getSupportedLanguages',
+              description: "Get supported languages for news",
+              signature: 'getSupportedLanguages(params)',
+              example: "const languages = await getSupportedLanguages({ apiKey: \"YOUR_KEY\" });",
+            },
+            {
+              name: 'getSupportedCountries',
+              description: "Get supported countries with their languages",
+              signature: 'getSupportedCountries(params)',
+              example: "const countries = await getSupportedCountries({ apiKey: \"YOUR_KEY\" });",
+            },
+            {
+              name: 'getNewsSummaryForAI',
+              description: "Get AI-formatted summary of trending news",
+              signature: 'getNewsSummaryForAI(params)',
+              example: "const { summary, selectedArticle } = await getNewsSummaryForAI({ apiKey: \"YOUR_KEY\", topic: \"ai\" });",
+            },
+          ],
+        },
+        {
+          name: 'rapidapi-twitter',
+          functions: [
+            {
+              name: 'searchTwitter',
+              description: "Search Twitter using RapidAPI",
+              signature: 'searchTwitter(params)',
+              example: "const results = await searchTwitter({ query: \"AI tools\", apiKey: \"YOUR_KEY\", count: 20 });",
+            },
+          ],
+        },
+      ],
+    },
+    {
       name: 'Leads',
       modules: [
         {
+          name: 'apify',
+          functions: [
+            {
+              name: 'runActor',
+              description: "Execute runActor",
+              signature: 'runActor(params)',
+            },
+            {
+              name: 'getActorRun',
+              description: "Execute getActorRun",
+              signature: 'getActorRun(params)',
+            },
+            {
+              name: 'getDatasetItems',
+              description: "Execute getDatasetItems",
+              signature: 'getDatasetItems(params)',
+            },
+            {
+              name: 'listActors',
+              description: "Execute listActors",
+              signature: 'listActors(params)',
+            },
+            {
+              name: 'waitForRun',
+              description: "Execute waitForRun",
+              signature: 'waitForRun(params)',
+            },
+            {
+              name: 'runActorAndWait',
+              description: "Execute runActorAndWait",
+              signature: 'runActorAndWait(params)',
+            },
+            {
+              name: 'getKeyValueStoreItem',
+              description: "Execute getKeyValueStoreItem",
+              signature: 'getKeyValueStoreItem(params)',
+            },
+            {
+              name: 'abortActorRun',
+              description: "Execute abortActorRun",
+              signature: 'abortActorRun(params)',
+            },
+          ],
+        },
+        {
+          name: 'apollo',
+          functions: [
+            {
+              name: 'searchPeople',
+              description: "Execute searchPeople",
+              signature: 'searchPeople(params)',
+            },
+            {
+              name: 'enrichContact',
+              description: "Execute enrichContact",
+              signature: 'enrichContact(params)',
+            },
+            {
+              name: 'getCompanyInfo',
+              description: "Execute getCompanyInfo",
+              signature: 'getCompanyInfo(params)',
+            },
+            {
+              name: 'createContact',
+              description: "Execute createContact",
+              signature: 'createContact(params)',
+            },
+            {
+              name: 'searchCompanies',
+              description: "Execute searchCompanies",
+              signature: 'searchCompanies(params)',
+            },
+            {
+              name: 'getEmail',
+              description: "Execute getEmail",
+              signature: 'getEmail(params)',
+            },
+            {
+              name: 'getJobPostings',
+              description: "Execute getJobPostings",
+              signature: 'getJobPostings(params)',
+            },
+          ],
+        },
+        {
           name: 'clearbit',
           functions: [
+            {
+              name: 'enrichPerson',
+              description: "Execute enrichPerson",
+              signature: 'enrichPerson(params)',
+            },
+            {
+              name: 'enrichCompany',
+              description: "Execute enrichCompany",
+              signature: 'enrichCompany(params)',
+            },
+            {
+              name: 'revealCompany',
+              description: "Execute revealCompany",
+              signature: 'revealCompany(params)',
+            },
+            {
+              name: 'getCombinedEnrichment',
+              description: "Execute getCombinedEnrichment",
+              signature: 'getCombinedEnrichment(params)',
+            },
+            {
+              name: 'autocompleteCompany',
+              description: "Execute autocompleteCompany",
+              signature: 'autocompleteCompany(params)',
+            },
+            {
+              name: 'findPersonByName',
+              description: "Execute findPersonByName",
+              signature: 'findPersonByName(params)',
+            },
             {
               name: 'getCompanyLogo',
               description: "Get logo URL for a domain",
@@ -2025,9 +3612,214 @@ export function getModuleRegistry(): ModuleCategory[] {
           name: 'hunter',
           functions: [
             {
+              name: 'findEmail',
+              description: "Execute findEmail",
+              signature: 'findEmail(params)',
+            },
+            {
+              name: 'verifyEmail',
+              description: "Execute verifyEmail",
+              signature: 'verifyEmail(params)',
+            },
+            {
+              name: 'domainSearch',
+              description: "Execute domainSearch",
+              signature: 'domainSearch(params)',
+            },
+            {
+              name: 'getEmailCount',
+              description: "Execute getEmailCount",
+              signature: 'getEmailCount(params)',
+            },
+            {
+              name: 'bulkVerify',
+              description: "Execute bulkVerify",
+              signature: 'bulkVerify(params)',
+            },
+            {
+              name: 'getAccountInfo',
+              description: "Execute getAccountInfo",
+              signature: 'getAccountInfo(params)',
+            },
+            {
+              name: 'searchLeads',
+              description: "Execute searchLeads",
+              signature: 'searchLeads(params)',
+            },
+            {
               name: 'validateEmailFormat',
               description: "Validate email format (client-side, no API call)",
               signature: 'validateEmailFormat(email)',
+            },
+          ],
+        },
+        {
+          name: 'lusha',
+          functions: [
+            {
+              name: 'enrichContact',
+              description: "Execute enrichContact",
+              signature: 'enrichContact(params)',
+            },
+            {
+              name: 'findEmail',
+              description: "Execute findEmail",
+              signature: 'findEmail(params)',
+            },
+            {
+              name: 'findPhone',
+              description: "Execute findPhone",
+              signature: 'findPhone(params)',
+            },
+            {
+              name: 'bulkEnrich',
+              description: "Execute bulkEnrich",
+              signature: 'bulkEnrich(params)',
+            },
+            {
+              name: 'enrichCompany',
+              description: "Execute enrichCompany",
+              signature: 'enrichCompany(params)',
+            },
+            {
+              name: 'enrichFromLinkedIn',
+              description: "Execute enrichFromLinkedIn",
+              signature: 'enrichFromLinkedIn(params)',
+            },
+            {
+              name: 'getCreditBalance',
+              description: "Execute getCreditBalance",
+              signature: 'getCreditBalance(params)',
+            },
+          ],
+        },
+        {
+          name: 'phantombuster',
+          functions: [
+            {
+              name: 'launchPhantom',
+              description: "Execute launchPhantom",
+              signature: 'launchPhantom(params)',
+            },
+            {
+              name: 'getPhantomStatus',
+              description: "Execute getPhantomStatus",
+              signature: 'getPhantomStatus(params)',
+            },
+            {
+              name: 'getPhantomOutput',
+              description: "Execute getPhantomOutput",
+              signature: 'getPhantomOutput(params)',
+            },
+            {
+              name: 'listPhantoms',
+              description: "Execute listPhantoms",
+              signature: 'listPhantoms(params)',
+            },
+            {
+              name: 'stopPhantom',
+              description: "Execute stopPhantom",
+              signature: 'stopPhantom(params)',
+            },
+            {
+              name: 'getAgent',
+              description: "Execute getAgent",
+              signature: 'getAgent(params)',
+            },
+            {
+              name: 'launchAndWait',
+              description: "Execute launchAndWait",
+              signature: 'launchAndWait(params)',
+            },
+            {
+              name: 'getAgentCsvOutput',
+              description: "Execute getAgentCsvOutput",
+              signature: 'getAgentCsvOutput(params)',
+            },
+          ],
+        },
+        {
+          name: 'proxycurl',
+          functions: [
+            {
+              name: 'getProfile',
+              description: "Execute getProfile",
+              signature: 'getProfile(params)',
+            },
+            {
+              name: 'getCompany',
+              description: "Execute getCompany",
+              signature: 'getCompany(params)',
+            },
+            {
+              name: 'searchPeople',
+              description: "Execute searchPeople",
+              signature: 'searchPeople(params)',
+            },
+            {
+              name: 'getPosts',
+              description: "Execute getPosts",
+              signature: 'getPosts(params)',
+            },
+            {
+              name: 'getContactInfo',
+              description: "Execute getContactInfo",
+              signature: 'getContactInfo(params)',
+            },
+            {
+              name: 'getCompanyEmployees',
+              description: "Execute getCompanyEmployees",
+              signature: 'getCompanyEmployees(params)',
+            },
+            {
+              name: 'resolveProfileFromEmail',
+              description: "Execute resolveProfileFromEmail",
+              signature: 'resolveProfileFromEmail(params)',
+            },
+            {
+              name: 'searchCompanies',
+              description: "Execute searchCompanies",
+              signature: 'searchCompanies(params)',
+            },
+          ],
+        },
+        {
+          name: 'zoominfo',
+          functions: [
+            {
+              name: 'searchContacts',
+              description: "Execute searchContacts",
+              signature: 'searchContacts(params)',
+            },
+            {
+              name: 'enrichCompany',
+              description: "Execute enrichCompany",
+              signature: 'enrichCompany(params)',
+            },
+            {
+              name: 'getTechnographics',
+              description: "Execute getTechnographics",
+              signature: 'getTechnographics(params)',
+            },
+            {
+              name: 'getContactDetails',
+              description: "Execute getContactDetails",
+              signature: 'getContactDetails(params)',
+            },
+            {
+              name: 'searchCompanies',
+              description: "Execute searchCompanies",
+              signature: 'searchCompanies(params)',
+            },
+            {
+              name: 'getIntentData',
+              description: "Execute getIntentData",
+              signature: 'getIntentData(params)',
+            },
+            {
+              name: 'getScoops',
+              description: "Execute getScoops",
+              signature: 'getScoops(params)',
             },
           ],
         },
@@ -2157,6 +3949,36 @@ export function getModuleRegistry(): ModuleCategory[] {
           ],
         },
         {
+          name: 'calendly',
+          functions: [
+            {
+              name: 'getCurrentUser',
+              description: "Execute getCurrentUser",
+              signature: 'getCurrentUser()',
+            },
+            {
+              name: 'listEventTypes',
+              description: "Execute listEventTypes",
+              signature: 'listEventTypes(userUri)',
+            },
+            {
+              name: 'listEvents',
+              description: "Execute listEvents",
+              signature: 'listEvents(userUri, options?)',
+            },
+            {
+              name: 'getEvent',
+              description: "Execute getEvent",
+              signature: 'getEvent(eventUri)',
+            },
+            {
+              name: 'cancelEvent',
+              description: "Execute cancelEvent",
+              signature: 'cancelEvent(eventUri, reason?)',
+            },
+          ],
+        },
+        {
           name: 'linear',
           functions: [
             {
@@ -2201,6 +4023,31 @@ export function getModuleRegistry(): ModuleCategory[] {
             },
           ],
         },
+        {
+          name: 'typeform',
+          functions: [
+            {
+              name: 'getForm',
+              description: "Execute getForm",
+              signature: 'getForm(formId)',
+            },
+            {
+              name: 'listForms',
+              description: "Execute listForms",
+              signature: 'listForms()',
+            },
+            {
+              name: 'getResponses',
+              description: "Execute getResponses",
+              signature: 'getResponses(formId, options?)',
+            },
+            {
+              name: 'createForm',
+              description: "Execute createForm",
+              signature: 'createForm(title, fields)',
+            },
+          ],
+        },
       ],
     },
     {
@@ -2213,6 +4060,36 @@ export function getModuleRegistry(): ModuleCategory[] {
               name: 'replyToInstagramDM',
               description: "Reply to an Instagram DM (Protected)",
               signature: 'replyToInstagramDM(senderId, message)',
+            },
+          ],
+        },
+        {
+          name: 'linkedin',
+          functions: [
+            {
+              name: 'getProfile',
+              description: "Execute getProfile",
+              signature: 'getProfile()',
+            },
+            {
+              name: 'createPost',
+              description: "Execute createPost",
+              signature: 'createPost(text, visibility?)',
+            },
+            {
+              name: 'getPost',
+              description: "Execute getPost",
+              signature: 'getPost(postId)',
+            },
+            {
+              name: 'getComments',
+              description: "Execute getComments",
+              signature: 'getComments(postId)',
+            },
+            {
+              name: 'addComment',
+              description: "Execute addComment",
+              signature: 'addComment(postId, message)',
             },
           ],
         },
@@ -2253,6 +4130,56 @@ export function getModuleRegistry(): ModuleCategory[] {
               name: 'downvotePost',
               description: "Downvote post",
               signature: 'downvotePost(postId)',
+            },
+          ],
+        },
+        {
+          name: 'twitter-oauth',
+          functions: [
+            {
+              name: 'replyToTweet',
+              description: "Execute replyToTweet",
+              signature: 'replyToTweet(params)',
+            },
+            {
+              name: 'createTweet',
+              description: "Execute createTweet",
+              signature: 'createTweet(params)',
+            },
+            {
+              name: 'createThread',
+              description: "Execute createThread",
+              signature: 'createThread(params)',
+            },
+          ],
+        },
+        {
+          name: 'twitter',
+          functions: [
+            {
+              name: 'createTweet',
+              description: "Execute createTweet",
+              signature: 'createTweet(text)',
+            },
+            {
+              name: 'replyToTweet',
+              description: "Execute replyToTweet",
+              signature: 'replyToTweet(tweetId, text)',
+            },
+            {
+              name: 'getUserTimeline',
+              description: "Execute getUserTimeline",
+              signature: 'getUserTimeline(userId, maxResults?)',
+            },
+            {
+              name: 'searchTweets',
+              description: "Execute searchTweets",
+              signature: 'searchTweets(query, maxResults?)',
+            },
+            {
+              name: 'createThread',
+              description: "Execute createThread",
+              signature: 'createThread(tweets)',
             },
           ],
         },
@@ -4620,6 +6547,136 @@ export function getModuleRegistry(): ModuleCategory[] {
       name: 'Video',
       modules: [
         {
+          name: 'cloudinary',
+          functions: [
+            {
+              name: 'uploadVideo',
+              description: "Execute uploadVideo",
+              signature: 'uploadVideo(options)',
+            },
+            {
+              name: 'transformVideo',
+              description: "Execute transformVideo",
+              signature: 'transformVideo(options)',
+            },
+            {
+              name: 'generateThumbnail',
+              description: "Execute generateThumbnail",
+              signature: 'generateThumbnail(options)',
+            },
+            {
+              name: 'convertFormat',
+              description: "Execute convertFormat",
+              signature: 'convertFormat(options)',
+            },
+            {
+              name: 'addTextOverlay',
+              description: "Execute addTextOverlay",
+              signature: 'addTextOverlay(options)',
+            },
+            {
+              name: 'deleteVideo',
+              description: "Execute deleteVideo",
+              signature: 'deleteVideo(publicId)',
+            },
+            {
+              name: 'getVideoDetails',
+              description: "Execute getVideoDetails",
+              signature: 'getVideoDetails(publicId)',
+            },
+            {
+              name: 'listVideos',
+              description: "Execute listVideos",
+              signature: 'listVideos(options?)',
+            },
+          ],
+        },
+        {
+          name: 'elevenlabs',
+          functions: [
+            {
+              name: 'generateSpeech',
+              description: "Execute generateSpeech",
+              signature: 'generateSpeech(options)',
+            },
+            {
+              name: 'generateSpeechStream',
+              description: "Execute generateSpeechStream",
+              signature: 'generateSpeechStream(options)',
+            },
+            {
+              name: 'listVoices',
+              description: "Execute listVoices",
+              signature: 'listVoices()',
+            },
+            {
+              name: 'getVoiceDetails',
+              description: "Execute getVoiceDetails",
+              signature: 'getVoiceDetails(voiceId)',
+            },
+            {
+              name: 'cloneVoice',
+              description: "Execute cloneVoice",
+              signature: 'cloneVoice(options)',
+            },
+            {
+              name: 'deleteVoice',
+              description: "Execute deleteVoice",
+              signature: 'deleteVoice(voiceId)',
+            },
+            {
+              name: 'getSubscriptionInfo',
+              description: "Execute getSubscriptionInfo",
+              signature: 'getSubscriptionInfo()',
+            },
+            {
+              name: 'getModels',
+              description: "Execute getModels",
+              signature: 'getModels()',
+            },
+          ],
+        },
+        {
+          name: 'heygen',
+          functions: [
+            {
+              name: 'createAvatarVideo',
+              description: "Execute createAvatarVideo",
+              signature: 'createAvatarVideo(options)',
+            },
+            {
+              name: 'createCustomAvatarVideo',
+              description: "Execute createCustomAvatarVideo",
+              signature: 'createCustomAvatarVideo(options)',
+            },
+            {
+              name: 'getVideoStatus',
+              description: "Execute getVideoStatus",
+              signature: 'getVideoStatus(videoId)',
+            },
+            {
+              name: 'listAvatars',
+              description: "Execute listAvatars",
+              signature: 'listAvatars()',
+            },
+            {
+              name: 'listVoices',
+              description: "Execute listVoices",
+              signature: 'listVoices(options?)',
+            },
+            {
+              name: 'deleteVideo',
+              description: "Execute deleteVideo",
+              signature: 'deleteVideo(videoId)',
+            },
+            {
+              name: 'listVideos',
+              description: "Execute listVideos",
+              signature: 'listVideos(options?)',
+            },
+          ],
+        },
+        {
           name: 'runway',
           functions: [
             {
@@ -4661,6 +6718,181 @@ export function getModuleRegistry(): ModuleCategory[] {
               name: 'cancelGeneration',
               description: "Cancel a running generation",
               signature: 'cancelGeneration(generationId)',
+            },
+          ],
+        },
+        {
+          name: 'synthesia',
+          functions: [
+            {
+              name: 'createVideo',
+              description: "Execute createVideo",
+              signature: 'createVideo(options)',
+            },
+            {
+              name: 'createMultiSceneVideo',
+              description: "Execute createMultiSceneVideo",
+              signature: 'createMultiSceneVideo(options)',
+            },
+            {
+              name: 'getVideoStatus',
+              description: "Execute getVideoStatus",
+              signature: 'getVideoStatus(videoId)',
+            },
+            {
+              name: 'listAvatars',
+              description: "Execute listAvatars",
+              signature: 'listAvatars()',
+            },
+            {
+              name: 'listVoices',
+              description: "Execute listVoices",
+              signature: 'listVoices(options?)',
+            },
+            {
+              name: 'deleteVideo',
+              description: "Execute deleteVideo",
+              signature: 'deleteVideo(videoId)',
+            },
+            {
+              name: 'listVideos',
+              description: "Execute listVideos",
+              signature: 'listVideos(options?)',
+            },
+            {
+              name: 'getQuota',
+              description: "Execute getQuota",
+              signature: 'getQuota()',
+            },
+          ],
+        },
+        {
+          name: 'tiktok',
+          functions: [
+            {
+              name: 'initializeUpload',
+              description: "Execute initializeUpload",
+              signature: 'initializeUpload(options)',
+            },
+            {
+              name: 'uploadVideo',
+              description: "Execute uploadVideo",
+              signature: 'uploadVideo(options)',
+            },
+            {
+              name: 'getVideoInfo',
+              description: "Execute getVideoInfo",
+              signature: 'getVideoInfo(videoId)',
+            },
+            {
+              name: 'getUserVideos',
+              description: "Execute getUserVideos",
+              signature: 'getUserVideos(options?)',
+            },
+            {
+              name: 'getVideoComments',
+              description: "Execute getVideoComments",
+              signature: 'getVideoComments(options)',
+            },
+            {
+              name: 'getUserInfo',
+              description: "Execute getUserInfo",
+              signature: 'getUserInfo()',
+            },
+            {
+              name: 'deleteVideo',
+              description: "Execute deleteVideo",
+              signature: 'deleteVideo(videoId)',
+            },
+            {
+              name: 'getVideoAnalytics',
+              description: "Execute getVideoAnalytics",
+              signature: 'getVideoAnalytics(options)',
+            },
+          ],
+        },
+        {
+          name: 'vimeo',
+          functions: [
+            {
+              name: 'uploadVideo',
+              description: "Execute uploadVideo",
+              signature: 'uploadVideo(options)',
+            },
+            {
+              name: 'getVideoInfo',
+              description: "Execute getVideoInfo",
+              signature: 'getVideoInfo(videoId)',
+            },
+            {
+              name: 'updateVideo',
+              description: "Execute updateVideo",
+              signature: 'updateVideo(options)',
+            },
+            {
+              name: 'deleteVideo',
+              description: "Execute deleteVideo",
+              signature: 'deleteVideo(videoId)',
+            },
+            {
+              name: 'listVideos',
+              description: "Execute listVideos",
+              signature: 'listVideos(options?)',
+            },
+            {
+              name: 'getEmbedCode',
+              description: "Execute getEmbedCode",
+              signature: 'getEmbedCode(options)',
+            },
+            {
+              name: 'getThumbnail',
+              description: "Execute getThumbnail",
+              signature: 'getThumbnail(options)',
+            },
+            {
+              name: 'getVideoStats',
+              description: "Execute getVideoStats",
+              signature: 'getVideoStats(videoId)',
+            },
+          ],
+        },
+        {
+          name: 'whisper',
+          functions: [
+            {
+              name: 'transcribeAudio',
+              description: "Execute transcribeAudio",
+              signature: 'transcribeAudio(options)',
+            },
+            {
+              name: 'transcribeAudioFromURL',
+              description: "Execute transcribeAudioFromURL",
+              signature: 'transcribeAudioFromURL(options)',
+            },
+            {
+              name: 'translateAudio',
+              description: "Execute translateAudio",
+              signature: 'translateAudio(options)',
+            },
+            {
+              name: 'translateAudioFromURL',
+              description: "Execute translateAudioFromURL",
+              signature: 'translateAudioFromURL(options)',
+            },
+            {
+              name: 'detectLanguage',
+              description: "Execute detectLanguage",
+              signature: 'detectLanguage(audioFile)',
+            },
+            {
+              name: 'transcribeWithSegments',
+              description: "Execute transcribeWithSegments",
+              signature: 'transcribeWithSegments(options)',
+            },
+            {
+              name: 'generateSubtitles',
+              description: "Execute generateSubtitles",
+              signature: 'generateSubtitles(options)',
             },
           ],
         },

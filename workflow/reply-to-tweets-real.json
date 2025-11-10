@@ -1,0 +1,209 @@
+{
+  "version": "1.0",
+  "name": "Reply to Tweets (Production)",
+  "description": "Search tweets by query, rank by engagement, generate AI-powered replies, and post them to Twitter",
+  "trigger": {
+    "type": "chat-input",
+    "config": {
+      "fields": [
+        {
+          "name": "searchQuery",
+          "label": "Search Query",
+          "type": "text",
+          "required": true,
+          "placeholder": "e.g., AI tools, TypeScript tips, open source",
+          "description": "What tweets should I search for?"
+        },
+        {
+          "name": "maxResults",
+          "label": "Max Results",
+          "type": "number",
+          "required": false,
+          "defaultValue": 10,
+          "description": "How many tweets to fetch (1-100)"
+        },
+        {
+          "name": "replyCount",
+          "label": "Number of Replies",
+          "type": "number",
+          "required": false,
+          "defaultValue": 1,
+          "description": "How many tweets to reply to (1-10)"
+        }
+      ]
+    }
+  },
+  "config": {
+    "steps": [
+      {
+        "id": "search-tweets",
+        "module": "external-apis.rapidapi-twitter.searchTwitter",
+        "inputs": {
+          "params": {
+            "query": "{{trigger.searchQuery}}",
+            "apiKey": "{{credential.rapidapi_api_key}}",
+            "count": "{{trigger.maxResults}}",
+            "category": "Latest"
+          }
+        },
+        "outputAs": "searchResults",
+        "note": "Uses RapidAPI Twitter Search with credentials from database"
+      },
+      {
+        "id": "extract-tweets",
+        "module": "utilities.javascript.execute",
+        "inputs": {
+          "options": {
+            "code": "const tweets = searchResults?.results || []; return tweets.map(t => ({ id: t.tweet_id, text: t.text, author: t.user_screen_name || 'unknown', likes: t.likes || 0, retweets: t.retweets || 0, replies: t.replies || 0 }));",
+            "context": {
+              "searchResults": "{{searchResults}}"
+            }
+          }
+        },
+        "outputAs": "tweets"
+      },
+      {
+        "id": "rank-by-engagement",
+        "module": "utilities.scoring.rankByWeightedScore",
+        "inputs": {
+          "params": {
+            "items": "{{tweets}}",
+            "scoreFields": [
+              { "field": "likes", "weight": 2 },
+              { "field": "retweets", "weight": 3 },
+              { "field": "replies", "weight": 1.5 }
+            ]
+          }
+        },
+        "outputAs": "rankedTweets"
+      },
+      {
+        "id": "select-top-tweets",
+        "module": "utilities.scoring.selectTop",
+        "inputs": {
+          "params": {
+            "items": "{{rankedTweets}}",
+            "count": "{{trigger.replyCount}}"
+          }
+        },
+        "outputAs": "topTweets"
+      },
+      {
+        "id": "generate-replies",
+        "module": "utilities.javascript.execute",
+        "inputs": {
+          "options": {
+            "code": "const results = []; for (const tweet of topTweets) { results.push({ tweetId: tweet.id, tweetText: tweet.text, author: tweet.author, engagement: tweet._score || 0 }); } return results;",
+            "context": {
+              "topTweets": "{{topTweets}}"
+            }
+          }
+        },
+        "outputAs": "tweetsToReply"
+      },
+      {
+        "id": "create-ai-replies",
+        "module": "utilities.javascript.execute",
+        "inputs": {
+          "options": {
+            "code": "const replies = []; for (const item of tweetsToReply) { replies.push({ tweetId: item.tweetId, tweetText: item.tweetText, author: item.author, engagement: item.engagement, prompt: `Generate a helpful, engaging, and authentic reply to this tweet. Be conversational and add value. Keep it under 280 characters.\\n\\nTweet: ${item.tweetText}` }); } return replies;",
+            "context": {
+              "tweetsToReply": "{{tweetsToReply}}"
+            }
+          }
+        },
+        "outputAs": "replyPrompts"
+      },
+      {
+        "id": "generate-first-reply",
+        "module": "ai.ai-sdk.generateText",
+        "inputs": {
+          "options": {
+            "prompt": "{{replyPrompts.0.prompt}}",
+            "model": "gpt-4o-mini",
+            "provider": "openai",
+            "maxTokens": 100,
+            "temperature": 0.8,
+            "apiKey": "{{credential.openai_api_key}}"
+          }
+        },
+        "outputAs": "aiReply1"
+      },
+      {
+        "id": "post-reply-1",
+        "module": "social.twitter-oauth.replyToTweet",
+        "inputs": {
+          "params": {
+            "tweetId": "{{replyPrompts.0.tweetId}}",
+            "text": "{{aiReply1.content}}",
+            "accessToken": "{{credential.twitter_oauth}}"
+          }
+        },
+        "outputAs": "postedReply1"
+      },
+      {
+        "id": "build-final-result",
+        "module": "utilities.javascript.execute",
+        "inputs": {
+          "options": {
+            "code": "return [{ tweetId: replyPrompts[0].tweetId, originalTweet: replyPrompts[0].tweetText, author: replyPrompts[0].author, engagement: replyPrompts[0].engagement, generatedReply: aiReply1.content, postedReplyId: postedReply1?.data?.id || postedReply1?.id || 'Posted', status: 'Success' }];",
+            "context": {
+              "replyPrompts": "{{replyPrompts}}",
+              "aiReply1": "{{aiReply1}}",
+              "postedReply1": "{{postedReply1}}"
+            }
+          }
+        },
+        "outputAs": "finalResult"
+      }
+    ],
+    "returnValue": "{{finalResult}}",
+    "outputDisplay": {
+      "type": "table",
+      "columns": [
+        {
+          "key": "tweetId",
+          "label": "Tweet ID",
+          "type": "text"
+        },
+        {
+          "key": "author",
+          "label": "Author",
+          "type": "text"
+        },
+        {
+          "key": "originalTweet",
+          "label": "Original Tweet",
+          "type": "text"
+        },
+        {
+          "key": "engagement",
+          "label": "Engagement Score",
+          "type": "number"
+        },
+        {
+          "key": "generatedReply",
+          "label": "Our Reply",
+          "type": "text"
+        },
+        {
+          "key": "postedReplyId",
+          "label": "Reply ID",
+          "type": "text"
+        },
+        {
+          "key": "status",
+          "label": "Status",
+          "type": "text"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "author": "b0t Workflow Generator",
+    "tags": ["twitter", "social-media", "ai", "automation", "engagement"],
+    "category": "social",
+    "requiresCredentials": ["rapidapi", "twitter_oauth", "openai"],
+    "notes": "Production workflow that searches Twitter via RapidAPI, ranks tweets by engagement, generates AI replies, and posts them using OAuth 2.0. All credentials are from database, not environment variables. Uses chat-input trigger to allow customizable search queries."
+  }
+}

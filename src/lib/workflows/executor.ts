@@ -697,6 +697,9 @@ async function loadUserCredentials(userId: string): Promise<Record<string, strin
       'slack': ['slack_oauth', 'slack'],
       'discord': ['discord_oauth', 'discord'],
       'stripe': ['stripe_connect', 'stripe'],
+      'rapidapi': ['rapidapi_api_key', 'rapidapi'],
+      'openai': ['openai_api_key', 'openai'],
+      'anthropic': ['anthropic_api_key', 'anthropic'],
     };
 
     // Apply aliases: check if any credential ID in the list exists, then make it available under all alias names

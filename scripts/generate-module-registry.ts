@@ -126,6 +126,55 @@ function parseFunction(
 }
 
 /**
+ * Parse arrow function or function expression parameters
+ */
+function parseArrowOrFunctionExpression(
+  name: string,
+  functionNode: ts.ArrowFunction | ts.FunctionExpression,
+  parentNode: ts.Node,
+  sourceFile: ts.SourceFile
+): FunctionInfo | null {
+  const description = getJSDocDescription(parentNode);
+  const example = getJSDocExample(parentNode);
+
+  // Build parameter list
+  const parameters: ParameterInfo[] = [];
+  const paramNames: string[] = [];
+
+  for (const param of functionNode.parameters) {
+    const paramName = param.name.getText(sourceFile);
+    const paramType = param.type ? param.type.getText(sourceFile) : 'unknown';
+    const required = !param.questionToken && !param.initializer;
+
+    parameters.push({
+      name: paramName,
+      type: paramType,
+      required,
+    });
+
+    // For signature, show object destructuring or simple param name
+    if (ts.isObjectBindingPattern(param.name)) {
+      // Object destructuring: ({ a, b, c })
+      const props = param.name.elements.map(e => e.name.getText(sourceFile));
+      paramNames.push(`{ ${props.join(', ')} }`);
+    } else {
+      // Simple parameter
+      paramNames.push(paramName + (required ? '' : '?'));
+    }
+  }
+
+  const signature = `${name}(${paramNames.join(', ')})`;
+
+  return {
+    name,
+    description: description || `Execute ${name}`,
+    signature,
+    parameters,
+    example,
+  };
+}
+
+/**
  * Parse a TypeScript file and extract exported functions
  */
 async function parseModuleFile(filePath: string): Promise<FunctionInfo[]> {
@@ -140,7 +189,7 @@ async function parseModuleFile(filePath: string): Promise<FunctionInfo[]> {
   const functions: FunctionInfo[] = [];
 
   function visit(node: ts.Node) {
-    // Look for exported functions
+    // Look for exported function declarations (export function foo() {})
     if (ts.isFunctionDeclaration(node)) {
       const hasExportKeyword = node.modifiers?.some(
         m => m.kind === ts.SyntaxKind.ExportKeyword
@@ -150,6 +199,76 @@ async function parseModuleFile(filePath: string): Promise<FunctionInfo[]> {
         const funcInfo = parseFunction(node, sourceFile);
         if (funcInfo) {
           functions.push(funcInfo);
+        }
+      }
+    }
+
+    // Look for exported const with arrow functions or function expressions
+    // (export const foo = () => {} or export const foo = function() {})
+    if (ts.isVariableStatement(node)) {
+      const hasExportKeyword = node.modifiers?.some(
+        m => m.kind === ts.SyntaxKind.ExportKeyword
+      );
+
+      if (hasExportKeyword) {
+        for (const declaration of node.declarationList.declarations) {
+          if (ts.isVariableDeclaration(declaration) && declaration.initializer) {
+            const varName = declaration.name.getText(sourceFile);
+
+            // Check if initializer is an arrow function or function expression
+            if (ts.isArrowFunction(declaration.initializer)) {
+              const funcInfo = parseArrowOrFunctionExpression(
+                varName,
+                declaration.initializer,
+                node,
+                sourceFile
+              );
+              if (funcInfo) {
+                functions.push(funcInfo);
+              }
+            } else if (ts.isFunctionExpression(declaration.initializer)) {
+              const funcInfo = parseArrowOrFunctionExpression(
+                varName,
+                declaration.initializer,
+                node,
+                sourceFile
+              );
+              if (funcInfo) {
+                functions.push(funcInfo);
+              }
+            } else if (ts.isCallExpression(declaration.initializer)) {
+              // Handle wrapped functions like: export const foo = withRateLimit(...)
+              // Try to extract parameters from the wrapper if possible
+              const callExpr = declaration.initializer;
+
+              // Check if the first argument is an arrow function or function expression
+              if (callExpr.arguments.length > 0) {
+                const firstArg = callExpr.arguments[0];
+
+                if (ts.isArrowFunction(firstArg)) {
+                  const funcInfo = parseArrowOrFunctionExpression(
+                    varName,
+                    firstArg,
+                    node,
+                    sourceFile
+                  );
+                  if (funcInfo) {
+                    functions.push(funcInfo);
+                  }
+                } else if (ts.isFunctionExpression(firstArg)) {
+                  const funcInfo = parseArrowOrFunctionExpression(
+                    varName,
+                    firstArg,
+                    node,
+                    sourceFile
+                  );
+                  if (funcInfo) {
+                    functions.push(funcInfo);
+                  }
+                }
+              }
+            }
+          }
         }
       }
     }
@@ -222,6 +341,8 @@ function formatRegistry(registry: Map<string, ModuleInfo[]>): string {
   let output = `// AUTO-GENERATED - DO NOT EDIT MANUALLY\n`;
   output += `// Generated by: scripts/generate-module-registry.ts\n`;
   output += `// Run: npm run generate:registry\n\n`;
+  output += `// logger imported but may not be used in auto-generated code\n`;
+  output += `// eslint-disable-next-line @typescript-eslint/no-unused-vars\n`;
   output += `import { logger } from '@/lib/logger';\n\n`;
   output += `export interface ModuleFunction {\n`;
   output += `  name: string;\n`;

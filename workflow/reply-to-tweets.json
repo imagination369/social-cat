@@ -1,0 +1,135 @@
+{
+  "version": "1.0",
+  "name": "Reply to Tweets",
+  "description": "Search for tweets based on a query, rank them by engagement, generate AI-powered replies, and post them",
+  "trigger": {
+    "type": "manual",
+    "config": {}
+  },
+  "config": {
+    "steps": [
+      {
+        "id": "create-mock-tweets",
+        "module": "utilities.array-utils.zipToObjects",
+        "inputs": {
+          "fieldArrays": {
+            "id": ["1234567890", "1234567891", "1234567892"],
+            "text": [
+              "Just discovered this amazing AI tool that helps with productivity!",
+              "Looking for recommendations on the best coding practices for TypeScript",
+              "Excited to share my new open source project with the community!"
+            ],
+            "author": ["@user1", "@user2", "@user3"],
+            "likes": [45, 23, 67],
+            "retweets": [12, 8, 34]
+          }
+        },
+        "outputAs": "tweets"
+      },
+      {
+        "id": "rank-tweets-by-engagement",
+        "module": "utilities.scoring.rankByWeightedScore",
+        "inputs": {
+          "params": {
+            "items": "{{tweets}}",
+            "scoreFields": [
+              { "field": "likes", "weight": 2 },
+              { "field": "retweets", "weight": 3 }
+            ]
+          }
+        },
+        "outputAs": "rankedTweets"
+      },
+      {
+        "id": "select-top-tweet",
+        "module": "utilities.scoring.selectTop",
+        "inputs": {
+          "params": {
+            "items": "{{rankedTweets}}",
+            "count": 1
+          }
+        },
+        "outputAs": "topTweets"
+      },
+      {
+        "id": "extract-first-tweet",
+        "module": "utilities.array-utils.first",
+        "inputs": {
+          "arr": "{{topTweets}}"
+        },
+        "outputAs": "topTweet"
+      },
+      {
+        "id": "generate-reply",
+        "module": "ai.ai-sdk.generateText",
+        "inputs": {
+          "options": {
+            "prompt": "Generate a helpful, engaging, and friendly reply to this tweet: {{topTweet.text}}. Keep it under 280 characters and make it conversational.",
+            "model": "gpt-4o-mini",
+            "provider": "openai",
+            "maxTokens": 100,
+            "temperature": 0.7
+          }
+        },
+        "outputAs": "aiReply"
+      },
+      {
+        "id": "build-result",
+        "module": "utilities.javascript.execute",
+        "inputs": {
+          "options": {
+            "code": "const tweet = Array.isArray(topTweets) ? topTweets[0] : topTweets; return [{ tweetId: tweet?.id || 'N/A', author: tweet?.author || 'N/A', originalTweet: tweet?.text || 'N/A', engagement: tweet?._score || 0, generatedReply: aiReply?.content || aiReply?.text || 'N/A', status: 'Ready to post (Twitter module integration pending)' }];",
+            "context": {
+              "topTweets": "{{topTweets}}",
+              "aiReply": "{{aiReply}}"
+            }
+          }
+        },
+        "outputAs": "finalResult"
+      }
+    ],
+    "returnValue": "{{finalResult}}",
+    "outputDisplay": {
+      "type": "table",
+      "columns": [
+        {
+          "key": "tweetId",
+          "label": "Tweet ID",
+          "type": "text"
+        },
+        {
+          "key": "author",
+          "label": "Author",
+          "type": "text"
+        },
+        {
+          "key": "originalTweet",
+          "label": "Original Tweet",
+          "type": "text"
+        },
+        {
+          "key": "engagement",
+          "label": "Engagement Score",
+          "type": "number"
+        },
+        {
+          "key": "generatedReply",
+          "label": "Generated Reply",
+          "type": "text"
+        },
+        {
+          "key": "status",
+          "label": "Status",
+          "type": "text"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "author": "b0t Workflow Generator",
+    "tags": ["twitter", "social-media", "ai", "automation"],
+    "category": "social",
+    "requiresCredentials": ["openai"],
+    "notes": "This workflow demonstrates the reply-to-tweets pattern: search/fetch tweets → rank by engagement → select top tweet → generate AI reply → post reply. Currently uses mock data for testing. To integrate with real Twitter API, replace step 1 with social.twitter.searchTweets and add social.twitter.replyToTweet at the end."
+  }
+}
