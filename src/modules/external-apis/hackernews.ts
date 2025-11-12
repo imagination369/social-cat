@@ -383,7 +383,7 @@ export async function getUserDetails(options: {
   logger.info({ username }, 'Fetching HackerNews user details');
 
   try {
-    const response = await httpGet(`${HN_API_BASE}/user/${username}.json`);
+    const response = await httpGet<Record<string, unknown>>(`${HN_API_BASE}/user/${username}.json`);
 
     if (!response.data) {
       throw new Error('User not found');

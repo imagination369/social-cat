@@ -70,10 +70,11 @@ export function WorkflowSettingsDialog({
   const [triggerSettings, setTriggerSettings] = useState<Record<string, unknown>>({});
   const [saving, setSaving] = useState(false);
   const [openSteps, setOpenSteps] = useState<Record<string, boolean>>({});
+  const [initialized, setInitialized] = useState(false);
 
   // Extract configurable steps from workflow config
   useEffect(() => {
-    if (open && workflowConfig) {
+    if (open && !initialized) {
       const steps = extractConfigurableSteps(workflowConfig);
       setConfigurableSteps(steps);
 
@@ -89,18 +90,23 @@ export function WorkflowSettingsDialog({
         // Auto-open first step
         initialOpenState[stepKey] = index === 0;
       });
+
+      // Auto-open trigger section if it has configurable fields
+      if (workflowTrigger.type !== 'manual') {
+        initialOpenState['trigger'] = steps.length === 0; // Open if no other steps
+      }
+
       setStepSettings(initialSettings);
       setOpenSteps(initialOpenState);
 
       // Initialize trigger settings
       setTriggerSettings(workflowTrigger.config || {});
-      // Auto-open trigger section if it has configurable fields
-      if (workflowTrigger.type !== 'manual') {
-        initialOpenState['trigger'] = steps.length === 0; // Open if no other steps
-      }
-      setOpenSteps(initialOpenState);
+      setInitialized(true);
+    } else if (!open) {
+      // Reset initialization when dialog closes
+      setInitialized(false);
     }
-  }, [open, workflowConfig, workflowTrigger]);
+  }, [open, initialized, workflowConfig, workflowTrigger]);
 
   const handleSave = async () => {
     try {
@@ -569,6 +575,18 @@ function getConfigurableFields(
     const options = inputs.options as Record<string, unknown> | undefined;
     const aiInputs = options || inputs;
 
+    // Check if this AI module has meaningful configurable content
+    // We'll show config if: prompt exists (static or dynamic), or system prompt is defined, or model is non-default
+    const hasPrompt = aiInputs.prompt !== undefined;
+    const hasSystemPrompt = aiInputs.systemPrompt !== undefined || aiInputs.system !== undefined;
+    const hasNonDefaultModel = aiInputs.model !== undefined && aiInputs.model !== 'gpt-4o-mini';
+    const hasTemperature = aiInputs.temperature !== undefined;
+
+    // If this AI step has no configurable context (no prompt, no system, default model only), skip it
+    if (!hasPrompt && !hasSystemPrompt && !hasNonDefaultModel && !hasTemperature) {
+      return fields;
+    }
+
     // Provider selection (for ai-sdk module only, not legacy modules)
     if (modulePath.includes('ai-sdk')) {
       fields.push({
@@ -581,29 +599,25 @@ function getConfigurableFields(
       });
     }
 
-    // System prompt (if present in inputs or always show for AI modules)
-    if (aiInputs.systemPrompt !== undefined || modulePath.startsWith('ai.')) {
-      fields.push({
-        key: 'systemPrompt',
-        label: 'System Prompt',
-        type: 'textarea',
-        value: aiInputs.systemPrompt || '',
-        placeholder: 'You are a helpful AI assistant...',
-        description: 'Instructions that guide the AI behavior and responses',
-      });
-    }
+    // System prompt - always show for AI modules so users can add instructions
+    fields.push({
+      key: 'systemPrompt',
+      label: 'System Prompt',
+      type: 'textarea',
+      value: aiInputs.systemPrompt || aiInputs.system || '',
+      placeholder: 'You are a helpful AI assistant...',
+      description: 'Instructions that guide the AI behavior and responses',
+    });
 
-    // Model selection (if present in inputs or always show for AI modules)
-    if (aiInputs.model !== undefined || modulePath.startsWith('ai.')) {
-      fields.push({
-        key: 'model',
-        label: 'Model',
-        type: 'text',
-        value: aiInputs.model || 'gpt-4o-mini',
-        placeholder: 'gpt-4o, gpt-4o-mini, claude-3-5-sonnet-20241022, etc.',
-        description: 'AI model to use',
-      });
-    }
+    // Model selection - always show for AI modules
+    fields.push({
+      key: 'model',
+      label: 'Model',
+      type: 'text',
+      value: aiInputs.model || 'gpt-4o-mini',
+      placeholder: 'gpt-4o, gpt-4o-mini, claude-3-5-sonnet-20241022, etc.',
+      description: 'AI model to use',
+    });
 
     // Temperature (if present in inputs)
     if (aiInputs.temperature !== undefined) {
@@ -636,12 +650,12 @@ function getConfigurableFields(
     }
 
     // Prompt field (for modules that use 'prompt' instead of separate system/user)
-    if (inputs.prompt !== undefined && typeof inputs.prompt === 'string' && !inputs.prompt.includes('{{')) {
+    if (aiInputs.prompt !== undefined && typeof aiInputs.prompt === 'string' && !aiInputs.prompt.includes('{{')) {
       fields.push({
         key: 'prompt',
         label: 'Prompt',
         type: 'textarea',
-        value: inputs.prompt || '',
+        value: aiInputs.prompt || '',
         placeholder: 'Enter your prompt...',
         description: 'The prompt to send to the AI',
       });
@@ -734,12 +748,17 @@ function applyStepSettings(
       // Apply all settings for this step
       Object.entries(settings).forEach(([key, value]) => {
         if (value !== undefined && value !== null && value !== '') {
+          // Special handling for systemPrompt - map to 'system' if that's what's being used
+          const actualKey = key === 'systemPrompt' && hasOptionsNesting ?
+            (step.inputs.options as Record<string, unknown>).system !== undefined ? 'system' : 'systemPrompt'
+            : key;
+
           if (hasOptionsNesting) {
             // Set nested in options for AI modules with that structure
-            (step.inputs.options as Record<string, unknown>)[key] = value;
+            (step.inputs.options as Record<string, unknown>)[actualKey] = value;
           } else {
             // Set at top level for other modules
-            step.inputs[key] = value;
+            step.inputs[actualKey] = value;
           }
         }
       });
