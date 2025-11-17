@@ -90,17 +90,23 @@ export async function executeWorkflow(
     });
 
     // Parse config - for PostgreSQL it's a string, for SQLite it's already an object
-    const config = (typeof workflow.config === 'string'
-      ? JSON.parse(workflow.config)
-      : workflow.config) as {
-      steps: Array<{
-        id: string;
-        module: string;
-        inputs: Record<string, unknown>;
-        outputAs?: string;
-      }>;
-      returnValue?: string;
-    };
+    let config;
+    try {
+      config = (typeof workflow.config === 'string'
+        ? JSON.parse(workflow.config)
+        : workflow.config) as {
+        steps: Array<{
+          id: string;
+          module: string;
+          inputs: Record<string, unknown>;
+          outputAs?: string;
+        }>;
+        returnValue?: string;
+      };
+    } catch (parseError) {
+      logger.error({ workflowId, parseError }, 'Failed to parse workflow config');
+      throw new Error(`Invalid workflow configuration: ${parseError instanceof Error ? parseError.message : 'Unknown error'}`);
+    }
 
     logger.info({ workflowId, stepCount: config.steps.length }, 'Executing workflow steps');
 
@@ -329,15 +335,6 @@ function resolveValue(value: unknown, variables: Record<string, unknown>): unkno
       const path = match[1];
       const resolved = getNestedValue(variables, path);
 
-      // Debug logging for variable resolution
-      if (path.startsWith('aiReply') || path.includes('aiReply')) {
-        console.log('=== AI REPLY RESOLUTION DEBUG ===');
-        console.log('Path:', path);
-        console.log('Resolved value:', resolved);
-        console.log('Resolved type:', typeof resolved);
-        console.log('variables.aiReply:', variables.aiReply);
-        console.log('===================================');
-      }
 
       return resolved;
     }
@@ -911,14 +908,6 @@ async function loadUserCredentialsFromDB(userId: string): Promise<Record<string,
       }
     }
 
-    console.log('=== CREDENTIALS DEBUG ===');
-    console.log('User ID:', userId);
-    console.log('Credential keys:', Object.keys(credentialMap));
-    console.log('Credential map:', JSON.stringify(Object.keys(credentialMap).reduce((acc, key) => {
-      acc[key] = credentialMap[key] ? '***HAS_VALUE***' : 'MISSING';
-      return acc;
-    }, {} as Record<string, string>), null, 2));
-    console.log('=========================');
 
     logger.info(
       {
