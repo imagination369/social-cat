@@ -129,6 +129,31 @@ steps:
     outputAs: variableName (optional)
 ```
 
+### Trigger Variables (CRITICAL)
+
+**Each trigger type provides specific variables accessible in workflows:**
+
+**Webhook triggers** provide `trigger` object with:
+- `trigger.body` - JSON request body (e.g., `trigger.body.email`, `trigger.body.numbers`)
+- `trigger.headers` - HTTP headers object
+- `trigger.query` - Query parameters object
+- `trigger.method` - HTTP method (POST, GET, etc.)
+- `trigger.url` - Request URL path
+
+**Chat triggers** provide:
+- `trigger.message` or `trigger.userInput` - User's message text
+- `trigger.conversationId` - Conversation ID
+
+**Telegram/Discord triggers** provide:
+- `trigger.message` - Message text
+- `trigger.userId` - User ID
+- `trigger.chatId` - Chat/channel ID
+
+**Manual/Cron triggers** provide:
+- No trigger data (start with hardcoded values or config)
+
+**IMPORTANT**: Always use `trigger.body.fieldName` for webhook data, NOT `webhookData.fieldName` or `input.fieldName`!
+
 ### User Answer → Plan Mapping
 
 **Trigger Types (choose one):**
@@ -256,6 +281,7 @@ output: json
 returnValue: "{{validationResult}}"
 steps:
   # 1. Validate incoming data
+  # CRITICAL: Use trigger.body to access webhook POST data
   - module: utilities.javascript.execute
     id: validate-data
     inputs:
