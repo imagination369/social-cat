@@ -16,6 +16,17 @@ import { type WorkflowExport } from '../src/lib/workflows/import-export';
 
 const API_URL = process.env.API_URL || 'http://localhost:3123';
 
+async function checkServerRunning(): Promise<boolean> {
+  try {
+    const response = await fetch(`${API_URL}/api/system/status`, {
+      signal: AbortSignal.timeout(3000), // 3 second timeout
+    });
+    return response.ok;
+  } catch {
+    return false;
+  }
+}
+
 async function importWorkflow(workflowJson: string): Promise<void> {
   try {
     // Validate JSON
@@ -29,6 +40,19 @@ async function importWorkflow(workflowJson: string): Promise<void> {
       console.log(`🔑 Required credentials: ${workflow.metadata.requiresCredentials.join(', ')}`);
     }
 
+    // Check if server is running
+    console.log('\n🔍 Checking if server is running...');
+    const serverRunning = await checkServerRunning();
+
+    if (!serverRunning) {
+      console.error(`❌ Server not responding at ${API_URL}`);
+      console.error(`   Please start the server first: npm run dev:full`);
+      console.error(`   Or set API_URL environment variable to point to running server`);
+      process.exit(1);
+    }
+
+    console.log(`✅ Server is running at ${API_URL}\n`);
+
     // Import via API (use test endpoint in development for no-auth import)
     const importEndpoint = process.env.NODE_ENV === 'production'
       ? `${API_URL}/api/workflows/import`
@@ -38,6 +62,7 @@ async function importWorkflow(workflowJson: string): Promise<void> {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ workflowJson }),
+      signal: AbortSignal.timeout(30000), // 30 second timeout
     });
 
     if (!response.ok) {

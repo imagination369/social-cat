@@ -66,26 +66,36 @@ Use AskUserQuestion tool to gather:
 
 **Do NOT proceed without reading ALL FOUR files!**
 
-## Step 3: Search for Specific Modules
+## Step 3: Search for Modules (MANDATORY - DO NOT SKIP)
 
-**REQUIRED: Use module search to find exact module paths for user's requirements.**
+**YOU MUST SEARCH FOR EVERY MODULE YOU PLAN TO USE. NEVER GUESS!**
 
+For each functionality needed, run:
 ```bash
 npm run modules:search <keyword>
 ```
 
-Search examples based on user needs:
-- User wants math → `npm run modules:search add`
-- User wants AI → `npm run modules:search generate`
-- User wants Twitter → `npm run modules:search twitter`
-- User wants validation → `npm run modules:search validate`
-- User wants arrays → `npm run modules:search array`
+**Example workflow needs:**
+"Webhook that adds numbers and generates AI summary"
 
-**CRITICAL:**
-- ALWAYS search for modules, don't guess paths
-- Use the exact `path` from search results in your YAML
-- Check the `signature` to see parameter names
-- Note if module has `wrapper` field (auto-wrapping handled by build script)
+**YOU MUST RUN THESE SEARCHES:**
+1. `npm run modules:search add` → Get exact path for addition
+2. `npm run modules:search generate` → Get exact path for AI generation
+3. `npm run modules:search execute` → Get exact path for JavaScript
+
+**Extract from search results:**
+- `path` - Use this EXACTLY in your YAML (e.g., `utilities.array-utils.sum`)
+- `signature` - Shows parameter names (e.g., `sum(arr)` means use `arr:`, not `array:` or `numbers:`)
+- `wrapper` - If "options" or "params", inputs are auto-wrapped
+- `params` - Shows which are required vs optional
+
+**CONSEQUENCES OF NOT SEARCHING:**
+- ❌ Wrong module paths → Build fails
+- ❌ Wrong parameter names → Build fails
+- ❌ Missing required params → Build fails
+- ❌ Using rest parameter modules → Runtime fails
+
+**NO EXCEPTIONS - SEARCH FOR EVERYTHING!**
 
 ## Step 4: Build YAML Plan
 
