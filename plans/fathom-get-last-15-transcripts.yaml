@@ -1,0 +1,112 @@
+name: Fathom - Get Last 15 Transcripts
+description: Fetch the last 15 Fathom meeting transcripts with speaker names and timestamps, save to database, and return table summary
+trigger: manual
+output: table
+outputColumns:
+  - title
+  - date
+  - transcript_segments
+  - file_path
+  - database_saved
+category: productivity
+tags:
+  - fathom
+  - transcripts
+  - batch-processing
+steps:
+  - module: productivity.fathom.listMeetings
+    id: list-meetings
+    name: Fetch last 15 meetings with transcripts
+    inputs:
+      limit: 15
+      include_transcript: true
+      include_summary: true
+    outputAs: meetingsResponse
+  - module: utilities.javascript.execute
+    id: extract-and-limit
+    name: Extract meetings and limit to 15
+    inputs:
+      code: |
+        const items = meetings.items || meetings || [];
+        return items.slice(0, 15);
+      context:
+        meetings: "{{meetingsResponse}}"
+    outputAs: limitedMeetings
+  - module: utilities.javascript.mapArray
+    id: prepare-transcript-data
+    name: Transform transcripts to database format
+    inputs:
+      items: "{{limitedMeetings}}"
+      code: |
+        const recordingId = String(item.recording_id);
+        const title = item.title || item.meeting_title || 'Untitled Meeting';
+        const meetingDate = item.recording_start_time || item.created_at;
+
+        // Format transcript as markdown
+        let transcriptMarkdown = `# ${title}\n\n**Date:** ${meetingDate}\n\n## Transcript\n\n`;
+        const transcript = item.transcript || [];
+
+        for (const segment of transcript) {
+          const speaker = segment.speaker?.display_name || 'Unknown';
+          const timestamp = segment.timestamp || '00:00:00';
+          const text = segment.text || '';
+          transcriptMarkdown += `**[${timestamp}] ${speaker}:** ${text}\n\n`;
+        }
+
+        // Extract participants
+        const participants = [];
+        if (item.calendar_invitees) {
+          for (const invitee of item.calendar_invitees) {
+            participants.push(invitee.name);
+          }
+        }
+
+        // Calculate duration
+        let durationMinutes = null;
+        if (item.recording_start_time && item.recording_end_time) {
+          const start = new Date(item.recording_start_time).getTime();
+          const end = new Date(item.recording_end_time).getTime();
+          durationMinutes = Math.round((end - start) / 60000);
+        }
+
+        return {
+          id: `fathom_${recordingId}_${Date.now()}`,
+          userId: 'system',
+          recordingId: recordingId,
+          title: title,
+          meetingDate: meetingDate,
+          durationMinutes: durationMinutes,
+          participants: participants,
+          shortSummary: item.default_summary?.markdown_formatted?.substring(0, 500) || null,
+          fullSummary: item.default_summary?.markdown_formatted || null,
+          transcriptMarkdown: transcriptMarkdown,
+          transcriptJson: transcript,
+          filePathMarkdown: `/tmp/fathom_${recordingId}.md`,
+          transcriptSaved: 1,
+          processed: 0,
+          transcript_segments: transcript.length,
+          original_item: item
+        };
+    outputAs: preparedTranscripts
+  - module: data.drizzle-utils.insertRecords
+    id: save-to-database
+    name: Save all transcripts to database
+    inputs:
+      workflowId: "{{workflowId}}"
+      tableName: fathom_transcripts
+      records: "{{preparedTranscripts}}"
+    outputAs: dbInsertResult
+  - module: utilities.javascript.mapArray
+    id: format-results
+    name: Format results for table display
+    inputs:
+      items: "{{preparedTranscripts}}"
+      code: |
+        return {
+          title: item.title,
+          date: item.meetingDate,
+          transcript_segments: item.transcript_segments,
+          file_path: item.filePathMarkdown,
+          database_saved: 'Yes'
+        };
+    outputAs: finalResults

@@ -1,0 +1,206 @@
+name: Test Single Transcript Save
+description: Minimal test - fetch ONE transcript and save to database
+trigger: manual
+output: json
+category: productivity
+tags: [debug, fathom, test]
+
+steps:
+  # 1. Get one meeting from API
+  - module: productivity.fathom.listMeetings
+    id: fetch
+    inputs:
+      options:
+        limit: 1
+        include_summary: true
+        include_transcript: false
+    outputAs: response
+
+  # 2. Extract first meeting
+  - module: utilities.javascript.execute
+    id: extract
+    inputs:
+      options:
+        code: |
+          // Handle mock data in dry-run
+          if (response.mock) {
+            return {
+              recording_id: '12345',
+              title: 'Mock Meeting',
+              recording_start_time: new Date().toISOString(),
+              default_summary: { markdown_formatted: 'Mock summary' }
+            };
+          }
+          const meeting = response.items[0];
+          console.log('Meeting to fetch:', meeting.recording_id, meeting.title);
+          return meeting;
+        context:
+          response: "{{response}}"
+    outputAs: meeting
+
+  # 3. Fetch transcript using Fathom module (handles auth properly)
+  - module: productivity.fathom.getTranscript
+    id: fetch_transcript
+    inputs:
+      options:
+        recording_id: "{{meeting.recording_id}}"
+    outputAs: transcriptData
+
+  # 3b. Combine meeting + transcript
+  - module: utilities.javascript.execute
+    id: combine
+    inputs:
+      options:
+        code: |
+          return {
+            meeting,
+            transcript: transcriptData.transcript || []
+          };
+        context:
+          meeting: "{{meeting}}"
+          transcriptData: "{{transcriptData}}"
+    outputAs: result
+
+  # 4. Format for database
+  - module: utilities.javascript.execute
+    id: format
+    inputs:
+      options:
+        code: |
+          const meeting = result.meeting;
+          const segments = result.transcript;
+          const recordingId = meeting.recording_id;
+
+          const title = meeting.title || meeting.meeting_title || 'Untitled Meeting';
+          const meetingDate = new Date(meeting.recording_start_time || meeting.created_at || new Date());
+
+          // Calculate duration
+          let durationMinutes = null;
+          if (meeting.recording_start_time && meeting.recording_end_time) {
+            const start = new Date(meeting.recording_start_time);
+            const end = new Date(meeting.recording_end_time);
+            durationMinutes = Math.round((end.getTime() - start.getTime()) / 60000);
+          }
+
+          // Extract participants
+          const participantSet = new Set();
+          segments.forEach(seg => {
+            if (seg.speaker?.display_name) participantSet.add(seg.speaker.display_name);
+            else if (seg.speaker?.name) participantSet.add(seg.speaker.name);
+          });
+          const participants = Array.from(participantSet);
+
+          // Get summary
+          const fullSummary = meeting.default_summary?.markdown_formatted || null;
+          const shortSummary = fullSummary?.substring(0, 200) || null;
+
+          // Build markdown
+          const lines = [];
+          lines.push(`# ${title}`);
+          lines.push(`**Date:** ${meetingDate.toLocaleDateString()}`);
+          if (durationMinutes) lines.push(`**Duration:** ${durationMinutes} minutes`);
+          if (participants.length > 0) lines.push(`**Participants:** ${participants.join(', ')}`);
+          lines.push('');
+
+          if (fullSummary) {
+            lines.push('## Summary');
+            lines.push(fullSummary);
+            lines.push('');
+          }
+
+          lines.push('## Full Transcript');
+          segments.forEach(seg => {
+            const speaker = seg.speaker?.display_name || seg.speaker?.name || 'Unknown';
+            const timestamp = seg.timestamp || '';
+            lines.push(`**${speaker} (${timestamp}):**`);
+            lines.push(seg.text || '');
+            lines.push('');
+          });
+
+          const markdown = lines.join('\n');
+
+          const dateStr = meetingDate.toISOString().split('T')[0];
+          const titleSlug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').substring(0, 50);
+          const filename = `${dateStr}-${titleSlug}.md`;
+
+          const record = {
+            id: `fathom-${recordingId}`,
+            user_id: 'system',
+            recording_id: String(recordingId),
+            title,
+            meeting_date: meetingDate.toISOString(),
+            duration_minutes: durationMinutes,
+            participants: participants,
+            short_summary: shortSummary,
+            full_summary: fullSummary,
+            transcript_markdown: markdown,
+            transcript_json: segments,
+            file_path_markdown: `/transcripts/${filename}`,
+            transcript_saved: 1,
+            processed: 0
+          };
+
+          console.log('Formatted record:', {
+            id: record.id,
+            recording_id: record.recording_id,
+            title: record.title,
+            segments: segments.length,
+            participants: participants.length
+          });
+
+          return record;
+        context:
+          result: "{{result}}"
+    outputAs: record
+
+  # 5. Wrap in array for insertRecords
+  - module: utilities.javascript.execute
+    id: wrap
+    inputs:
+      options:
+        code: |
+          console.log('=== WRAP STEP DEBUG ===');
+          console.log('Record type:', typeof record);
+          console.log('Record keys:', Object.keys(record || {}));
+          console.log('Record.id:', record?.id);
+          console.log('Record.recording_id:', record?.recording_id);
+          const wrapped = [record];
+          console.log('Wrapped array length:', wrapped.length);
+          console.log('Wrapped[0] type:', typeof wrapped[0]);
+          return wrapped;
+        context:
+          record: "{{record}}"
+    outputAs: records
+
+  # 6. Save to database
+  - module: data.drizzle-utils.insertRecords
+    id: save
+    inputs:
+      params:
+        tableName: fathom_transcripts
+        data: "{{records}}"
+    outputAs: saveResult
+
+  # 7. Return diagnostic info
+  - module: utilities.javascript.execute
+    id: output
+    inputs:
+      options:
+        code: |
+          return {
+            success: true,
+            recording_id: record?.recording_id || 'UNDEFINED',
+            title: record?.title || 'UNDEFINED',
+            transcript_segments: record?.transcript_json?.length || 0,
+            save_result: saveResult,
+            message: 'Transcript saved! Run check-transcripts.ts to verify.',
+            debug_record_type: typeof record,
+            debug_record_keys: record ? Object.keys(record) : [],
+            debug_records_length: records?.length || 'UNDEFINED',
+            debug_records_type: typeof records
+          };
+        context:
+          record: "{{record}}"
+          records: "{{records}}"
+          saveResult: "{{saveResult}}"
+    outputAs: final

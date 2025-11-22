@@ -339,6 +339,12 @@ export async function insertRecord(params: {
         } else {
           acc[key] = value;
         }
+      } else if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+        // For plain objects, stringify for JSONB columns
+        acc[key] = JSON.stringify(value);
+      } else if (Array.isArray(value)) {
+        // For arrays, stringify for JSONB columns
+        acc[key] = JSON.stringify(value);
       } else {
         acc[key] = value;
       }
@@ -403,7 +409,16 @@ export async function insertRecords(params: {
     const allValues: unknown[] = [];
 
     const valuePlaceholders = data.map((record, recordIndex) => {
-      const recordValues = columns.map(col => record[col]);
+      const recordValues = columns.map(col => {
+        const value = record[col];
+        // Auto-stringify arrays and objects for JSONB columns (same logic as insertRecord)
+        if (Array.isArray(value)) {
+          return JSON.stringify(value);
+        } else if (typeof value === 'object' && value !== null) {
+          return JSON.stringify(value);
+        }
+        return value;
+      });
       allValues.push(...recordValues);
 
       const startIndex = recordIndex * columns.length + 1;
